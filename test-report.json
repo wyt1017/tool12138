@@ -1,0 +1,127 @@
+{
+  "tested_pages": [
+    {
+      "page": "主页",
+      "status": "OK",
+      "url": "/"
+    },
+    {
+      "page": "工具列表",
+      "status": "OK",
+      "url": "/tools"
+    },
+    {
+      "page": "文本字数统计",
+      "status": "OK",
+      "url": "/tools/text-counter",
+      "inputs": 1,
+      "buttons": 8
+    },
+    {
+      "page": "JSON格式化",
+      "status": "OK",
+      "url": "/tools/json-formatter",
+      "inputs": 2,
+      "buttons": 12
+    },
+    {
+      "page": "颜色选择器",
+      "status": "OK",
+      "url": "/tools/color-picker",
+      "inputs": 3,
+      "buttons": 13
+    },
+    {
+      "page": "二维码生成器",
+      "status": "OK",
+      "url": "/tools/qrcode-generator",
+      "inputs": 1,
+      "buttons": 11
+    },
+    {
+      "page": "时间戳转换",
+      "status": "OK",
+      "url": "/tools/timestamp-converter",
+      "inputs": 2,
+      "buttons": 9
+    },
+    {
+      "page": "密码生成器",
+      "status": "OK",
+      "url": "/tools/password-generator",
+      "inputs": 2,
+      "buttons": 11
+    },
+    {
+      "page": "Base64编解码",
+      "status": "OK",
+      "url": "/tools/base64",
+      "inputs": 3,
+      "buttons": 11
+    },
+    {
+      "page": "哈希生成",
+      "status": "OK",
+      "url": "/tools/hash-generator",
+      "inputs": 1,
+      "buttons": 14
+    },
+    {
+      "page": "文本差异对比",
+      "status": "OK",
+      "url": "/tools/text-diff",
+      "inputs": 2,
+      "buttons": 8
+    },
+    {
+      "page": "图片压缩",
+      "status": "OK",
+      "url": "/tools/image-compress",
+      "inputs": 1,
+      "buttons": 6
+    },
+    {
+      "page": "LZ文本压缩",
+      "status": "OK",
+      "url": "/tools/lz-string-compress",
+      "inputs": 2,
+      "buttons": 14
+    },
+    {
+      "page": "JWT解析器",
+      "status": "OK",
+      "url": "/tools/jwt-parser",
+      "inputs": 1,
+      "buttons": 6
+    },
+    {
+      "page": "摩斯电码",
+      "status": "OK",
+      "url": "/tools/morse-code",
+      "inputs": 2,
+      "buttons": 10
+    },
+    {
+      "page": "BMI计算",
+      "status": "OK",
+      "url": "/tools/bmi-calculator",
+      "inputs": 2,
+      "buttons": 8
+    },
+    {
+      "page": "About",
+      "status": "OK",
+      "url": "/about"
+    }
+  ],
+  "errors": [],
+  "warnings": [
+    "密码生成器: 密码显示区域不可见"
+  ],
+  "summary": {
+    "total": 17,
+    "ok": 17,
+    "warnings": 0,
+    "errors": 0
+  }
+}
