@@ -1,7 +1,12 @@
-import { Link } from 'react-router-dom';
+﻿import { Link } from 'react-router-dom';
 import { Zap, Github, Heart } from 'lucide-react';
+import { tools } from '@/data/tools';
 
 export default function Footer() {
+  const textTools = tools.filter(t => t.category === 'text').slice(0, 6);
+  const devTools = tools.filter(t => t.category === 'dev').slice(0, 7);
+  const otherTools = tools.filter(t => !['text', 'dev'].includes(t.category)).slice(0, 3);
+
   return (
     <footer className="border-t border-white/5 bg-[#0a0a1a]/80 backdrop-blur-sm">
       <div className="max-w-6xl mx-auto px-6 py-12">
@@ -21,47 +26,32 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* 文本 & 设计 */}
+          {/* 文本工具 */}
           <div>
             <h4 className="font-['Syne'] font-semibold text-white mb-4 text-sm uppercase tracking-wider">
-              文本 & 设计
+              文本工具
             </h4>
             <ul className="space-y-2.5">
-              {[
-                { label: '文本字数统计', path: '/tools/text-counter' },
-                { label: '大小写转换', path: '/tools/case-converter' },
-                { label: '文本去重', path: '/tools/text-dedup' },
-                { label: '文本替换', path: '/tools/text-replace' },
-                { label: 'Markdown编辑器', path: '/tools/markdown-editor' },
-                { label: '颜色选择器', path: '/tools/color-picker' },
-              ].map((link) => (
-                <li key={link.path}>
-                  <Link to={link.path} className="text-sm text-[#a8b2c1] hover:text-[#00d9ff] transition-colors">
-                    {link.label}
+              {textTools.map((tool) => (
+                <li key={tool.path}>
+                  <Link to={tool.path} className="text-sm text-[#a8b2c1] hover:text-[#00d9ff] transition-colors">
+                    {tool.name}
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* 开发 & 转换 */}
+          {/* 开发工具 */}
           <div>
             <h4 className="font-['Syne'] font-semibold text-white mb-4 text-sm uppercase tracking-wider">
-              开发 & 转换
+              开发工具
             </h4>
             <ul className="space-y-2.5">
-              {[
-                { label: 'JSON格式化', path: '/tools/json-formatter' },
-                { label: '时间戳转换', path: '/tools/timestamp-converter' },
-                { label: 'URL编解码', path: '/tools/url-encode-decode' },
-                { label: 'Base64编解码', path: '/tools/base64' },
-                { label: '正则测试', path: '/tools/regex-tester' },
-                { label: '进制转换', path: '/tools/base-converter' },
-                { label: 'MD5/SHA哈希', path: '/tools/hash-generator' },
-              ].map((link) => (
-                <li key={link.path}>
-                  <Link to={link.path} className="text-sm text-[#a8b2c1] hover:text-[#00d9ff] transition-colors">
-                    {link.label}
+              {devTools.map((tool) => (
+                <li key={tool.path}>
+                  <Link to={tool.path} className="text-sm text-[#a8b2c1] hover:text-[#00d9ff] transition-colors">
+                    {tool.name}
                   </Link>
                 </li>
               ))}
@@ -74,19 +64,23 @@ export default function Footer() {
               生成器 & 其他
             </h4>
             <ul className="space-y-2.5">
-              {[
-                { label: '二维码生成', path: '/tools/qrcode-generator' },
-                { label: '密码生成', path: '/tools/password-generator' },
-                { label: 'UUID生成', path: '/tools/uuid-generator' },
-                { label: '全部工具', path: '/tools' },
-                { label: '关于我们', path: '/about' },
-              ].map((link) => (
-                <li key={link.path}>
-                  <Link to={link.path} className="text-sm text-[#a8b2c1] hover:text-[#00d9ff] transition-colors">
-                    {link.label}
+              {otherTools.map((tool) => (
+                <li key={tool.path}>
+                  <Link to={tool.path} className="text-sm text-[#a8b2c1] hover:text-[#00d9ff] transition-colors">
+                    {tool.name}
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link to="/tools" className="text-sm text-[#a8b2c1] hover:text-[#00d9ff] transition-colors">
+                  全部工具
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" className="text-sm text-[#a8b2c1] hover:text-[#00d9ff] transition-colors">
+                  关于我们
+                </Link>
+              </li>
             </ul>
             <div className="flex items-center gap-3 mt-5">
               <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center text-[#a8b2c1] hover:bg-white/10 hover:text-white transition-all" aria-label="GitHub">
