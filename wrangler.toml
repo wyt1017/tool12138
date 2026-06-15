@@ -1,6 +1,6 @@
 ﻿name = "toolbox-33834"
+compatibility_date = "2025-06-15"
 main = "src/workers/index.ts"
-compatibility_date = "2025-01-01"
 
 [assets]
 directory = "dist"
