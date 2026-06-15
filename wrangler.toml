@@ -2,16 +2,14 @@
 main = "src/workers/index.ts"
 compatibility_date = "2025-01-01"
 
-assets = {
-  directory = "dist",
-  binding = "ASSETS",
-  not_found_handling = "single-page-application"
-}
+[assets]
+directory = "dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
 
 [vars]
 NODE_VERSION = "20.0.0"
 
-# Cloudflare 缓存规则 - 静态资源长期缓存
 [[rules]]
 type = "CacheRule"
 pattern = "*.{png,jpg,jpeg,gif,svg,webp}"
@@ -22,7 +20,6 @@ type = "CacheRule"
 pattern = "*.{js,css,woff2,woff,ttf}"
 cache_ttl = 31536000
 
-# JSON 数据缓存 1 小时
 [[rules]]
 type = "CacheRule"
 pattern = "*.json"
