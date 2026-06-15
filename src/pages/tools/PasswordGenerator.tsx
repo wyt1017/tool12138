@@ -250,7 +250,7 @@ export default function PasswordGenerator() {
                     </div>
                     <button
                       onClick={() => handleCopy(pwd, index)}
-                      className="btn-secondary !py-2 !px-3 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="btn-secondary !py-2 !px-3 shrink-0"
                     >
                       {copiedIndex === index ? (
                         <span className="text-green-400 text-xs">已复制</span>

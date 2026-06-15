@@ -1,4 +1,4 @@
-﻿import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Zap, Github, Heart } from 'lucide-react';
 import { tools } from '@/data/tools';
 
@@ -14,7 +14,7 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#00d9ff] to-[#6366f1] flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#8b5cf6] to-[#a78bfa] flex items-center justify-center">
                 <Zap size={16} className="text-white" />
               </div>
               <span className="font-['Syne'] font-bold text-lg text-white">
