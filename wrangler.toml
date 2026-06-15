@@ -9,18 +9,3 @@ not_found_handling = "single-page-application"
 
 [vars]
 NODE_VERSION = "20.0.0"
-
-[[rules]]
-type = "CacheRule"
-pattern = "*.{png,jpg,jpeg,gif,svg,webp}"
-cache_ttl = 31536000
-
-[[rules]]
-type = "CacheRule"
-pattern = "*.{js,css,woff2,woff,ttf}"
-cache_ttl = 31536000
-
-[[rules]]
-type = "CacheRule"
-pattern = "*.json"
-cache_ttl = 3600
