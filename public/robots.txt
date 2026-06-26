@@ -1,0 +1,5 @@
+﻿User-agent: *
+Allow: /
+Disallow: /@
+Disallow: /__vite__
+Sitemap: https://same-toolbox.pages.dev/sitemap.xml
