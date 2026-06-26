@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generate Icons</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      padding: 40px;
+      text-align: center;
+    }
+    .icon-preview {
+      margin: 20px 0;
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      cursor: pointer;
+      background: #0969da;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      margin: 10px;
+    }
+    button:hover {
+      background: #0550ae;
+    }
+  </style>
+</head>
+<body>
+  <h1>Generate Chrome Extension Icons</h1>
+  <p>点击按钮生成扩展图标</p>
+  
+  <div class="icon-preview">
+    <canvas id="icon16" width="16" height="16"></canvas>
+    <canvas id="icon48" width="48" height="48"></canvas>
+    <canvas id="icon128" width="128" height="128"></canvas>
+  </div>
+  
+  <button onclick="generateIcons()">Generate Icons</button>
+  <button onclick="downloadIcons()">Download Icons</button>
+  
+  <script>
+    const icons = [
+      { id: 'icon16', size: 16 },
+      { id: 'icon48', size: 48 },
+      { id: 'icon128', size: 128 }
+    ];
+    
+    function drawIcon(canvas, size) {
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, size, size);
+      
+      // Background circle
+      ctx.beginPath();
+      ctx.arc(size/2, size/2, size/2 - 2, 0, Math.PI * 2);
+      ctx.fillStyle = '#0969da';
+      ctx.fill();
+      
+      // PR icon (branch symbol)
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = size / 16;
+      ctx.lineCap = 'round';
+      
+      // Vertical line
+      ctx.beginPath();
+      ctx.moveTo(size * 0.4, size * 0.15);
+      ctx.lineTo(size * 0.4, size * 0.85);
+      ctx.stroke();
+      
+      // Branch line
+      ctx.beginPath();
+      ctx.moveTo(size * 0.4, size * 0.35);
+      ctx.lineTo(size * 0.85, size * 0.55);
+      ctx.stroke();
+      
+      // Dots
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(size * 0.4, size * 0.15, size / 20, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.beginPath();
+      ctx.arc(size * 0.4, size * 0.85, size / 20, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.beginPath();
+      ctx.arc(size * 0.85, size * 0.55, size / 20, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    
+    function generateIcons() {
+      icons.forEach(({ id, size }) => {
+        const canvas = document.getElementById(id);
+        drawIcon(canvas, size);
+      });
+    }
+    
+    function downloadIcons() {
+      icons.forEach(({ id, size }) => {
+        const canvas = document.getElementById(id);
+        const link = document.createElement('a');
+        link.download = `icon${size}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+      alert('Icons downloaded! Move them to the icons/ folder');
+    }
+    
+    // Auto-generate on load
+    generateIcons();
+  </script>
+</body>
+</html>

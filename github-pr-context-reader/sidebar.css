@@ -1,0 +1,508 @@
+/* PR Context Sidebar Styles */
+
+.pr-context-btn {
+  margin-left: 8px;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  background: #2da44e;
+  color: white;
+  border: 1px solid rgba(27, 31, 35, 0.15);
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pr-context-btn:hover {
+  background: #2c974b;
+}
+
+.pr-context-btn.active {
+  background: #0969da;
+}
+
+.pr-context-btn svg {
+  fill: currentColor;
+}
+
+.pr-context-sidebar {
+  position: fixed;
+  top: 0;
+  right: -480px;
+  width: 480px;
+  height: 100vh;
+  background: #ffffff;
+  border-left: 1px solid #d0d7de;
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+  transition: right 0.3s ease;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.pr-context-sidebar.active {
+  right: 0;
+}
+
+.pr-context-sidebar-header {
+  padding: 16px;
+  border-bottom: 1px solid #d0d7de;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f6f8fa;
+}
+
+.pr-context-sidebar-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #24292f;
+}
+
+.pr-context-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #57606a;
+  padding: 0 8px;
+  line-height: 1;
+}
+
+.pr-context-close:hover {
+  color: #24292f;
+}
+
+.pr-context-tabs {
+  display: flex;
+  border-bottom: 1px solid #d0d7de;
+  background: #f6f8fa;
+}
+
+.pr-context-tabs .tab {
+  flex: 1;
+  padding: 12px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #57606a;
+  transition: all 0.2s;
+}
+
+.pr-context-tabs .tab:hover {
+  color: #24292f;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.pr-context-tabs .tab.active {
+  color: #0969da;
+  border-bottom-color: #0969da;
+  background: #ffffff;
+}
+
+.pr-context-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Loading State */
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #57606a;
+  font-style: italic;
+}
+
+/* Error State */
+.error {
+  padding: 16px;
+  background: #fff0f0;
+  border: 1px solid #d73a49;
+  border-radius: 6px;
+  color: #cb2431;
+  margin: 8px 0;
+}
+
+/* No Data State */
+.no-data {
+  color: #57606a;
+  font-style: italic;
+  padding: 8px 0;
+}
+
+/* PR Summary Styles */
+.pr-summary {
+  margin-bottom: 16px;
+}
+
+.summary-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.summary-stat {
+  text-align: center;
+  padding: 12px;
+  background: #f6f8fa;
+  border-radius: 6px;
+  border: 1px solid #d0d7de;
+}
+
+.stat-value {
+  display: block;
+  font-size: 24px;
+  font-weight: 600;
+  color: #24292f;
+}
+
+.stat-add {
+  color: #1a7f37;
+}
+
+.stat-del {
+  color: #cf222e;
+}
+
+.stat-label {
+  display: block;
+  font-size: 11px;
+  color: #57606a;
+  margin-top: 4px;
+  text-transform: uppercase;
+}
+
+.pr-description {
+  margin-bottom: 20px;
+}
+
+.pr-description h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #24292f;
+  margin: 0 0 8px 0;
+}
+
+.description-content {
+  padding: 12px;
+  background: #f6f8fa;
+  border-radius: 6px;
+  border: 1px solid #d0d7de;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #24292f;
+}
+
+.description-content p {
+  margin: 0;
+}
+
+.description-content code {
+  background: rgba(31, 35, 40, 0.15);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 85%;
+}
+
+/* PR Meta Info */
+.pr-meta {
+  margin-bottom: 20px;
+}
+
+.pr-meta h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #24292f;
+  margin: 0 0 12px 0;
+}
+
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #d0d7de;
+  font-size: 14px;
+}
+
+.meta-row:last-child {
+  border-bottom: none;
+}
+
+.meta-label {
+  color: #57606a;
+  font-weight: 500;
+}
+
+.meta-value {
+  color: #24292f;
+}
+
+.meta-value a {
+  color: #0969da;
+  text-decoration: none;
+}
+
+.meta-value a:hover {
+  text-decoration: underline;
+}
+
+.state-open {
+  color: #1a7f37;
+  font-weight: 500;
+}
+
+.state-closed {
+  color: #cf222e;
+  font-weight: 500;
+}
+
+/* Assignees */
+.pr-assignees {
+  margin-bottom: 20px;
+}
+
+.pr-assignees h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #24292f;
+  margin: 0 0 8px 0;
+}
+
+.assignees-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.assignee-avatar {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #f6f8fa;
+  border: 1px solid #d0d7de;
+  border-radius: 20px;
+  color: #0969da;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.assignee-avatar:hover {
+  background: #0969da;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+/* Labels */
+.pr-labels {
+  margin-bottom: 16px;
+}
+
+.pr-labels h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #24292f;
+  margin: 0 0 8px 0;
+}
+
+.labels-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.label {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+/* Related PRs */
+.related-prs {
+  margin-bottom: 16px;
+}
+
+.related-prs h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #24292f;
+  margin: 0 0 12px 0;
+}
+
+.prs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pr-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: #f6f8fa;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+}
+
+.pr-link {
+  color: #0969da;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  flex: 1;
+  margin-right: 8px;
+  word-break: break-word;
+}
+
+.pr-link:hover {
+  text-decoration: underline;
+}
+
+.pr-state {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.pr-state.state-open {
+  background: #dafbe1;
+  color: #1a7f37;
+}
+
+.pr-state.state-closed {
+  background: #ffebee;
+  color: #cf222e;
+}
+
+/* File History */
+.file-history {
+  margin-bottom: 16px;
+}
+
+.file-history h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #24292f;
+  margin: 0 0 12px 0;
+}
+
+.file-group {
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #f6f8fa;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+}
+
+.file-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #24292f;
+  margin: 0 0 8px 0;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+
+.commits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.commit-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px;
+  background: #ffffff;
+  border: 1px solid #d0d7de;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.commit-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  color: #24292f;
+  flex: 1;
+}
+
+.commit-link:hover {
+  color: #0969da;
+}
+
+.commit-hash {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  color: #57606a;
+  font-weight: 500;
+}
+
+.commit-message {
+  color: #24292f;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.commit-author {
+  color: #57606a;
+  font-size: 11px;
+}
+
+.commit-date {
+  color: #57606a;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* Scrollbar Styling */
+.pr-context-sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.pr-context-sidebar::-webkit-scrollbar-track {
+  background: #f6f8fa;
+}
+
+.pr-context-sidebar::-webkit-scrollbar-thumb {
+  background: #d0d7de;
+  border-radius: 4px;
+}
+
+.pr-context-sidebar::-webkit-scrollbar-thumb:hover {
+  background: #afb8c1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pr-context-sidebar {
+    width: 100vw;
+    right: -100vw;
+  }
+}

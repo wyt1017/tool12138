@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PR Context Reader - 设置</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: #f6f8fa;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+      max-width: 600px;
+      width: 90%;
+    }
+    
+    h1 {
+      color: #24292f;
+      margin-bottom: 8px;
+      font-size: 24px;
+    }
+    
+    .subtitle {
+      color: #57606a;
+      margin-bottom: 32px;
+      font-size: 14px;
+    }
+    
+    .form-group {
+      margin-bottom: 24px;
+    }
+    
+    label {
+      display: block;
+      color: #24292f;
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d0d7de;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+    
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      outline: none;
+      border-color: #0969da;
+      box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.1);
+    }
+    
+    .hint {
+      color: #57606a;
+      font-size: 12px;
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+    
+    .hint a {
+      color: #0969da;
+      text-decoration: none;
+    }
+    
+    .hint a:hover {
+      text-decoration: underline;
+    }
+    
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn-primary {
+      background: #2da44e;
+      color: white;
+      width: 100%;
+    }
+    
+    .btn-primary:hover {
+      background: #2c974b;
+    }
+    
+    .btn-secondary {
+      background: #6e7781;
+      color: white;
+      margin-top: 12px;
+      width: 100%;
+    }
+    
+    .btn-secondary:hover {
+      background: #57606a;
+    }
+    
+    .status {
+      padding: 12px;
+      border-radius: 6px;
+      margin-top: 16px;
+      font-size: 14px;
+      display: none;
+    }
+    
+    .status.success {
+      background: #dafbe1;
+      color: #1a7f37;
+      border: 1px solid #aad8b3;
+      display: block;
+    }
+    
+    .status.error {
+      background: #ffebe9;
+      color: #cf222e;
+      border: 1px solid #ff8182;
+      display: block;
+    }
+    
+    .divider {
+      height: 1px;
+      background: #d0d7de;
+      margin: 32px 0;
+    }
+    
+    .info-box {
+      background: #ddf4ff;
+      border: 1px solid #54aeff;
+      border-radius: 6px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .info-box p {
+      color: #0969da;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔧 PR Context Reader 设置</h1>
+    <p class="subtitle">配置你的GitHub扩展</p>
+    
+    <div class="info-box">
+      <p>💡 此设置页面会自动保存到浏览器本地存储，所有GitHub PR页面都可以使用。</p>
+    </div>
+    
+    <form id="settingsForm">
+      <div class="form-group">
+        <label for="githubToken">GitHub Token（可选）</label>
+        <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off">
+        <p class="hint">
+          未配置token时，API限制为每分钟60次请求。<br>
+          配置后可提升至每分钟5000次请求。<br>
+          获取token: <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a>
+        </p>
+      </div>
+      
+      <button type="submit" class="btn btn-primary">保存设置</button>
+      <button type="button" class="btn btn-secondary" onclick="clearToken()">清除Token</button>
+    </form>
+    
+    <div id="status" class="status"></div>
+  </div>
+  
+  <script>
+    // 加载已保存的token
+    chrome.storage.local.get(['githubToken'], (result) => {
+      if (result.githubToken) {
+        document.getElementById('githubToken').value = result.githubToken;
+      }
+    });
+    
+    // 表单提交
+    document.getElementById('settingsForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const token = document.getElementById('githubToken').value.trim();
+      const statusDiv = document.getElementById('status');
+      
+      if (token) {
+        chrome.storage.local.set({ githubToken: token }, () => {
+          statusDiv.className = 'status success';
+          statusDiv.textContent = '✅ 设置已保存！Token已加密存储在浏览器中。';
+          console.log('Token saved successfully');
+        });
+      } else {
+        chrome.storage.local.set({ githubToken: '' }, () => {
+          statusDiv.className = 'status success';
+          statusDiv.textContent = '✅ Token已清除！';
+        });
+      }
+    });
+    
+    function clearToken() {
+      chrome.storage.local.remove(['githubToken'], () => {
+        const statusDiv = document.getElementById('status');
+        statusDiv.className = 'status success';
+        statusDiv.textContent = '✅ Token已清除！';
+        document.getElementById('githubToken').value = '';
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "GitHub PR Context Reader",
+  "version": "1.0.0",
+  "description": "Enhance GitHub PR reviews with AI summaries, related issues, and code change history analysis",
+  "permissions": ["storage", "activeTab", "scripting"],
+  "host_permissions": [
+    "https://github.com/*",
+    "https://api.github.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://github.com/*/*/pull/*"],
+      "js": ["content.js"],
+      "css": ["sidebar.css"]
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "GitHub PR Context Reader"
+  },
+  "options_page": "options.html"
+}
