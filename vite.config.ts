@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   build: {
     sourcemap: false,
     chunkSizeWarningLimit: 1000,
@@ -22,16 +22,14 @@ export default defineConfig({
   },
   cacheDir: path.resolve(__dirname, '.vite-cache-same'),
   plugins: [
-    react({
+    react(mode === 'development' ? {
       babel: {
-        plugins: [
-          'react-dev-locator',
-        ],
+        plugins: ['react-dev-locator'],
       },
-    }),
+    } : undefined),
     tsconfigPaths()
   ],
   server: {
     allowedHosts: true,
   },
-})
+}))
