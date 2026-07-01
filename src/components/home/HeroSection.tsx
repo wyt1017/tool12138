@@ -22,11 +22,26 @@ export default function HeroSection() {
 
   return (
     <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#00d9ff]/8 rounded-full blur-[120px] animate-pulse-glow" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-[#a78bfa]/8 rounded-full blur-[100px] animate-pulse-glow" style={{ animationDelay: '1.5s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#e94560]/4 rounded-full blur-[150px]" />
+      {/* Video Background */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{ zIndex: 0 }}
+      >
+        <source src="/city-night-bg.mp4" type="video/mp4" />
+      </video>
+      {/* Dark overlay */}
+      <div
+        className="absolute inset-0"
+        style={{ zIndex: 1 }}
+      >
+        <div className="absolute inset-0 bg-black/70" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#00d9ff]/5 rounded-full blur-[120px] animate-pulse-glow" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-[#a78bfa]/5 rounded-full blur-[100px] animate-pulse-glow" style={{ animationDelay: '1.5s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#e94560]/3 rounded-full blur-[150px]" />
       </div>
 
       {/* Floating Orbs */}
