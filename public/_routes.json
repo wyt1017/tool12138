@@ -1,0 +1,5 @@
+{
+  "version": 1,
+  "include": ["/*"],
+  "exclude": ["/assets/*", "/favicon.*", "/robots.txt", "/sitemap.xml", "/city-night-bg.mp4"]
+}
