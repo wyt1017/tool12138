@@ -92,6 +92,12 @@ const ChinesePinyin = lazy(() => import('@/pages/tools/ChinesePinyin'));
 const TextDuplicateStats = lazy(() => import('@/pages/tools/TextDuplicateStats'));
 const Base64FileDecoder = lazy(() => import('@/pages/tools/Base64FileDecoder'));
 
+// 第7批：纯前端新增工具（无后端）
+const PomodoroTodo = lazy(() => import('@/pages/tools/PomodoroTodo'));
+const ExchangeRate = lazy(() => import('@/pages/tools/ExchangeRate'));
+const GithubCard = lazy(() => import('@/pages/tools/GithubCard'));
+const WeatherWidget = lazy(() => import('@/pages/tools/WeatherWidget'));
+
 export default function App() {
   return (
     <Router>
@@ -171,6 +177,11 @@ export default function App() {
           <Route path="/tools/chinese-pinyin" element={<Suspense fallback={<LoadingSpinner />}><ChinesePinyin /></Suspense>} />
           <Route path="/tools/text-duplicate-stats" element={<Suspense fallback={<LoadingSpinner />}><TextDuplicateStats /></Suspense>} />
           <Route path="/tools/base64-file-decoder" element={<Suspense fallback={<LoadingSpinner />}><Base64FileDecoder /></Suspense>} />
+          {/* 第7批：纯前端新增工具（无后端） */}
+          <Route path="/tools/pomodoro-todo" element={<Suspense fallback={<LoadingSpinner />}><PomodoroTodo /></Suspense>} />
+          <Route path="/tools/exchange-rate" element={<Suspense fallback={<LoadingSpinner />}><ExchangeRate /></Suspense>} />
+          <Route path="/tools/github-card" element={<Suspense fallback={<LoadingSpinner />}><GithubCard /></Suspense>} />
+          <Route path="/tools/weather-widget" element={<Suspense fallback={<LoadingSpinner />}><WeatherWidget /></Suspense>} />
           <Route path="/about" element={<About />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

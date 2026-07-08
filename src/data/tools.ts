@@ -103,6 +103,12 @@ export const tools: Tool[] = [
   { id: 'chinese-pinyin', name: '中文转拼音工具', description: '将中文文本转换为拼音（带声调或数字标调），支持多音字简单识别', category: 'text', icon: 'Languages', path: '/tools/chinese-pinyin', tags: ['拼音', '中文', '声调', '转换', '多音字'] },
   { id: 'text-duplicate-stats', name: '文本重复内容统计', description: '分析文本中重复的行或单词，统计每个重复项的出现次数并排序', category: 'text', icon: 'BarChart', path: '/tools/text-duplicate-stats', tags: ['重复', '统计', '分析', '排序', '频率'] },
   { id: 'base64-file-decoder', name: 'Base64文件还原工具', description: '将Base64字符串解码并还原为原始文件，提供下载', category: 'convert', icon: 'FileDown', path: '/tools/base64-file-decoder', tags: ['Base64', '解码', '文件', '还原', '下载'] },
+
+  // ===== 第7批：纯前端新增工具（无后端） =====
+  { id: 'pomodoro-todo', name: '番茄钟·倒计时·待办', description: '专注番茄计时、自定义倒计时与本地待办清单，数据保存在浏览器', category: 'generator', icon: 'Timer', path: '/tools/pomodoro-todo', hot: true, tags: ['番茄钟', '倒计时', '待办', '专注', '计时', '清单'] },
+  { id: 'exchange-rate', name: '汇率看板', description: '实时多币种汇率换算，数据来自 Frankfurter 欧洲央行参考汇率', category: 'calculator', icon: 'TrendingUp', path: '/tools/exchange-rate', hot: true, tags: ['汇率', '货币', '换算', '外汇', 'Exchange'] },
+  { id: 'github-card', name: 'GitHub卡片生成器', description: '输入用户名自动生成 SVG 统计卡，可下载或复制代码嵌入 README', category: 'dev', icon: 'Github', path: '/tools/github-card', tags: ['GitHub', '卡片', 'SVG', '统计', 'README', '头像'] },
+  { id: 'weather-widget', name: '天气小部件', description: '实时天气与三日预报，支持城市搜索与定位，数据来自 Open-Meteo', category: 'design', icon: 'Cloud', path: '/tools/weather-widget', hot: true, tags: ['天气', '预报', '气温', '城市', 'Weather', '定位'] },
 ];
 
 export function getToolByPath(path: string): Tool | undefined {
