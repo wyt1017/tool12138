@@ -5,7 +5,7 @@
     const extLower = pathname.toLowerCase();
 
     // ── 1. 静态资源 ──
-    const staticExts = [".js", ".css", ".svg", ".png", ".jpg", ".jpeg", ".gif", ".webp", ".woff2", ".woff", ".ttf", ".json", ".ico"];
+    const staticExts = [".js", ".css", ".svg", ".png", ".jpg", ".jpeg", ".gif", ".webp", ".woff2", ".woff", ".ttf", ".json", ".ico", ".mp4", ".webm", ".ogv", ".ogg", ".mp3", ".wav", ".avi", ".mov", ".m4a", ".mkv"];
     for (const ext of staticExts) {
       if (extLower.endsWith(ext)) {
         const res = await env.ASSETS.fetch(request);
