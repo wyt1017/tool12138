@@ -21,6 +21,11 @@ export default defineConfig(({ mode }) => ({
     },
   },
   cacheDir: path.resolve(__dirname, '.vite-cache-same'),
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
   plugins: [
     react(mode === 'development' ? {
       babel: {

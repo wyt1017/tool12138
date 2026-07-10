@@ -45,6 +45,8 @@ bug_report.json
 # Screenshots and local files
 screenshots
 *.png
+!public/*.png
+!public/**/*.png
 *.tgz
 
 # Independent / cache projects (not part of the toolbox repo)
