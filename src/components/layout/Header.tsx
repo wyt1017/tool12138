@@ -77,9 +77,18 @@ export default function Header() {
                 className="relative"
                 onMouseEnter={() => setOpenDropdown(cat.key)}
                 onMouseLeave={() => setOpenDropdown(null)}
+                onFocus={() => setOpenDropdown(cat.key)}
+                onBlur={(e) => {
+                  if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+                    setOpenDropdown(null);
+                  }
+                }}
               >
                 <button
-                  className={`flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 ${
+                  type="button"
+                  aria-haspopup="true"
+                  aria-expanded={isActive}
+                  className={`flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8b5cf6]/60 ${
                     isActive ? 'text-white bg-white/8' : 'text-[#9ca3af] hover:text-white hover:bg-white/5'
                   }`}
                 >

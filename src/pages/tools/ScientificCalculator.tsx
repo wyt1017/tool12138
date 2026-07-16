@@ -28,13 +28,18 @@ export default function ScientificCalculator() {
         .replace(/abs/gi, 'Math.abs')
         .replace(/exp/gi, 'Math.exp')
         .replace(/pi/gi, 'Math.PI')
-        .replace(/e(?![xp])/gi, 'Math.E')
+        .replace(/(?<![0-9])e(?![0-9xp])/gi, 'Math.E')
+        .replace(/(\d+(?:\.\d+)?)!/g, 'factorial($1)')
         .replace(/\^/g, '**')
         .replace(/×/g, '*')
         .replace(/÷/g, '/');
 
-      // 安全计算
-      const evaluated = Function('"use strict"; return (' + expr + ')')();
+      // 安全计算（factorial 在当前作用域内定义，仅 self-XSS，风险可控）
+      const evaluated = Function(
+        '"use strict";' +
+        'const factorial=(n)=>{if(n<0||!Number.isInteger(n))return NaN;let r=1;for(let i=2;i<=n;i++)r*=i;return r;};' +
+        'return (' + expr + ')'
+      )();
       const res = typeof evaluated === 'number' ? evaluated : NaN;
 
       if (isNaN(res)) {

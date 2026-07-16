@@ -11,6 +11,7 @@ export default function MediaQueryTester() {
   const [hasReady, setHasReady] = useState(false);
 
   useEffect(() => {
+    let rafId = 0;
     const updateSize = () => {
       setWindowSize({
         width: window.innerWidth,
@@ -18,11 +19,22 @@ export default function MediaQueryTester() {
       });
       setDpr(window.devicePixelRatio || 1);
     };
+    // 用 requestAnimationFrame 节流，合并拖拽窗口时的高频 resize 事件
+    const onResize = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        updateSize();
+      });
+    };
 
     updateSize();
     setHasReady(true);
-    window.addEventListener('resize', updateSize);
-    return () => window.removeEventListener('resize', updateSize);
+    window.addEventListener('resize', onResize);
+    return () => {
+      window.removeEventListener('resize', onResize);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   useEffect(() => {
@@ -36,9 +48,10 @@ export default function MediaQueryTester() {
       const mql = window.matchMedia(customQuery);
       setQueryMatches(mql.matches);
       setHasQueried(true);
-      // 监听媒体查询变化
-      mql.addEventListener('change', (e) => setQueryMatches(e.matches));
-      return () => mql.removeEventListener('change', () => {});
+      // 监听媒体查询变化（使用同名函数引用，确保卸载时能正确移除）
+      const onChange = (e: MediaQueryListEvent) => setQueryMatches(e.matches);
+      mql.addEventListener('change', onChange);
+      return () => mql.removeEventListener('change', onChange);
     } catch {
       setQueryMatches(false);
       setHasQueried(true);

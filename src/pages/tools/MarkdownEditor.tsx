@@ -27,6 +27,16 @@ function escapeHtml(str: string): string {
     .replace(/'/g, '&#039;');
 }
 
+// 属性值转义，防止相对路径 URL 跳出属性（如 "/><img onerror=...>）
+function escapeAttr(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
 // Simple markdown parser -> HTML (basic support)
 function markdownToHtml(md: string): string {
   // 首先转义所有 HTML 特殊字符
@@ -51,7 +61,7 @@ function markdownToHtml(md: string): string {
   html = html.replace(/\[(.+?)\]\((.+?)\)/g, (_m, text, url) => {
     const safeUrl = sanitizeUrl(url);
     if (!safeUrl) return escapeHtml(text);
-    return `<a href="${safeUrl}" class="text-[#00d9ff] underline hover:text-[#6bcb77]" target="_blank" rel="noopener noreferrer">${escapeHtml(text)}</a>`;
+    return `<a href="${escapeAttr(safeUrl)}" class="text-[#00d9ff] underline hover:text-[#6bcb77]" target="_blank" rel="noopener noreferrer">${escapeHtml(text)}</a>`;
   });
   // Unordered list
   html = html.replace(/^[-*] (.+)$/gm, '<li class="ml-4 list-disc text-[#a8b2c1] my-1">$1</li>');
@@ -65,7 +75,7 @@ function markdownToHtml(md: string): string {
   html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_m, alt, url) => {
     const safeUrl = sanitizeUrl(url);
     if (!safeUrl) return escapeHtml(alt);
-    return `<img src="${safeUrl}" alt="${escapeHtml(alt)}" class="rounded-lg max-w-full my-4"/>`;
+    return `<img src="${escapeAttr(safeUrl)}" alt="${escapeHtml(alt)}" class="rounded-lg max-w-full my-4"/>`;
   });
   // Line breaks
   html = html.replace(/\n\n/g, '</p><p class="my-2 text-[#a8b2c1] leading-relaxed">');

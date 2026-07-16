@@ -21,6 +21,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent; /* 去除 iOS 点击高亮灰块 */
 }
 
 html {
@@ -31,10 +32,17 @@ body {
   font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  min-height: 100vh;
+  min-height: 100vh; /* 旧浏览器回退 */
+  min-height: 100dvh; /* 移动端动态视口，避免地址栏伸缩造成布局抖动 */
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* 移动端动态视口高度：先 100vh 回退，再 100dvh 覆盖（保证回退顺序） */
+.min-h-dvh {
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 h1, h2, h3, h4, h5, h6 {

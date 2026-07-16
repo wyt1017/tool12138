@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ImageUp, Copy, Trash2, FileImage } from 'lucide-react';
 
@@ -9,11 +9,27 @@ export default function ImageToBase64() {
   const [formatMode, setFormatMode] = useState<'full' | 'pure'>('full');
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const previewUrlRef = useRef<string>('');
+
+  // 设置预览 URL，并在创建新 URL 前回收上一个，防止 Blob URL 内存泄漏
+  const setPreview = (file: File) => {
+    if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
+    const url = URL.createObjectURL(file);
+    previewUrlRef.current = url;
+    setPreviewUrl(url);
+  };
+
+  // 组件卸载时回收当前 Blob URL
+  useEffect(() => {
+    return () => {
+      if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
+    };
+  }, []);
 
   const processFile = useCallback((file: File) => {
     if (!file.type.match(/^image\/(jpeg|png|gif|webp)$/)) return;
     setImageFile(file);
-    setPreviewUrl(URL.createObjectURL(file));
+    setPreview(file);
     const reader = new FileReader();
     reader.onload = () => {
       const result = reader.result as string;
@@ -53,6 +69,10 @@ export default function ImageToBase64() {
 
   const clearAll = () => {
     setImageFile(null);
+    if (previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current);
+      previewUrlRef.current = '';
+    }
     setPreviewUrl('');
     setBase64Output('');
     if (fileInputRef.current) fileInputRef.current.value = '';

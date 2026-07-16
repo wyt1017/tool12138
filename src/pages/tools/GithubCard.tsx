@@ -80,23 +80,29 @@ export default function GithubCard() {
     }
   };
 
+  // 转义 SVG/XML 文本与属性，防止来自 GitHub API 的第三方数据造成 XSS
+  const escapeXml = (s: string): string =>
+    s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+
   const buildSvg = (): string => {
     if (!user) return '';
     const w = 480;
     const h = 200;
-    const displayName = (user.name || user.login).slice(0, 18);
-    const bio = (user.bio || '').slice(0, 30);
+    const displayName = escapeXml((user.name || user.login).slice(0, 18));
+    const bio = escapeXml((user.bio || '').slice(0, 30));
+    const login = escapeXml(user.login);
+    const avatarUrl = escapeXml(user.avatar_url || '');
     const langBar = languages.length
       ? languages
-          .map((l) => `<rect x="20" y="160" width="${(l.pct / 100) * 440}" height="8" rx="4" fill="${l.color}"/><text x="20" y="185" fill="#8b949e" font-size="11" font-family="sans-serif">${l.name} ${l.pct.toFixed(0)}%</text>`)
+          .map((l) => `<rect x="20" y="160" width="${(l.pct / 100) * 440}" height="8" rx="4" fill="${l.color}"/><text x="20" y="185" fill="#8b949e" font-size="11" font-family="sans-serif">${escapeXml(l.name)} ${l.pct.toFixed(0)}%</text>`)
           .join('')
       : '';
     return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
   <defs><clipPath id="a"><rect x="20" y="20" width="80" height="80" rx="16"/></clipPath></defs>
   <rect width="${w}" height="${h}" rx="16" fill="#0d1117"/>
-  <image href="${user.avatar_url}" x="20" y="20" width="80" height="80" clip-path="url(#a)"/>
+  <image href="${avatarUrl}" x="20" y="20" width="80" height="80" clip-path="url(#a)"/>
   <text x="120" y="46" fill="#ffffff" font-size="20" font-weight="700" font-family="sans-serif">${displayName}</text>
-  <text x="120" y="68" fill="#8b949e" font-size="13" font-family="sans-serif">@${user.login}</text>
+  <text x="120" y="68" fill="#8b949e" font-size="13" font-family="sans-serif">@${login}</text>
   ${bio ? `<text x="120" y="90" fill="#c9d1d9" font-size="12" font-family="sans-serif">${bio}</text>` : ''}
   <text x="120" y="120" fill="#ffffff" font-size="13" font-family="sans-serif">👥 ${user.followers} followers   🔭 ${user.following} following   📦 ${user.public_repos} repos</text>
   ${langBar}

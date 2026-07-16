@@ -1,5 +1,6 @@
 import { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { MotionConfig } from 'framer-motion';
 import Layout from '@/components/layout/Layout';
 import Home from '@/pages/Home';
 import Tools from '@/pages/Tools';
@@ -100,8 +101,9 @@ const WeatherWidget = lazy(() => import('@/pages/tools/WeatherWidget'));
 
 export default function App() {
   return (
-    <Router>
-      <Routes>
+    <MotionConfig reducedMotion="user">
+      <Router>
+        <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/tools" element={<Tools />} />
@@ -186,6 +188,7 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
-    </Router>
+      </Router>
+    </MotionConfig>
   );
 }

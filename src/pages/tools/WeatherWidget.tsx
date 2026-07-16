@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Cloud, Search, MapPin, Loader2, AlertCircle, Navigation, Droplets, Wind } from 'lucide-react';
 
@@ -51,15 +51,16 @@ export default function WeatherWidget() {
   const [daily, setDaily] = useState<Day[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const abortRef = useRef<AbortController | null>(null);
 
-  const fetchWeather = useCallback(async (lat: number, lon: number, locLabel: string) => {
+  const fetchWeather = useCallback(async (lat: number, lon: number, locLabel: string, signal: AbortSignal) => {
     setLoading(true);
     setError('');
     try {
       const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
         `&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m` +
         `&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=3`;
-      const res = await fetch(url);
+      const res = await fetch(url, { signal });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       const c = data.current;
@@ -81,30 +82,36 @@ export default function WeatherWidget() {
       );
       setLabel(locLabel);
     } catch (e) {
+      if (signal.aborted || (e as Error)?.name === 'AbortError') return; // 被新请求取消，忽略
       setError(e instanceof Error ? e.message : '获取天气失败');
       setCurrent(null);
     } finally {
-      setLoading(false);
+      if (!signal.aborted) setLoading(false);
     }
   }, []);
 
   const searchCity = useCallback(async () => {
     const name = query.trim();
     if (!name) return;
+    abortRef.current?.abort(); // 取消上一次可能仍在进行中的请求
+    const controller = new AbortController();
+    abortRef.current = controller;
+    const signal = controller.signal;
     setLoading(true);
     setError('');
     try {
-      const geo = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(name)}&count=1&language=zh&format=json`);
+      const geo = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(name)}&count=1&language=zh&format=json`, { signal });
       if (!geo.ok) throw new Error(`HTTP ${geo.status}`);
       const g = await geo.json();
       if (!g.results || g.results.length === 0) throw new Error('未找到该城市，请检查名称');
       const r = g.results[0];
       const locLabel = [r.name, r.admin1, r.country].filter(Boolean).join(' · ');
-      await fetchWeather(r.latitude, r.longitude, locLabel);
+      await fetchWeather(r.latitude, r.longitude, locLabel, signal);
     } catch (e) {
+      if (signal.aborted || (e as Error)?.name === 'AbortError') return;
       setError(e instanceof Error ? e.message : '搜索失败');
     } finally {
-      setLoading(false);
+      if (!signal.aborted) setLoading(false);
     }
   }, [query, fetchWeather]);
 
@@ -113,11 +120,16 @@ export default function WeatherWidget() {
       setError('当前浏览器不支持定位');
       return;
     }
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+    const signal = controller.signal;
     setLoading(true);
     setError('');
     navigator.geolocation.getCurrentPosition(
-      (pos) => fetchWeather(pos.coords.latitude, pos.coords.longitude, '我的位置'),
+      (pos) => { fetchWeather(pos.coords.latitude, pos.coords.longitude, '我的位置', signal); },
       () => {
+        if (signal.aborted) return;
         setError('无法获取定位，请手动搜索城市');
         setLoading(false);
       }
@@ -126,6 +138,7 @@ export default function WeatherWidget() {
 
   useEffect(() => {
     searchCity();
+    return () => abortRef.current?.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

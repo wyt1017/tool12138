@@ -9,7 +9,7 @@ export default function Layout() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
-      className="min-h-screen flex flex-col bg-grid"
+      className="min-h-dvh flex flex-col bg-grid"
     >
       <Header />
       <main className="flex-1 pt-16">

@@ -71,10 +71,10 @@ export default function CodeRunner() {
   // 监听 iframe 发送的错误消息
   useEffect(() => {
     const handler = (e: MessageEvent) => {
+      if (e.source !== iframeRef.current?.contentWindow) return; // 仅接受来自预览 iframe 的消息
       if (e.data && e.data.type === 'error') {
         const { message, line, column } = e.data;
         setError(`${message}\n    at line ${line}:${column}`);
-
       }
     };
     window.addEventListener('message', handler);
@@ -89,8 +89,10 @@ export default function CodeRunner() {
     run();
   };
 
+  // 输入时防抖 300ms 再重建 iframe，避免每次按键都重载
   useEffect(() => {
-    run();
+    const id = setTimeout(() => run(), 300);
+    return () => clearTimeout(id);
   }, [run]);
 
   return (

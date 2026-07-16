@@ -22,6 +22,7 @@ function compressImage(
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
+      URL.revokeObjectURL(objectUrl);
       let w = img.width;
       let h = img.height;
 
@@ -57,8 +58,12 @@ function compressImage(
         q
       );
     };
-    img.onerror = () => reject(new Error('Failed to load image'));
-    img.src = URL.createObjectURL(file);
+    const objectUrl = URL.createObjectURL(file);
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error('Failed to load image'));
+    };
+    img.src = objectUrl;
   });
 }
 
@@ -122,11 +127,16 @@ export default function ImageCompress() {
     try {
       // Get original dimensions
       const origImg = new Image();
+      const origUrl = URL.createObjectURL(file);
       await new Promise<void>((resolve, reject) => {
         origImg.onload = () => resolve();
-        origImg.onerror = () => reject();
-        origImg.src = URL.createObjectURL(file);
+        origImg.onerror = () => {
+          URL.revokeObjectURL(origUrl);
+          reject();
+        };
+        origImg.src = origUrl;
       });
+      URL.revokeObjectURL(origUrl);
 
       const compressed = await compressImage(file, quality, maxWidth, maxHeight, format);
       // 清理旧的 blob URL

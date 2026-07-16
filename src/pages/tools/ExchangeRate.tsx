@@ -37,27 +37,30 @@ export default function ExchangeRate() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const fetchRates = useCallback(async () => {
+  const fetchRates = useCallback(async (signal?: AbortSignal) => {
     setLoading(true);
     setError('');
     try {
       const symbols = CURRENCIES.map((c) => c.code).join(',');
-      const res = await fetch(`https://api.frankfurter.app/latest?from=${base}&to=${symbols}`);
+      const res = await fetch(`https://api.frankfurter.app/latest?from=${base}&to=${symbols}`, { signal });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       if (!data.rates) throw new Error('返回数据异常');
       setRates({ [base]: 1, ...data.rates });
       setDate(data.date || '');
     } catch (e) {
+      if (signal?.aborted) return; // 请求已被新请求取消，忽略
       setError(e instanceof Error ? e.message : '获取汇率失败，请检查网络后重试');
       setRates(null);
     } finally {
-      setLoading(false);
+      if (!signal?.aborted) setLoading(false);
     }
   }, [base]);
 
   useEffect(() => {
-    fetchRates();
+    const controller = new AbortController();
+    fetchRates(controller.signal);
+    return () => controller.abort();
   }, [fetchRates]);
 
   const amt = parseFloat(amount) || 0;
@@ -97,7 +100,7 @@ export default function ExchangeRate() {
               onChange={(e) => setAmount(e.target.value)}
               className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white outline-none focus:border-[#00d9ff]/30" />
           </div>
-          <button onClick={fetchRates} disabled={loading}
+          <button onClick={() => fetchRates()} disabled={loading}
             className="btn-secondary flex items-center justify-center gap-2 !py-2.5 disabled:opacity-40">
             <RefreshCw size={15} className={loading ? 'animate-spin' : ''} /> {loading ? '刷新中' : '刷新汇率'}
           </button>
@@ -112,7 +115,7 @@ export default function ExchangeRate() {
         <div className="glass-card p-5 mb-6 flex items-center gap-3" style={{ borderColor: '#e9456055' }}>
           <AlertCircle size={18} className="text-[#e94560]" />
           <span className="text-sm text-[#e94560] flex-1">{error}</span>
-          <button onClick={fetchRates} className="btn-secondary !py-1.5 !px-3 text-xs">重试</button>
+          <button onClick={() => fetchRates()} className="btn-secondary !py-1.5 !px-3 text-xs">重试</button>
         </div>
       )}
 
