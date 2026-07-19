@@ -47,7 +47,9 @@ export async function onRequest(context: any) {
   }
 
   const headers = new Headers(response.headers);
-  headers.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=86400');
+  // HTML 短缓存 + 长后台刷新：部署后最多 60s 旧壳窗口，避免旧 HTML 引用已下线哈希资源而 404
+  headers.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=604800');
+  headers.set('CDN-Cache-Control', 'public, max-age=60, stale-while-revalidate=604800');
   Object.entries(securityHeaders).forEach(([k, v]) => headers.set(k, v));
   headers.set('Content-Security-Policy', csp);
   return new Response(response.body, { status: response.status, headers });

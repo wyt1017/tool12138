@@ -1,6 +1,7 @@
 # 默认规则（必须放最前，具体规则在后覆盖）
+# HTML 只做短缓存 + 长后台刷新：避免部署后旧 HTML 引用已下线的哈希资源而 404
 /*
-  Cache-Control: public, max-age=60, stale-while-revalidate=86400
+  Cache-Control: public, max-age=60, stale-while-revalidate=604800
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
@@ -8,9 +9,10 @@
   Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' data: https://api.frankfurter.app https://api.github.com https://api.open-meteo.com https://geocoding-api.open-meteo.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self';
 
-# 哈希化静态资源 - 不可变，1 年强缓存
+# 哈希化静态资源 - 内容哈希命名、不可变，1 年强缓存（同时给 CDN 边缘层显式指令）
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
+  CDN-Cache-Control: public, max-age=31536000, immutable
 
 # Favicon - 一周缓存
 /favicon.svg
