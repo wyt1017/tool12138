@@ -45,7 +45,7 @@ export default function ImageFormatConverter() {
       if (!ctx) return;
       ctx.drawImage(img, 0, 0);
 
-      const mimeType = format === 'jpeg' ? 'image/jpeg' : format === 'webp' ? 'image/webp' : format === 'bmp' ? 'image/bmp' : 'image/png';
+      const mimeType = format === 'jpeg' ? 'image/jpeg' : format === 'webp' ? 'image/webp' : 'image/png';
       const dataUrl = canvas.toDataURL(mimeType, quality);
       setConverted(dataUrl);
     };

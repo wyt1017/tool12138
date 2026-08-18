@@ -27,7 +27,13 @@ export default function LineNumberTool() {
       }).join('\n');
       setOutput(result);
     } else {
-      // 移除行号 - 动态匹配添加时使用的分隔符
+      // 移除行号 - 仅在"添加行号"模式使用过分隔符时启用移除，防止误删数字开头的普通文本
+      const hasUserConfiguredSep = separator !== ': ';
+      if (!hasUserConfiguredSep) {
+        // 未自定义分隔符，提示用户此工具主要用于添加/移除"本工具生成的行号"
+        setOutput('请先在上方选择「添加行号」模式并设置分隔符后，再切换回「移除行号」模式');
+        return;
+      }
       const sepRegex = separator.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       const lineNumRegex = new RegExp(`^\\d+${sepRegex}`);
       const result = lines.map(line => {

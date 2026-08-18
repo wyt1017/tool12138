@@ -225,7 +225,9 @@ function formatHTML(code: string, indentSize: number): string {
     } else if (inTag && ch === '>') {
       buffer += '>';
       const isClosing = /^\s*<\//.test(buffer);
-      const isSelfClosing = /\/>\s*$/.test(buffer);
+      // HTML5 void elements that don't need explicit closing slash
+      const voidElements = /^<(img|br|hr|input|meta|link|area|base|col|embed|source|track|wbr)\b/i;
+      const isSelfClosing = /\/>\s*$/.test(buffer) || voidElements.test(buffer);
 
       if (isClosing && !isSelfClosing) {
         depth = Math.max(0, depth - 1);

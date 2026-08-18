@@ -81,6 +81,7 @@ export default function ImageCompress() {
   const [maxHeight, setMaxHeight] = useState(1080);
   const [format, setFormat] = useState<ImageFormat>('jpeg');
   const [compressing, setCompressing] = useState(false);
+  const [error, setError] = useState<string>('');
   const [resultBlobUrl, setResultBlobUrl] = useState<string>('');
   const [result, setResult] = useState<{ blob: Blob; width: number; height: number; originalSize: number; originalWidth: number; originalHeight: number } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -149,8 +150,8 @@ export default function ImageCompress() {
         originalWidth: origImg.width,
         originalHeight: origImg.height,
       });
-    } catch {
-      // 压缩失败， silently handled
+    } catch (e) {
+      setError(e instanceof Error ? e.message : '压缩失败，请重试');
     }
     setCompressing(false);
   };
@@ -198,8 +199,13 @@ export default function ImageCompress() {
         </motion.div>
       ) : (
         <>
-          {/* Settings Panel */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-card p-6 mb-6">
+      {/* Settings Panel */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-card p-6 mb-6">
+        {error && (
+          <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-sm text-red-400">
+            {error}
+          </div>
+        )}
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-[#ffd369]/15 flex items-center justify-center overflow-hidden">

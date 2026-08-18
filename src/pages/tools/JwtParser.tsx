@@ -39,8 +39,12 @@ export default function JwtParser() {
     }
   }, [input]);
 
-  const copyJson = (obj: object) => {
-    navigator.clipboard.writeText(JSON.stringify(obj, null, 2));
+  const copyJson = async (obj: object) => {
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(obj, null, 2));
+    } catch {
+      // clipboard permission denied or unsupported
+    }
   };
 
   return (
