@@ -32,7 +32,10 @@ export default function BaseConverter() {
 
     try {
       const cleaned = inputValue.replace(/^0[bxo]|^0X/i, '');
-      const bigInt = BigInt(parseInt(cleaned || '0', activeBase));
+      // 单独处理符号位，避免负号被 parseInt 带入前缀清理逻辑
+      const isNegative = cleaned.startsWith('-');
+      const absStr = isNegative ? cleaned.slice(1) : cleaned;
+      const bigInt = BigInt(parseInt(absStr || '0', activeBase)) * (isNegative ? -1n : 1n);
 
       setValues({
         2: bigInt.toString(2),
@@ -95,11 +98,7 @@ export default function BaseConverter() {
                     setInputValue(values[base]);
                   }
                 }}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                  activeBase === base
-                    ? `bg-[${colors[base]}]/15 text-[${colors[base]}]`
-                    : 'bg-white/5 text-[#666] hover:text-white'
-                }`}
+                className="px-4 py-2 rounded-full text-sm font-medium transition-all bg-white/5 text-[#666] hover:text-white"
                 style={
                   activeBase === base
                     ? { backgroundColor: `${colors[base]}20`, color: colors[base] }

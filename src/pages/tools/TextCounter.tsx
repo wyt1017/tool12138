@@ -31,8 +31,8 @@ function analyzeText(text: string): Stats {
   // Words (Chinese char count + English word count)
   const words = chinese + english;
 
-  // Paragraphs
-  const paragraphs = trimmed ? trimmed.split(/\n\s*\n/).filter((p) => p.trim()).length : 0;
+  // Paragraphs: split by blank lines, filter out empty
+  const paragraphs = trimmed ? trimmed.split(/\n\s*\n/).filter((p) => p.trim().length > 0).length : 0;
 
   // Lines
   const lines = trimmed ? trimmed.split('\n').length : 0;

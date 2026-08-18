@@ -4,6 +4,13 @@ import { Key, Copy, AlertCircle } from 'lucide-react';
 
 const COLOR = '#e94560';
 
+// base64url → 标准 base64（-_/ 换回 +/ 并补齐 padding），再用 atob 解码
+function b64urlDecode(str: string): string {
+  let b64 = str.replace(/-/g, '+').replace(/_/g, '/');
+  while (b64.length % 4) b64 += '=';
+  return atob(b64);
+}
+
 export default function JwtParser() {
   const [input, setInput] = useState('');
 
@@ -16,8 +23,8 @@ export default function JwtParser() {
     }
 
     try {
-      const header = JSON.parse(atob(parts[0]));
-      const payload = JSON.parse(atob(parts[1]));
+      const header = JSON.parse(b64urlDecode(parts[0]));
+      const payload = JSON.parse(b64urlDecode(parts[1]));
       const signature = parts[2];
 
       return {

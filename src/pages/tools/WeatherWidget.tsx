@@ -127,7 +127,7 @@ export default function WeatherWidget() {
     setLoading(true);
     setError('');
     navigator.geolocation.getCurrentPosition(
-      (pos) => { fetchWeather(pos.coords.latitude, pos.coords.longitude, '我的位置', signal); },
+      (pos) => { fetchWeather(pos.coords.latitude, pos.coords.longitude, '我的位置', signal).catch(() => {}); },
       () => {
         if (signal.aborted) return;
         setError('无法获取定位，请手动搜索城市');

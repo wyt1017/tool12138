@@ -80,23 +80,25 @@ export default function TimeDiffCalc() {
 
   const startObj = useMemo(() => new Date(startDate), [startDate]);
   const endObj = useMemo(() => new Date(endDate), [endDate]);
-  const isFuture = useMemo(() => endObj > new Date(), [endObj]);
 
   const diff = useMemo(() => calcDiff(startObj, endObj), [startObj, endObj]);
   const naturalDesc = useMemo(() => naturalLanguageDesc(startObj, endObj), [startObj, endObj]);
 
   useEffect(() => {
-    if (!isFuture) {
-      setCountdown(null);
-      return;
+    const check = () => {
+      const isFuture = endObj > new Date();
+      if (!isFuture) {
+        setCountdown(null);
+        return false;
+      }
+      setCountdown(getCountdown(endObj));
+      return true;
+    };
+    if (check()) {
+      const timer = setInterval(check, 1000);
+      return () => clearInterval(timer);
     }
-    setCountdown(getCountdown(endObj));
-    const timer = setInterval(() => {
-      const cd = getCountdown(endObj);
-      setCountdown(cd);
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [endObj, isFuture]);
+  }, [endObj]);
 
   const swapDates = () => {
     const temp = startDate;
@@ -243,7 +245,7 @@ export default function TimeDiffCalc() {
             </div>
 
             {/* Countdown */}
-            {isFuture && countdown && (
+            {countdown && (
               <div className="border-t border-white/5 pt-5">
                 <div className="flex items-center gap-2 mb-4">
                   <Clock size={14} className="text-[#e94560]" />

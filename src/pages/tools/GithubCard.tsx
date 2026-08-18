@@ -19,6 +19,10 @@ interface GithubUser {
   created_at: string;
 }
 
+interface GithubRepo {
+  language: string | null;
+}
+
 const LANG_COLORS: Record<string, string> = {
   JavaScript: '#f1e05a', TypeScript: '#3178c6', Python: '#3572A5', Go: '#00ADD8',
   Rust: '#dea584', Java: '#b07219', C: '#555555', 'C++': '#f34b7d', 'C#': '#178600',
@@ -40,8 +44,9 @@ export default function GithubCard() {
     setError('');
     setUser(null);
     setLanguages([]);
+    const controller = new AbortController();
     try {
-      const userRes = await fetch(`https://api.github.com/users/${encodeURIComponent(name)}`);
+      const userRes = await fetch(`https://api.github.com/users/${encodeURIComponent(name)}`, { signal: controller.signal });
       if (userRes.status === 404) throw new Error('未找到该 GitHub 用户');
       if (userRes.status === 403) throw new Error('已达到 GitHub API 匿名限流（60次/小时），请稍后再试');
       if (!userRes.ok) throw new Error(`HTTP ${userRes.status}`);
@@ -49,12 +54,12 @@ export default function GithubCard() {
 
       let langs: { name: string; pct: number; color: string }[] = [];
       try {
-        const repoRes = await fetch(`https://api.github.com/users/${encodeURIComponent(name)}/repos?per_page=100&sort=updated`);
+        const repoRes = await fetch(`https://api.github.com/users/${encodeURIComponent(name)}/repos?per_page=100&sort=updated`, { signal: controller.signal });
         if (repoRes.ok) {
-          const repos = await repoRes.json();
+          const repos: GithubRepo[] = await repoRes.json();
           const tally: Record<string, number> = {};
           let total = 0;
-          (repos as any[]).forEach((r) => {
+          repos.forEach((r) => {
             const l = r.language;
             if (l) { tally[l] = (tally[l] || 0) + 1; total++; }
           });
@@ -74,9 +79,10 @@ export default function GithubCard() {
       setUser(u);
       setLanguages(langs);
     } catch (e) {
+      if (controller.signal.aborted) return;
       setError(e instanceof Error ? e.message : '获取失败');
     } finally {
-      setLoading(false);
+      if (!controller.signal.aborted) setLoading(false);
     }
   };
 

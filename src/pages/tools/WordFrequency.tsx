@@ -13,14 +13,15 @@ export default function WordFrequency() {
   const wordStats = useMemo(() => {
     if (!input.trim()) return [];
 
-    // 分词：支持中英文混合
     const text = ignoreCase ? input.toLowerCase() : input;
-    // 匹配中文词汇和英文单词
-    const words = text.match(/[\u4e00-\u9fa5]+|[a-zA-Z]+/g) || [];
+    // 英文单词（含连字符），中文按单字切分
+    const englishWords = text.match(/[a-zA-Z]+(?:[-'][a-zA-Z]+)*/g) || [];
+    const chineseChars = text.match(/[\u4e00-\u9fa5]/g) || [];
+    const allWords = [...chineseChars, ...englishWords];
 
     // 统计词频
     const freqMap = new Map<string, number>();
-    words.forEach(word => {
+    allWords.forEach(word => {
       freqMap.set(word, (freqMap.get(word) || 0) + 1);
     });
 
@@ -42,8 +43,9 @@ export default function WordFrequency() {
   const totalWords = useMemo(() => {
     if (!input.trim()) return 0;
     const text = ignoreCase ? input.toLowerCase() : input;
-    const words = text.match(/[\u4e00-\u9fa5]+|[a-zA-Z]+/g) || [];
-    return words.length;
+    const englishWords = text.match(/[a-zA-Z]+(?:[-'][a-zA-Z]+)*/g) || [];
+    const chineseChars = text.match(/[\u4e00-\u9fa5]/g) || [];
+    return chineseChars.length + englishWords.length;
   }, [input, ignoreCase]);
 
   const uniqueWords = wordStats.length;

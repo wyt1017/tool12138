@@ -259,10 +259,9 @@ export default function XmlFormatter() {
     }
 
     try {
-      // Remove whitespace between tags, preserve whitespace within text content
+      // 最小化XML：仅移除标签之间的空白，保留文本内容中的空格
       const minified = input
         .replace(/>\s+</g, '><')
-        .replace(/\s+/g, ' ')
         .trim();
       setOutput(minified);
     } catch {

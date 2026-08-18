@@ -6,7 +6,6 @@ const FORMAT_OPTIONS = [
   { value: 'png', label: 'PNG' },
   { value: 'jpeg', label: 'JPEG' },
   { value: 'webp', label: 'WebP' },
-  { value: 'bmp', label: 'BMP' },
 ];
 
 export default function ImageFormatConverter() {
@@ -85,7 +84,7 @@ export default function ImageFormatConverter() {
           <label className="glass-card p-12 flex flex-col items-center justify-center cursor-pointer hover:bg-white/5 transition-colors">
             <Upload size={48} className="text-[#666] mb-4" />
             <span className="text-[#a8b2c1] mb-2">点击上传图片</span>
-            <span className="text-xs text-[#666]">支持 PNG、JPEG、WebP、BMP 等格式</span>
+            <span className="text-xs text-[#666]">支持 PNG、JPEG、WebP 等格式</span>
             <input type="file" accept="image/*" onChange={handleFileUpload} aria-label="上传图片" className="hidden" />
           </label>
         </motion.div>

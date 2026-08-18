@@ -44,10 +44,13 @@ function markdownToHtml(md: string): string {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
-  // Code blocks - 注意 code 内容已经被转义了
-  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_m, _lang, code) =>
-    `<pre class="bg-black/40 rounded-lg p-4 my-3 overflow-x-auto"><code class="text-[#00d9ff] text-sm">${code.trim()}</code></pre>`
-  );
+  // Code blocks - 先用占位符抽离，避免后续换行替换把 <pre> 内部的换行变成 <br/> 造成双倍行距
+  const codeBlocks: string[] = [];
+  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_m, _lang, code) => {
+    const idx = codeBlocks.length;
+    codeBlocks.push(`<pre class="bg-black/40 rounded-lg p-4 my-3 overflow-x-auto"><code class="text-[#00d9ff] text-sm">${code.trim()}</code></pre>`);
+    return `CODEBLOCKPH${idx}PH`;
+  });
   // Inline code
   html = html.replace(/`([^`]+)`/g, '<code class="bg-white/10 px-1.5 py-0.5 rounded text-[#ffd369] text-sm">$1</code>');
   // Headers
@@ -80,6 +83,9 @@ function markdownToHtml(md: string): string {
   // Line breaks
   html = html.replace(/\n\n/g, '</p><p class="my-2 text-[#a8b2c1] leading-relaxed">');
   html = html.replace(/\n/g, '<br/>');
+
+  // 还原代码块（此时已避开换行替换，<pre> 内部换行保持原样）
+  html = html.replace(/CODEBLOCKPH(\d+)PH/g, (_m, i) => codeBlocks[Number(i)]);
 
   return `<div class="prose-container">${html}</div>`;
 }

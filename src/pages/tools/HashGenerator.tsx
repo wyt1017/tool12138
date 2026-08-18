@@ -112,7 +112,7 @@ function md5(originalStr: string): string {
       a0 = ii(a0, b0, c0, d0, block[4], 6, 0xD62F105D); d0 = ii(d0, a0, b0, c0, block[11], 10, 0x02441453);
       c0 = ii(c0, d0, a0, b0, block[2], 15, 0xD8A1E681); b0 = ii(b0, c0, d0, a0, block[9], 21, 0xE7D3FBC8);
 
-      a0 = addUnsigned(a0, 0x67462301); b0 = addUnsigned(b0, 0xEFCDAB89);
+      a0 = addUnsigned(a0, 0x67452301); b0 = addUnsigned(b0, 0xEFCDAB89);
       c0 = addUnsigned(c0, 0x98BADCFE); d0 = addUnsigned(d0, 0x10325476);
     }
 

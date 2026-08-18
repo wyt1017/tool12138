@@ -535,8 +535,8 @@ export default function EmojiPicker() {
         .map(item => item.emoji)
     : getCategoryEmojis(selectedCategory);
 
-  const copyEmoji = (emoji: string) => {
-    navigator.clipboard.writeText(emoji);
+  const copyEmoji = async (emoji: string) => {
+    await navigator.clipboard.writeText(emoji);
     setCopiedEmoji(emoji);
     setTimeout(() => setCopiedEmoji(null), 1500);
   };

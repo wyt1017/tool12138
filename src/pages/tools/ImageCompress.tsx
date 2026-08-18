@@ -212,8 +212,11 @@ export default function ImageCompress() {
               </div>
               <button
                 onClick={() => {
+                  if (originalPreview) URL.revokeObjectURL(originalPreview);
+                  if (resultBlobUrl) URL.revokeObjectURL(resultBlobUrl);
                   setFile(null);
                   setOriginalPreview('');
+                  setResultBlobUrl('');
                   setResult(null);
                 }}
                 className="p-2 hover:bg-red-500/10 rounded-lg transition-colors"

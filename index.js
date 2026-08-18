@@ -15,7 +15,7 @@ var index_default = {
           response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
           response.headers.set("X-Content-Type-Options", "nosniff");
           response.headers.set("X-Frame-Options", "DENY");
-          response.headers.set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'");
+          response.headers.set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' data: https://api.frankfurter.app https://api.github.com https://api.open-meteo.com https://geocoding-api.open-meteo.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self';");
           return response;
         } catch {
         }
@@ -37,14 +37,14 @@ var index_default = {
       response = await env.ASSETS.fetch(indexRequest);
     }
     response = new Response(response.body, response);
-    response.headers.set("Cache-Control", "no-cache, no-store, must-revalidate");
-    response.headers.set("Pragma", "no-cache");
-    response.headers.set("Expires", "0");
+    response.headers.set("Cache-Control", "public, max-age=60, stale-while-revalidate=86400");
+    response.headers.set("Pragma", "");
+    response.headers.set("Expires", "");
     response.headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
     response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
     response.headers.set("X-Content-Type-Options", "nosniff");
     response.headers.set("X-Frame-Options", "DENY");
-    response.headers.set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'");
+    response.headers.set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' data: https://api.frankfurter.app https://api.github.com https://api.open-meteo.com https://geocoding-api.open-meteo.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self';");
     if (url.protocol === "http:" && !(url.hostname === "localhost" || url.hostname === "127.0.0.1")) {
       const httpsUrl = url.origin + url.pathname + url.search + url.hash;
       return new Response("", { status: 301, headers: { Location: httpsUrl.replace("http:", "https:"), "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload" } });

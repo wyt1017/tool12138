@@ -5,7 +5,6 @@ import { Calculator, Copy } from 'lucide-react';
 const COLOR = '#e94560';
 
 export default function ScientificCalculator() {
-  const color = '#e94560';
   const [expression, setExpression] = useState('');
   const [result, setResult] = useState<string | null>(null);
   const [history, setHistory] = useState<string[]>([]);
@@ -15,20 +14,15 @@ export default function ScientificCalculator() {
 
     try {
       // 替换数学函数为 JavaScript 可执行形式
+      // 用单次带词边界的合并替换，避免 asin→Math.asin 后又被 sin 规则二次替换成 Math.aMath.sin
+      const fnMap: Record<string, string> = {
+        asin: 'Math.asin', acos: 'Math.acos', atan: 'Math.atan',
+        sin: 'Math.sin', cos: 'Math.cos', tan: 'Math.tan',
+        log: 'Math.log10', ln: 'Math.log', sqrt: 'Math.sqrt',
+        abs: 'Math.abs', exp: 'Math.exp', pi: 'Math.PI', e: 'Math.E',
+      };
       const expr = expression
-        .replace(/sin/gi, 'Math.sin')
-        .replace(/cos/gi, 'Math.cos')
-        .replace(/tan/gi, 'Math.tan')
-        .replace(/asin/gi, 'Math.asin')
-        .replace(/acos/gi, 'Math.acos')
-        .replace(/atan/gi, 'Math.atan')
-        .replace(/log/gi, 'Math.log10')
-        .replace(/ln/gi, 'Math.log')
-        .replace(/sqrt/gi, 'Math.sqrt')
-        .replace(/abs/gi, 'Math.abs')
-        .replace(/exp/gi, 'Math.exp')
-        .replace(/pi/gi, 'Math.PI')
-        .replace(/(?<![0-9])e(?![0-9xp])/gi, 'Math.E')
+        .replace(/\b(asin|acos|atan|sin|cos|tan|log|ln|sqrt|abs|exp|pi|e)\b/gi, (m) => fnMap[m.toLowerCase()])
         .replace(/(\d+(?:\.\d+)?)!/g, 'factorial($1)')
         .replace(/\^/g, '**')
         .replace(/×/g, '*')
@@ -83,14 +77,14 @@ export default function ScientificCalculator() {
     else setExpression(prev => prev + btn);
   };
 
-  const getButtonStyle = (btn: string) => {
-    if (btn === '=') return `bg-[${COLOR}]/15 text-[${COLOR}] hover:bg-[${COLOR}]/25`;
-    if (btn === 'C') return 'bg-red-500/15 text-red-400 hover:bg-red-500/25';
-    if (btn === '←') return 'bg-yellow-500/15 text-yellow-400 hover:bg-yellow-500/25';
-    if (['÷', '×', '+', '-', '%', '^', '!'].includes(btn)) return 'bg-blue-500/15 text-blue-400 hover:bg-blue-500/25';
-    if (['sin', 'cos', 'tan', 'asin', 'acos', 'atan', 'log', 'ln', 'sqrt', 'abs', 'exp'].includes(btn)) return 'bg-purple-500/15 text-purple-400 hover:bg-purple-500/25';
-    if (['pi', 'e'].includes(btn)) return 'bg-green-500/15 text-green-400 hover:bg-green-500/25';
-    return 'bg-white/5 text-white hover:bg-white/10';
+  const getButtonProps = (btn: string) => {
+    if (btn === '=') return { className: 'bg-[#e94560]/15 text-[#e94560] hover:bg-[#e94560]/25', style: { WebkitTextFillColor: '#e94560' } as React.CSSProperties };
+    if (btn === 'C') return { className: 'bg-red-500/15 text-red-400 hover:bg-red-500/25' };
+    if (btn === '←') return { className: 'bg-yellow-500/15 text-yellow-400 hover:bg-yellow-500/25' };
+    if (['÷', '×', '+', '-', '%', '^', '!'].includes(btn)) return { className: 'bg-blue-500/15 text-blue-400 hover:bg-blue-500/25' };
+    if (['sin', 'cos', 'tan', 'asin', 'acos', 'atan', 'log', 'ln', 'sqrt', 'abs', 'exp'].includes(btn)) return { className: 'bg-purple-500/15 text-purple-400 hover:bg-purple-500/25' };
+    if (['pi', 'e'].includes(btn)) return { className: 'bg-green-500/15 text-green-400 hover:bg-green-500/25' };
+    return { className: 'bg-white/5 text-white hover:bg-white/10' };
   };
 
   return (
@@ -98,8 +92,8 @@ export default function ScientificCalculator() {
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
-          <div style={{ width: 40, height: 40, borderRadius: 12, background: `${color}24`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Calculator size={20} style={{ color }} />
+          <div style={{ width: 40, height: 40, borderRadius: 12, background: `${COLOR}24`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Calculator size={20} style={{ color: COLOR }} />
           </div>
           <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">科学计算器</h1>
         </div>
@@ -137,15 +131,19 @@ export default function ScientificCalculator() {
         <div className="space-y-2">
           {buttons.map((row, i) => (
             <div key={i} className="grid grid-cols-6 gap-2">
-              {row.map((btn) => (
-                <button
-                  key={btn}
-                  onClick={() => handleButtonClick(btn)}
-                  className={`py-3 rounded-lg text-sm font-medium transition-all ${getButtonStyle(btn)}`}
-                >
-                  {btn}
-                </button>
-              ))}
+              {row.map((btn) => {
+                const props = getButtonProps(btn);
+                return (
+                  <button
+                    key={btn}
+                    onClick={() => handleButtonClick(btn)}
+                    className={props.className}
+                    style={props.style}
+                  >
+                    {btn}
+                  </button>
+                );
+              })}
             </div>
           ))}
         </div>

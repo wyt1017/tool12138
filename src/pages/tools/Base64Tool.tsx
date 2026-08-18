@@ -59,10 +59,17 @@ export default function Base64Tool() {
 
   const downloadImage = () => {
     if (!isImage || !output) return;
+    // 从 data URL 提取 MIME 类型以确定正确扩展名
+    const mimeTypeMatch = output.match(/^data:([^;]+)/);
+    const ext = mimeTypeMatch ? mimeTypeMatch[1].split('/')[1] : 'png';
     const a = document.createElement('a');
     a.href = output;
-    a.download = 'decoded-image.png';
+    a.download = `decoded-image.${ext}`;
     a.click();
+    // 释放 blob URL
+    if (output.startsWith('blob:')) {
+      URL.revokeObjectURL(output);
+    }
   };
 
   const swapInOut = () => {

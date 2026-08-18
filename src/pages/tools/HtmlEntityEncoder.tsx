@@ -63,7 +63,7 @@ export default function HtmlEntityEncoder() {
 
   const encode = () => {
     let result = input;
-    // 按顺序替换，避免 & 被重复替换
+    // 必须先替换 &，否则已有实体中的 & 会被二次替换
     result = result.replace(/&/g, '&amp;');
     result = result.replace(/</g, '&lt;');
     result = result.replace(/>/g, '&gt;');
@@ -83,14 +83,19 @@ export default function HtmlEntityEncoder() {
   const decode = () => {
     let result = input;
 
-    // 解码数字实体
+    // 先解码数字实体
     result = result.replace(/&#(\d+);/g, (_, num) => String.fromCharCode(parseInt(num)));
     result = result.replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)));
 
-    // 解码命名实体
+    // 再解码命名实体（不含 &amp;）
     Object.entries(ENTITY_TO_CHAR).forEach(([entity, char]) => {
-      result = result.replace(new RegExp(entity, 'g'), char);
+      if (entity !== '&amp;') {
+        result = result.replace(new RegExp(entity, 'g'), char);
+      }
     });
+
+    // 最后解码 &amp; → &
+    result = result.replace(/&amp;/g, '&');
 
     setOutput(result);
   };

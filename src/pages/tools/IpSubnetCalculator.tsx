@@ -85,27 +85,32 @@ export default function IpSubnetCalculator() {
       broadcastValue & 255,
     ].join('.');
 
-    // 计算主机范围
+    // 计算主机范围（/31 和 /32 无可用主机）
     const totalHosts = Math.pow(2, 32 - cidrValue);
-    const usableHostsCount = totalHosts > 2 ? totalHosts - 2 : 0;
+    const usableHostsCount = cidrValue <= 30 ? totalHosts - 2 : 0;
 
-    // 第一个可用主机
-    const firstHostValue = networkValue + 1;
-    const firstHost = [
-      (firstHostValue >>> 24) & 255,
-      (firstHostValue >>> 16) & 255,
-      (firstHostValue >>> 8) & 255,
-      firstHostValue & 255,
-    ].join('.');
+    let firstHost: string;
+    let lastHost: string;
+    if (cidrValue >= 31) {
+      firstHost = '-';
+      lastHost = '-';
+    } else {
+      const firstHostValue = networkValue + 1;
+      firstHost = [
+        (firstHostValue >>> 24) & 255,
+        (firstHostValue >>> 16) & 255,
+        (firstHostValue >>> 8) & 255,
+        firstHostValue & 255,
+      ].join('.');
 
-    // 最后一个可用主机
-    const lastHostValue = broadcastValue - 1;
-    const lastHost = [
-      (lastHostValue >>> 24) & 255,
-      (lastHostValue >>> 16) & 255,
-      (lastHostValue >>> 8) & 255,
-      lastHostValue & 255,
-    ].join('.');
+      const lastHostValue = broadcastValue - 1;
+      lastHost = [
+        (lastHostValue >>> 24) & 255,
+        (lastHostValue >>> 16) & 255,
+        (lastHostValue >>> 8) & 255,
+        lastHostValue & 255,
+      ].join('.');
+    }
 
     setResult({
       networkAddress,

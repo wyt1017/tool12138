@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Link2, Copy, ArrowRightLeft, Code } from 'lucide-react';
 
@@ -6,12 +6,18 @@ export default function UrlEncodeDecode() {
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
   const [mode, setMode] = useState<'encode' | 'decode'>('encode');
+  const isSwappingRef = useRef(false);
 
   useEffect(() => {
     if (!input) {
       setOutput('');
       return;
     }
+    if (isSwappingRef.current) {
+      isSwappingRef.current = false;
+      return;
+    }
+
     try {
       if (mode === 'encode') {
         setOutput(encodeURIComponent(input));
@@ -24,6 +30,7 @@ export default function UrlEncodeDecode() {
   }, [input, mode]);
 
   const swapInOut = () => {
+    isSwappingRef.current = true;
     setInput(output);
     setOutput('');
     setMode(mode === 'encode' ? 'decode' : 'encode');

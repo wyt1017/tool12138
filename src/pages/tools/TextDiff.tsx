@@ -9,28 +9,95 @@ interface DiffLine {
   newLineNum?: number;
 }
 
+// LCS-based diff algorithm
 function diffLines(oldLines: string[], newLines: string[]): DiffLine[] {
-  const result: DiffLine[] = [];
-  const oldLen = oldLines.length;
-  const newLen = newLines.length;
-  const maxLen = Math.max(oldLen, newLen);
+  const m = oldLines.length;
+  const n = newLines.length;
 
-  for (let i = 0; i < maxLen; i++) {
-    const oldLine = i < oldLen ? oldLines[i] : undefined;
-    const newLine = i < newLen ? newLines[i] : undefined;
-
-    if (oldLine === undefined && newLine !== undefined) {
-      result.push({ type: 'add', content: newLine, newLineNum: i + 1 });
-    } else if (oldLine !== undefined && newLine === undefined) {
-      result.push({ type: 'remove', content: oldLine, oldLineNum: i + 1 });
-    } else if (oldLine === newLine) {
-      result.push({ type: 'unchanged', content: oldLine!, oldLineNum: i + 1, newLineNum: i + 1 });
-    } else {
-      result.push({ type: 'modify', content: `${oldLine} → ${newLine}`, oldLineNum: i + 1, newLineNum: i + 1 });
+  // Build LCS DP table
+  const dp: number[][] = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (oldLines[i - 1] === newLines[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+      }
     }
   }
 
-  return result;
+  // Traceback to build diff
+  let i = m, j = n;
+  const steps: { type: 'add' | 'remove' | 'equal'; oldIdx?: number; newIdx?: number }[] = [];
+
+  while (i > 0 || j > 0) {
+    if (i > 0 && j > 0 && oldLines[i - 1] === newLines[j - 1]) {
+      steps.push({ type: 'equal', oldIdx: i - 1, newIdx: j - 1 });
+      i--; j--;
+    } else if (j > 0 && (!i || dp[i][j - 1] >= dp[i - 1][j])) {
+      steps.push({ type: 'add', newIdx: j - 1 });
+      j--;
+    } else {
+      steps.push({ type: 'remove', oldIdx: i - 1 });
+      i--;
+    }
+  }
+
+  steps.reverse();
+
+  // Group consecutive remove+add into modify when counts match
+  const grouped: { type: 'add' | 'remove' | 'equal'; idx?: number }[] = [];
+  for (const step of steps) {
+    if (step.type === 'equal') {
+      grouped.push({ type: 'equal', idx: step.oldIdx! });
+    } else if (step.type === 'remove') {
+      grouped.push({ type: 'remove', idx: step.oldIdx! });
+    } else {
+      grouped.push({ type: 'add', idx: step.newIdx! });
+    }
+  }
+
+  // Merge adjacent remove+add pairs into modify
+  const merged: { type: 'add' | 'remove' | 'modify' | 'unchanged'; content: string; oldLineNum?: number; newLineNum?: number }[] = [];
+  let k = 0;
+  while (k < grouped.length) {
+    if (grouped[k].type === 'equal') {
+      merged.push({
+        type: 'unchanged',
+        content: oldLines[grouped[k].idx!],
+        oldLineNum: grouped[k].idx! + 1,
+        newLineNum: grouped[k].idx! + 1,
+      });
+      k++;
+    } else if (grouped[k].type === 'remove' && k + 1 < grouped.length && grouped[k + 1].type === 'add') {
+      merged.push({
+        type: 'modify',
+        content: `${oldLines[grouped[k].idx!]} → ${newLines[grouped[k + 1].idx!]}`,
+        oldLineNum: grouped[k].idx! + 1,
+        newLineNum: grouped[k + 1].idx! + 1,
+      });
+      k += 2;
+    } else if (grouped[k].type === 'remove') {
+      merged.push({
+        type: 'remove',
+        content: oldLines[grouped[k].idx!],
+        oldLineNum: grouped[k].idx! + 1,
+      });
+      k++;
+    } else {
+      merged.push({
+        type: 'add',
+        content: newLines[grouped[k].idx!],
+        newLineNum: grouped[k].idx! + 1,
+      });
+      k++;
+    }
+  }
+
+  // Handle trailing adds (new lines after end of old text)
+  // Already handled by the loop above
+
+  return merged;
 }
 
 export default function TextDiff() {

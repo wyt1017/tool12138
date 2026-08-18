@@ -108,9 +108,15 @@ export default function JsonFormatter() {
   };
 
   const handleFormatAndShow = () => {
-    format();
-    if (!error && input) {
-      setTimeout(() => setShowTree(true), 100);
+    try {
+      const parsed = JSON.parse(input);
+      setOutput(JSON.stringify(parsed, null, indent));
+      setError('');
+      setShowTree(true);
+    } catch (e) {
+      setError(`JSON格式错误: ${(e as Error).message}`);
+      setOutput('');
+      setShowTree(false);
     }
   };
 
@@ -202,7 +208,8 @@ export default function JsonFormatter() {
             <button
               key={n}
               onClick={() => setIndent(n)}
-              className={`w-8 h-8 rounded-lg text-xs font-mono transition-all ${indent === n ? 'bg-[#00d9ff]/20 text-[#00d9ff]' : 'bg-white/5 text-[#666] hover:bg-white/10'}`}
+              className={`w-8 h-8 rounded-lg text-xs font-mono transition-all bg-white/5 text-[#666] hover:bg-white/10`}
+              style={indent === n ? { backgroundColor: '#00d9ff33', color: '#00d9ff' } : undefined}
             >
               {n}
             </button>

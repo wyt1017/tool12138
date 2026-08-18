@@ -254,18 +254,12 @@ function formatHTML(code: string, indentSize: number): string {
 }
 
 function formatSQL(code: string): string {
-  const keywords = ['SELECT', 'FROM', 'WHERE', 'AND', 'OR', 'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'OUTER JOIN', 'GROUP BY', 'ORDER BY', 'HAVING', 'LIMIT', 'UNION', 'INSERT INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE FROM'];
+  // 一次性替换所有关键字，避免重叠替换问题
+  const keywordPattern = /\b(SELECT|INSERT INTO|VALUES|UPDATE|SET|DELETE FROM|FROM|WHERE|AND|OR|LEFT JOIN|RIGHT JOIN|INNER JOIN|OUTER JOIN|GROUP BY|ORDER BY|HAVING|LIMIT|UNION)\b/gi;
 
-  let formatted = code;
-
-  // Sort keywords by length descending to match longer ones first
-  const sortedKeywords = [...keywords].sort((a, b) => b.length - a.length);
-
-  for (let i = 0; i < sortedKeywords.length; i++) {
-    const kw = sortedKeywords[i];
-    const regex = new RegExp(`\\b${kw}\\b`, 'gi');
-    formatted = formatted.replace(regex, `\n${kw}`);
-  }
+  const formatted = code.replace(keywordPattern, (match) => {
+    return '\n' + match;
+  });
 
   // Clean up multiple newlines and add indentation
   const lines = formatted.split('\n').filter((line) => line.trim());
@@ -276,15 +270,15 @@ function formatSQL(code: string): string {
     const line = lines[j].trim();
     const lineUpper = line.toUpperCase();
 
-    // Decrease indent before certain keywords
-    if (/^(FROM|WHERE|GROUP BY|ORDER BY|HAVING|LIMIT|AND|OR|ON)\b/.test(lineUpper)) {
+    // Decrease indent before certain keywords (subclauses like WHERE/AND/OR)
+    if (/^(WHERE|GROUP BY|ORDER BY|HAVING|LIMIT|AND|OR|ON)\b/.test(lineUpper)) {
       depth = Math.max(0, depth - 1);
     }
 
     indentedLines.push('  '.repeat(Math.max(0, depth)) + line);
 
-    // Increase indent after certain keywords
-    if (/^(SELECT|FROM|WHERE|SET|VALUES|INTO)\b/.test(lineUpper)) {
+    // Increase indent after certain keywords for their following content
+    if (/^(SELECT|FROM|SET|VALUES|INTO)\b/.test(lineUpper)) {
       depth++;
     }
   }

@@ -1,9 +1,11 @@
 import { Outlet } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import useSEO from '@/hooks/useSEO';
 import Header from './Header';
 import Footer from './Footer';
 
 export default function Layout() {
+  useSEO();
   return (
     <motion.div
       initial={{ opacity: 0 }}

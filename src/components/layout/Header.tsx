@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Zap, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { tools, type Tool } from '@/data/tools';
+import DynamicIcon from '@/components/DynamicIcon';
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -104,9 +105,7 @@ export default function Header() {
                           to={tool.path}
                           className="flex items-center gap-3 px-4 py-2.5 text-sm text-[#c8d0e0] hover:text-white hover:bg-white/5 transition-colors"
                         >
-                          <span className="w-5 h-5 flex items-center justify-center text-xs text-[#6b7280] shrink-0">
-                            {tool.icon[0]}
-                          </span>
+                          <DynamicIcon name={tool.icon} size={18} className="text-[#6b7280] shrink-0" />
                           <span>{tool.name}</span>
                         </Link>
                       ))}

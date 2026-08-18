@@ -27,10 +27,11 @@ export default function LineNumberTool() {
       }).join('\n');
       setOutput(result);
     } else {
-      // 移除行号
+      // 移除行号 - 动态匹配添加时使用的分隔符
+      const sepRegex = separator.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const lineNumRegex = new RegExp(`^\\d+${sepRegex}`);
       const result = lines.map(line => {
-        // 匹配开头的数字+分隔符
-        const match = line.match(/^\d+[.:;\s\t-]+/);
+        const match = line.match(lineNumRegex);
         if (match) {
           return line.slice(match[0].length);
         }

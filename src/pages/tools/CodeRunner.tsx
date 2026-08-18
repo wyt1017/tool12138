@@ -45,20 +45,28 @@ export default function CodeRunner() {
     `;
 
     // 直接拼接完整 HTML 文档，不再做误删正则
+    // 对 JS 内容进行转义，防止 </script> 注入
+    const escapeJs = (s: string) => s.replace(/<\/script>/gi, '<\\/script>');
     const fullHtml = `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
-  <style>${css}</style>
+  <style>${css.replace(/<\/style>/gi, '<\\/style>')}</style>
 </head>
 <body>
-  ${html}
+  ${html.replace(/<\/body>/gi, '<\\/body>')}
   ${errorScript}
   <script>
     try {
-      ${js}
+      ${escapeJs(js)}
     } catch(e) {
-      window.onerror(e.message, '', e.lineNumber || 0, e.columnNumber || 0, e);
+      window.parent.postMessage({
+        type: 'error',
+        message: e.message || String(e),
+        line: e.lineNumber || 0,
+        column: e.columnNumber || 0,
+        stack: e.stack || null
+      }, '*');
     }
   </script>
 </body>
@@ -86,7 +94,7 @@ export default function CodeRunner() {
     setCss(DEFAULT_CSS);
     setJs(DEFAULT_JS);
     setError(null);
-    run();
+    // 不直接调用 run()，防抖 useEffect 会在状态更新后自动执行
   };
 
   // 输入时防抖 300ms 再重建 iframe，避免每次按键都重载

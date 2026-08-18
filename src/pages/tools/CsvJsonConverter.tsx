@@ -69,7 +69,7 @@ export default function CsvJsonConverter() {
           inQuotes = !inQuotes;
         }
       } else if (char === delim && !inQuotes) {
-        result.push(current.trim());
+        result.push(current);
         current = '';
       } else {
         current += char;

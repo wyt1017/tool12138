@@ -44,7 +44,10 @@ function calculateExpiryDate(productionDate: string, amount: number, unit: strin
 
 function getExpiryStatus(expiryDate: Date): ExpiryStatus {
   const now = new Date();
-  const diffDays = Math.ceil((expiryDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  // 比较日期部分，忽略具体时间，避免午夜边界问题
+  const expiryDay = new Date(expiryDate.getFullYear(), expiryDate.getMonth(), expiryDate.getDate());
+  const todayDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const diffDays = Math.ceil((expiryDay.getTime() - todayDay.getTime()) / (1000 * 60 * 60 * 24));
   if (diffDays < 0) return 'expired';
   if (diffDays <= 7) return 'warning';
   return 'fresh';
@@ -52,7 +55,9 @@ function getExpiryStatus(expiryDate: Date): ExpiryStatus {
 
 function getDaysRemaining(expiryDate: Date): number {
   const now = new Date();
-  return Math.ceil((expiryDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  const expiryDay = new Date(expiryDate.getFullYear(), expiryDate.getMonth(), expiryDate.getDate());
+  const todayDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  return Math.ceil((expiryDay.getTime() - todayDay.getTime()) / (1000 * 60 * 60 * 24));
 }
 
 const STATUS_CONFIG: Record<ExpiryStatus, { label: string; color: string; bgColor: string; icon: typeof CheckCircle2 }> = {
@@ -307,7 +312,7 @@ export default function ExpiryCalculator() {
                           <Clock size={13} /> 剩余
                         </span>
                         <span className={`font-bold font-mono ${product.status === 'expired' ? 'text-[#e94560]' : product.status === 'warning' ? 'text-[#ffd369]' : 'text-[#6bcb77]'}`}>
-                          {product.daysRemaining > 0 ? `还剩 ${product.daysRemaining} 天` : `已过期 ${Math.abs(product.daysRemaining)} 天`}
+                          {product.daysRemaining >= 0 ? `还剩 ${product.daysRemaining} 天` : `已过期 ${Math.abs(product.daysRemaining)} 天`}
                         </span>
                       </div>
                     </div>
