@@ -101,7 +101,7 @@ export const tools: Tool[] = [
   { id: 'media-query-tester', name: '屏幕尺寸与媒体查询测试', description: '显示当前窗口尺寸、设备像素比，自定义媒体查询条件并实时测试', category: 'dev', icon: 'Monitor', path: '/tools/media-query-tester', tags: ['屏幕', '尺寸', '媒体查询', 'DPR', '响应式'] },
   { id: 'emoji-picker', name: 'Emoji表情大全', description: '分类展示所有Emoji表情（支持搜索），点击即可复制到剪贴板', category: 'text', icon: 'Smile', path: '/tools/emoji-picker', tags: ['Emoji', '表情', '搜索', '复制', '分类'] },
   { id: 'chinese-pinyin', name: '中文转拼音工具', description: '将中文文本转换为拼音（带声调或数字标调），支持多音字简单识别', category: 'text', icon: 'Languages', path: '/tools/chinese-pinyin', tags: ['拼音', '中文', '声调', '转换', '多音字'] },
-  { id: 'text-duplicate-stats', name: '文本重复内容统计', description: '分析文本中重复的行或单词，统计每个重复项的出现次数并排序', category: 'text', icon: 'BarChart', path: '/tools/text-duplicate-stats', tags: ['重复', '统计', '分析', '排序', '频率'] },
+  { id: 'text-duplicate-stats', name: '文本重复内容统计', description: '分析文本中重复的行或单词，统计每个重复项的出现次数并排序', category: 'text', icon: 'BarChart3', path: '/tools/text-duplicate-stats', tags: ['重复', '统计', '分析', '排序', '频率'] },
   { id: 'base64-file-decoder', name: 'Base64文件还原工具', description: '将Base64字符串解码并还原为原始文件，提供下载', category: 'convert', icon: 'FileDown', path: '/tools/base64-file-decoder', tags: ['Base64', '解码', '文件', '还原', '下载'] },
 
   // ===== 第7批：纯前端新增工具（无后端） =====
@@ -109,6 +109,11 @@ export const tools: Tool[] = [
   { id: 'exchange-rate', name: '汇率看板', description: '实时多币种汇率换算，数据来自 Frankfurter 欧洲央行参考汇率', category: 'calculator', icon: 'TrendingUp', path: '/tools/exchange-rate', hot: true, tags: ['汇率', '货币', '换算', '外汇', 'Exchange'] },
   { id: 'github-card', name: 'GitHub卡片生成器', description: '输入用户名自动生成 SVG 统计卡，可下载或复制代码嵌入 README', category: 'dev', icon: 'Github', path: '/tools/github-card', tags: ['GitHub', '卡片', 'SVG', '统计', 'README', '头像'] },
   { id: 'weather-widget', name: '天气小部件', description: '实时天气与三日预报，支持城市搜索与定位，数据来自 Open-Meteo', category: 'design', icon: 'Cloud', path: '/tools/weather-widget', hot: true, tags: ['天气', '预报', '气温', '城市', 'Weather', '定位'] },
+  { id: 'stopwatch', name: '秒表', description: '毫秒级高精度计时，支持计圈、最快/最慢圈识别，数据本地保存', category: 'generator', icon: 'Timer', path: '/tools/stopwatch', tags: ['秒表', '计时', 'Stopwatch', 'Lap', '计圈'] },
+  { id: 'world-clock', name: '世界时钟', description: '实时显示全球城市时间，支持添加删除城市，时差一目了然', category: 'generator', icon: 'Globe', path: '/tools/world-clock', tags: ['世界时钟', '时区', 'World', 'Clock', '时差'] },
+  { id: 'percentage-calculator', name: '百分比计算器', description: '三种常见百分比场景一键换算：占比、基准值、增长率', category: 'calculator', icon: 'Percent', path: '/tools/percentage-calculator', tags: ['百分比', 'Percent', '计算器', '换算'] },
+  { id: 'typing-speed-test', name: '打字速度测试', description: '英文打字速度测试，实时准确率统计，WPM 评分，历史记录保存', category: 'generator', icon: 'Keyboard', path: '/tools/typing-speed-test', tags: ['打字', '速度', 'WPM', 'Typing', '测试'] },
+  { id: 'image-crop', name: '图片裁剪', description: '上传图片拖拽选区裁剪，支持 1:1、4:3、16:9 等多比例预设，导出 PNG/JPEG/WebP', category: 'design', icon: 'Crop', path: '/tools/image-crop', tags: ['裁剪', '图片', 'Crop', '比例', '尺寸'] },
 ];
 
 export function getToolByPath(path: string): Tool | undefined {

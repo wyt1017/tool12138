@@ -98,6 +98,11 @@ const PomodoroTodo = lazy(() => import('@/pages/tools/PomodoroTodo'));
 const ExchangeRate = lazy(() => import('@/pages/tools/ExchangeRate'));
 const GithubCard = lazy(() => import('@/pages/tools/GithubCard'));
 const WeatherWidget = lazy(() => import('@/pages/tools/WeatherWidget'));
+const Stopwatch = lazy(() => import('@/pages/tools/Stopwatch'));
+const WorldClock = lazy(() => import('@/pages/tools/WorldClock'));
+const PercentageCalculator = lazy(() => import('@/pages/tools/PercentageCalculator'));
+const TypingSpeedTest = lazy(() => import('@/pages/tools/TypingSpeedTest'));
+const ImageCrop = lazy(() => import('@/pages/tools/ImageCrop'));
 
 export default function App() {
   return (
@@ -184,6 +189,11 @@ export default function App() {
           <Route path="/tools/exchange-rate" element={<Suspense fallback={<LoadingSpinner />}><ExchangeRate /></Suspense>} />
           <Route path="/tools/github-card" element={<Suspense fallback={<LoadingSpinner />}><GithubCard /></Suspense>} />
           <Route path="/tools/weather-widget" element={<Suspense fallback={<LoadingSpinner />}><WeatherWidget /></Suspense>} />
+          <Route path="/tools/stopwatch" element={<Suspense fallback={<LoadingSpinner />}><Stopwatch /></Suspense>} />
+          <Route path="/tools/world-clock" element={<Suspense fallback={<LoadingSpinner />}><WorldClock /></Suspense>} />
+          <Route path="/tools/percentage-calculator" element={<Suspense fallback={<LoadingSpinner />}><PercentageCalculator /></Suspense>} />
+          <Route path="/tools/typing-speed-test" element={<Suspense fallback={<LoadingSpinner />}><TypingSpeedTest /></Suspense>} />
+          <Route path="/tools/image-crop" element={<Suspense fallback={<LoadingSpinner />}><ImageCrop /></Suspense>} />
           <Route path="/about" element={<About />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
