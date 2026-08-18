@@ -114,6 +114,9 @@ export const tools: Tool[] = [
   { id: 'percentage-calculator', name: '百分比计算器', description: '三种常见百分比场景一键换算：占比、基准值、增长率', category: 'calculator', icon: 'Percent', path: '/tools/percentage-calculator', tags: ['百分比', 'Percent', '计算器', '换算'] },
   { id: 'typing-speed-test', name: '打字速度测试', description: '英文打字速度测试，实时准确率统计，WPM 评分，历史记录保存', category: 'generator', icon: 'Keyboard', path: '/tools/typing-speed-test', tags: ['打字', '速度', 'WPM', 'Typing', '测试'] },
   { id: 'image-crop', name: '图片裁剪', description: '上传图片拖拽选区裁剪，支持 1:1、4:3、16:9 等多比例预设，导出 PNG/JPEG/WebP', category: 'design', icon: 'Crop', path: '/tools/image-crop', tags: ['裁剪', '图片', 'Crop', '比例', '尺寸'] },
+  { id: 'mortgage-calculator', name: '房贷/复利计算器', description: '房贷月供（等额本息/等额本金）与复利投资收益测算，含增长曲线', category: 'calculator', icon: 'Landmark', path: '/tools/mortgage-calculator', tags: ['房贷', '按揭', '等额本息', '等额本金', '复利', '理财'] },
+  { id: 'lottery-wheel', name: '抽奖转盘/抽签', description: '可自定义奖项与权重的概率转盘，以及随机抽签工具', category: 'generator', icon: 'Dice1', path: '/tools/lottery-wheel', tags: ['抽奖', '转盘', '抽签', '概率', '随机'] },
+  { id: 'fortune', name: '运势/抽签/心理测试', description: '每日运势、灵签抽签与趣味心理测试三合一', category: 'generator', icon: 'Sparkles', path: '/tools/fortune', tags: ['运势', '抽签', '灵签', '心理测试', '趣味'] },
 ];
 
 export function getToolByPath(path: string): Tool | undefined {

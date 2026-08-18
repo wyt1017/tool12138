@@ -103,6 +103,9 @@ const WorldClock = lazy(() => import('@/pages/tools/WorldClock'));
 const PercentageCalculator = lazy(() => import('@/pages/tools/PercentageCalculator'));
 const TypingSpeedTest = lazy(() => import('@/pages/tools/TypingSpeedTest'));
 const ImageCrop = lazy(() => import('@/pages/tools/ImageCrop'));
+const MortgageCalculator = lazy(() => import('@/pages/tools/MortgageCalculator'));
+const LotteryWheel = lazy(() => import('@/pages/tools/LotteryWheel'));
+const Fortune = lazy(() => import('@/pages/tools/Fortune'));
 
 export default function App() {
   return (
@@ -194,6 +197,9 @@ export default function App() {
           <Route path="/tools/percentage-calculator" element={<Suspense fallback={<LoadingSpinner />}><PercentageCalculator /></Suspense>} />
           <Route path="/tools/typing-speed-test" element={<Suspense fallback={<LoadingSpinner />}><TypingSpeedTest /></Suspense>} />
           <Route path="/tools/image-crop" element={<Suspense fallback={<LoadingSpinner />}><ImageCrop /></Suspense>} />
+          <Route path="/tools/mortgage-calculator" element={<Suspense fallback={<LoadingSpinner />}><MortgageCalculator /></Suspense>} />
+          <Route path="/tools/lottery-wheel" element={<Suspense fallback={<LoadingSpinner />}><LotteryWheel /></Suspense>} />
+          <Route path="/tools/fortune" element={<Suspense fallback={<LoadingSpinner />}><Fortune /></Suspense>} />
           <Route path="/about" element={<About />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
