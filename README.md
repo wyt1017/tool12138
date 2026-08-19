@@ -164,8 +164,7 @@ Lucide React   (图标库)
 │   │   └── index.ts       # Cloudflare Worker 边缘函数
 │   └── App.tsx            # 路由配置
 ├── public/
-│   ├── _headers           # 缓存策略（构建产物同步到 dist/）
-│   └── _redirects         # 空文件（0字节）
+│   └── _headers           # 缓存策略（构建产物同步到 dist/）
 ├── wrangler.toml          # Cloudflare Workers 配置
 └── vite.config.ts         # Vite 构建配置
 ```
