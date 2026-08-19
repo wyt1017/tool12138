@@ -186,7 +186,7 @@ function formatCSS(code: string, indentSize: number): string {
         result += indent.repeat(depth) + buffer.trim() + '\n';
       }
       buffer = '';
-      depth--;
+      depth = Math.max(0, depth - 1);
       result += indent.repeat(depth) + '}\n';
     } else if (ch === ';') {
       buffer += ';';

@@ -26,8 +26,11 @@ export default function CodeRunner() {
   const [error, setError] = useState<string | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  const run = useCallback(() => {
-    if (!iframeRef.current) return;
+  // 每次 render 更新到 ref，确保 timeout 内始终调用最新闭包版本
+  const runRef = useRef<(() => void) | null>(null);
+  runRef.current = useCallback(() => {
+    const iframe = iframeRef.current;
+    if (!iframe) return;
 
     // 捕获 iframe 内的 JS 错误
     const errorScript = `
@@ -44,7 +47,6 @@ export default function CodeRunner() {
       </script>
     `;
 
-    // 直接拼接完整 HTML 文档，不再做误删正则
     // 对 JS 内容进行转义，防止 </script> 注入
     const escapeJs = (s: string) => s.replace(/<\/script>/gi, '<\\/script>');
     const fullHtml = `<!DOCTYPE html>
@@ -72,14 +74,14 @@ export default function CodeRunner() {
 </body>
 </html>`;
 
-    iframeRef.current.srcdoc = fullHtml;
+    iframe.srcdoc = fullHtml;
     setError(null);
   }, [html, css, js]);
 
   // 监听 iframe 发送的错误消息
   useEffect(() => {
     const handler = (e: MessageEvent) => {
-      if (e.source !== iframeRef.current?.contentWindow) return; // 仅接受来自预览 iframe 的消息
+      if (e.source !== iframeRef.current?.contentWindow) return;
       if (e.data && e.data.type === 'error') {
         const { message, line, column } = e.data;
         setError(`${message}\n    at line ${line}:${column}`);
@@ -94,14 +96,19 @@ export default function CodeRunner() {
     setCss(DEFAULT_CSS);
     setJs(DEFAULT_JS);
     setError(null);
-    // 不直接调用 run()，防抖 useEffect 会在状态更新后自动执行
+    setTimeout(() => runRef.current?.(), 50);
   };
 
   // 输入时防抖 300ms 再重建 iframe，避免每次按键都重载
+  // 使用 timerRef 保证清理事件，不依赖 run 的引用稳定性
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
-    const id = setTimeout(() => run(), 300);
-    return () => clearTimeout(id);
-  }, [run]);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => runRef.current?.(), 300);
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [html, css, js]);
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-12">
@@ -165,7 +172,7 @@ export default function CodeRunner() {
 
       {/* Actions */}
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="flex items-center gap-3 mb-4">
-        <button onClick={run} className="btn-primary">
+        <button onClick={() => runRef.current?.()} className="btn-primary">
           <Play size={15} className="inline mr-2" /> 运行
         </button>
         <button onClick={reset} className="btn-secondary">

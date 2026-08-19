@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Braces, Copy, Trash2, ChevronDown, ChevronRight, AlertCircle } from 'lucide-react';
 
@@ -120,10 +120,13 @@ export default function JsonFormatter() {
     }
   };
 
-  let treeData: unknown = null;
-  try {
-    treeData = input ? JSON.parse(input) : null;
-  } catch { /* ignore */ }
+  const treeData = useMemo<unknown>(() => {
+    try {
+      return input ? JSON.parse(input) : null;
+    } catch {
+      return null;
+    }
+  }, [input]);
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-12">

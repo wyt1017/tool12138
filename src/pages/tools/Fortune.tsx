@@ -222,7 +222,7 @@ export default function Fortune() {
             <>
               <div className="text-xs text-[#666] mb-1">第 {step + 1} / {TEST.length} 题</div>
               <div className="h-1.5 rounded-full bg-white/5 overflow-hidden mb-5">
-                <div className="h-full rounded-full" style={{ width: `${((step) / TEST.length) * 100}%`, background: color }} />
+                <div className="h-full rounded-full" style={{ width: `${((step + 1) / TEST.length) * 100}%`, background: color }} />
               </div>
               <h3 className="text-lg text-white mb-5">{TEST[step].q}</h3>
               <div className="space-y-3">

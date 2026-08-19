@@ -6,6 +6,7 @@ interface ColorValue {
   hex: string;
   rgb: { r: number; g: number; b: number };
   hsl: { h: number; s: number; l: number };
+  hsv: { h: number; s: number; v: number };
 }
 
 function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
@@ -34,6 +35,25 @@ function rgbToHsl(r: number, g: number, b: number): { h: number; s: number; l: n
   return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
 }
 
+function rgbToHsv(r: number, g: number, b: number): { h: number; s: number; v: number } {
+  const rn = r / 255, gn = g / 255, bn = b / 255;
+  const max = Math.max(rn, gn, bn), min = Math.min(rn, gn, bn);
+  const v = max;
+  const d = max - min;
+  const s = max === 0 ? 0 : d / max;
+  let h: number;
+  if (max === min) {
+    h = 0;
+  } else {
+    switch (max) {
+      case rn: h = ((gn - bn) / d + (gn < bn ? 6 : 0)) / 6; break;
+      case gn: h = ((bn - rn) / d + 2) / 6; break;
+      default: h = ((rn - gn) / d + 4) / 6; break;
+    }
+  }
+  return { h: Math.round(h * 360), s: Math.round(s * 100), v: Math.round(v * 100) };
+}
+
 function parseColor(input: string): ColorValue | null {
   let hex = input.trim();
   if (/^#[a-fA-F0-9]{6}$/.test(hex)) {
@@ -52,7 +72,7 @@ function parseColor(input: string): ColorValue | null {
   }
   const rgb = hexToRgb(hex);
   if (!rgb) return null;
-  return { hex, rgb, hsl: rgbToHsl(rgb.r, rgb.g, rgb.b) };
+  return { hex, rgb, hsl: rgbToHsl(rgb.r, rgb.g, rgb.b), hsv: rgbToHsv(rgb.r, rgb.g, rgb.b) };
 }
 
 // Generate a nice palette based on base color
@@ -320,7 +340,7 @@ export default function ColorPicker() {
                 {formatRow('RGB', `rgb(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b})`, 'rgb')}
                 {formatRow('RGB数字', `${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}`, 'rgb-num')}
                 {formatRow('HSL', `hsl(${color.hsl.h}, ${color.hsl.s}%, ${color.hsl.l}%)`, 'hsl')}
-                {formatRow('HSV', `hsv(${color.hsl.h}, ${Math.round(((Math.max(color.rgb.r, color.rgb.g, color.rgb.b) - Math.min(color.rgb.r, color.rgb.g, color.rgb.b)) / (Math.max(color.rgb.r, color.rgb.g, color.rgb.b) || 1)) * 100)}%, ${Math.round(Math.max(color.rgb.r, color.rgb.g, color.rgb.b) / 255 * 100)}%)`, 'hsv')}
+                {formatRow('HSV', `hsv(${color.hsv.h}, ${color.hsv.s}%, ${color.hsv.v}%)`, 'hsv')}
               </>
             ) : (
               <div className="text-center py-12 text-[#555] text-sm">请输入有效的颜色值</div>

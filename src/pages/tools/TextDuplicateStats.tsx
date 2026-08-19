@@ -53,9 +53,13 @@ export default function TextDuplicateStats() {
     return stats.length > 0 ? Math.max(...stats.map(s => s.count)) : 0;
   }, [stats]);
 
-  const copyResults = () => {
+  const copyResults = async () => {
     const text = stats.map(item => `${item.content}: ${item.count}次`).join('\n');
-    navigator.clipboard.writeText(text);
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      // fallback
+    }
   };
 
   const handleModeClick = (newMode: 'line' | 'word') => setMode(newMode);

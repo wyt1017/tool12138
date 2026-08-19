@@ -31,11 +31,14 @@ export default function BaseConverter() {
     }
 
     try {
-      const cleaned = inputValue.replace(/^0[bxo]|^0X/i, '');
-      // 单独处理符号位，避免负号被 parseInt 带入前缀清理逻辑
-      const isNegative = cleaned.startsWith('-');
-      const absStr = isNegative ? cleaned.slice(1) : cleaned;
-      const bigInt = BigInt(parseInt(absStr || '0', activeBase)) * (isNegative ? -1n : 1n);
+      // 1. 去掉符号位
+      const isNegative = inputValue.startsWith('-');
+      const withoutSign = isNegative ? inputValue.slice(1) : inputValue;
+
+      // 2. 去掉各进制前缀（所有出现都要替换）
+      const cleaned = withoutSign.replace(/^0x/i, '').replace(/^0o/i, '').replace(/^0b/i, '');
+
+      const bigInt = BigInt(parseInt(cleaned || '0', activeBase)) * (isNegative ? -1n : 1n);
 
       setValues({
         2: bigInt.toString(2),

@@ -50,9 +50,13 @@ export default function WordFrequency() {
 
   const uniqueWords = wordStats.length;
 
-  const copyResults = () => {
+  const copyResults = async () => {
     const text = wordStats.map(item => `${item.word}: ${item.count}`).join('\n');
-    navigator.clipboard.writeText(text);
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      // fallback
+    }
   };
 
   return (

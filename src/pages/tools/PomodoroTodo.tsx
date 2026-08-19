@@ -250,7 +250,7 @@ export default function PomodoroTodo() {
               className="btn-primary flex items-center gap-2 !px-6" disabled={cdMin <= 0}>
               {cdRunning ? <Pause size={16} /> : <Play size={16} />} {cdRunning ? '暂停' : '开始'}
             </button>
-            <button onClick={() => { setCdRunning(false); setCdLeft(cdMin * 60); }} className="btn-secondary flex items-center gap-2">
+            <button onClick={() => { cdTotalRef.current = cdMin * 60; setCdRunning(false); setCdLeft(cdMin * 60); }} className="btn-secondary flex items-center gap-2">
               <RotateCcw size={15} /> 重置
             </button>
           </div>

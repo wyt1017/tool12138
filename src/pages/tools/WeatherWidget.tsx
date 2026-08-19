@@ -118,6 +118,7 @@ export default function WeatherWidget() {
   const useMyLocation = () => {
     if (!navigator.geolocation) {
       setError('当前浏览器不支持定位');
+      setLoading(false);
       return;
     }
     abortRef.current?.abort();

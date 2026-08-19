@@ -95,18 +95,12 @@ export default function DateCalc() {
       const isLeapYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
 
       // ISO 8601 周数计算：第一周是包含1月4日的那一周
+      const jan4 = new Date(year, 0, 4);
+      const week1Monday = new Date(jan4);
+      week1Monday.setDate(jan4.getDate() - (jan4.getDay() + 6) % 7);
       const startOfYear = new Date(year, 0, 1);
-      const jan1 = new Date(year, 0, 1).getDay(); // 1月1日是星期几
       const dayOfYear = Math.floor((date.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-      // ISO周数公式
-      const isoWeek = Math.floor((dayOfYear - 1 + (jan1 + 6) % 7) / 7) + 1;
-      // 处理第1周的年份边界（如2020年12月28日属于2021年第1周）
-      let weekNum = isoWeek;
-      if (isoWeek === 1 && new Date(year, 0, 1).getDay() > 4) {
-        weekNum = 53; // 上年最后一周
-      } else if (isoWeek === 53 && new Date(year, 11, 31).getDay() < 4) {
-        weekNum = 1; // 次年第一周
-      }
+      const weekNum = Math.ceil(((date.getTime() - week1Monday.getTime()) / (1000 * 60 * 60 * 24) + 1) / 7);
 
       const daysInMonth = new Date(year, month, 0).getDate();
       const endOfYear = new Date(year, 11, 31);

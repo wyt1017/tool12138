@@ -21,12 +21,14 @@ export default function ScientificCalculator() {
         log: 'Math.log10', ln: 'Math.log', sqrt: 'Math.sqrt',
         abs: 'Math.abs', exp: 'Math.exp', pi: 'Math.PI', e: 'Math.E',
       };
+      // 先替换函数/常量（排除 e 避免与科学计数法冲突），再单独处理科学计数法
       const expr = expression
-        .replace(/\b(asin|acos|atan|sin|cos|tan|log|ln|sqrt|abs|exp|pi|e)\b/gi, (m) => fnMap[m.toLowerCase()])
+        .replace(/\b(asin|acos|atan|sin|cos|tan|log|ln|sqrt|abs|exp|pi)\b/gi, (m) => fnMap[m.toLowerCase()])
         .replace(/(\d+(?:\.\d+)?)!/g, 'factorial($1)')
         .replace(/\^/g, '**')
         .replace(/×/g, '*')
-        .replace(/÷/g, '/');
+        .replace(/÷/g, '/')
+        .replace(/\be\b/gi, 'Math.E');
 
       // 安全计算（factorial 在当前作用域内定义，仅 self-XSS，风险可控）
       const evaluated = Function(
@@ -74,7 +76,7 @@ export default function ScientificCalculator() {
     if (btn === 'C') clear();
     else if (btn === '=') evaluate();
     else if (btn === '←') setExpression(prev => prev.slice(0, -1));
-    else setExpression(prev => prev + btn);
+    else if (btn === '!') setExpression(prev => prev + '!');
   };
 
   const getButtonProps = (btn: string) => {

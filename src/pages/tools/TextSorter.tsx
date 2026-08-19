@@ -78,7 +78,11 @@ export default function TextSorter() {
   const sortedText = sortedLines.join('\n');
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(sortedText);
+    try {
+      await navigator.clipboard.writeText(sortedText);
+    } catch {
+      // fallback
+    }
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

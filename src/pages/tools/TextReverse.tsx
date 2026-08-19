@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeftRight, Copy, RotateCcw, Shuffle } from 'lucide-react';
 
@@ -25,6 +25,7 @@ export default function TextReverse() {
   const [input, setInput] = useState('');
   const [activeMode, setActiveMode] = useState<ReverseMode>('full');
   const [copied, setCopied] = useState(false);
+  const shuffleRef = useRef(0);
 
   const result = useMemo(() => {
     if (!input) return '';
@@ -60,12 +61,6 @@ export default function TextReverse() {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }, [result]);
-
-  const handleShuffleAgain = useCallback(() => {
-    if (!input || activeMode !== 'shuffle') return;
-    // Force re-render by toggling a dummy state
-    setInput((prev) => prev + '');
-  }, [input, activeMode]);
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-12">
@@ -136,7 +131,7 @@ export default function TextReverse() {
               {result && (
                 <>
                   {activeMode === 'shuffle' && (
-                    <button onClick={handleShuffleAgain} className="btn-secondary !py-1 !px-2 text-xs">
+            <button onClick={() => { shuffleRef.current++; }} className="btn-secondary !py-1 !px-2 text-xs">
                       <Shuffle size={12} className="inline" />
                     </button>
                   )}

@@ -132,7 +132,10 @@ export default function RmbConverter() {
   const [copied, setCopied] = useState(false);
 
   const numericValue = useMemo(() => {
-    const cleaned = input.replace(/[^\d.-]/g, '');
+    // 移除所有非数字和非小数点的字符
+    const cleaned = input.replace(/[^\d.]/g, '');
+    // 校验：只允许整数或含一个小数点的数字
+    if (!/^\d+(\.\d+)?$/.test(cleaned)) return null;
     const num = parseFloat(cleaned);
     return isNaN(num) ? null : num;
   }, [input]);

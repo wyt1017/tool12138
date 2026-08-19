@@ -238,8 +238,8 @@ export default function TextReplace() {
         className="flex items-center gap-3 mt-6"
       >
         <button
-          onClick={() => {
-            navigator.clipboard.writeText(result.text);
+          onClick={async () => {
+            try { await navigator.clipboard.writeText(result.text); } catch { /* 忽略复制失败 */ }
           }}
           disabled={!result.text}
           className="btn-primary disabled:opacity-30"

@@ -36,7 +36,9 @@ function getBmiCategory(bmi: number): BmiCategory {
 }
 
 function imperialToMetric(heightFt: number, weightLbs: number): { cm: number; kg: number } {
-  const cm = heightFt * 30.48;
+  const feet = Math.floor(heightFt);
+  const inches = (heightFt - feet) * 10;
+  const cm = (feet * 12 + inches) * 2.54;
   const kg = weightLbs * 0.453592;
   return { cm, kg };
 }
@@ -69,7 +71,12 @@ export default function BmiCalculator() {
   }, [bmiValue]);
 
   const healthyRange = useMemo(() => {
-    const h = unitSystem === 'metric' ? parseFloat(heightCm) : parseFloat(heightFt) * 30.48;
+    const h = unitSystem === 'metric' ? parseFloat(heightCm) : (() => {
+      const hf = parseFloat(heightFt);
+      const feet = Math.floor(hf);
+      const inches = (hf - feet) * 10;
+      return (feet * 12 + inches) * 2.54;
+    })();
     if (isNaN(h) || h <= 0) return null;
 
     const heightM = h / 100;

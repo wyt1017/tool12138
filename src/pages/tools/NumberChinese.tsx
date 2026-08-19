@@ -102,12 +102,15 @@ function numberToChinese(input: string, mode: Mode): string {
   if (isNaN(num)) return '无效数字';
 
   if (mode === 'year') {
-    const year = Math.abs(Math.round(num)).toString();
-    const yearDigits = year.padStart(4, '0');
-    return yearDigits.split('').map(d => {
+    const year = Math.round(num);
+    const isNegative = year < 0;
+    const absYear = Math.abs(year).toString();
+    const yearDigits = absYear.padStart(4, '0');
+    const yearStr = yearDigits.split('').map(d => {
       const n = parseInt(d, 10);
       return n === 0 ? '〇' : CN_NUMS[n];
     }).join('');
+    return isNegative ? '负' + yearStr : yearStr;
   }
 
   const [intPart, decPart] = trimmed.includes('.') ? trimmed.split('.') : [trimmed, ''];

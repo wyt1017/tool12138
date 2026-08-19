@@ -102,24 +102,46 @@ export default function ImageCompress() {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     const droppedFile = e.dataTransfer.files[0];
-    if (droppedFile && droppedFile.type.startsWith('image/')) {
-      if (resultBlobUrl) URL.revokeObjectURL(resultBlobUrl);
-      setResultBlobUrl('');
-      setFile(droppedFile);
-      setOriginalPreview(URL.createObjectURL(droppedFile));
-      setResult(null);
+    if (!droppedFile) return;
+    const errorMsg = validateImageFile(droppedFile);
+    if (errorMsg) {
+      setError(errorMsg);
+      return;
     }
+    setError('');
+    if (resultBlobUrl) URL.revokeObjectURL(resultBlobUrl);
+    setResultBlobUrl('');
+    setFile(droppedFile);
+    setOriginalPreview(URL.createObjectURL(droppedFile));
+    setResult(null);
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
-    if (selectedFile && selectedFile.type.startsWith('image/')) {
-      if (resultBlobUrl) URL.revokeObjectURL(resultBlobUrl);
-      setResultBlobUrl('');
-      setFile(selectedFile);
-      setOriginalPreview(URL.createObjectURL(selectedFile));
-      setResult(null);
+    if (!selectedFile) return;
+    const errorMsg = validateImageFile(selectedFile);
+    if (errorMsg) {
+      setError(errorMsg);
+      return;
     }
+    setError('');
+    if (resultBlobUrl) URL.revokeObjectURL(resultBlobUrl);
+    setResultBlobUrl('');
+    setFile(selectedFile);
+    setOriginalPreview(URL.createObjectURL(selectedFile));
+    setResult(null);
+  };
+
+  const SUPPORTED_TYPES = new Set(['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
+  const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+  const validateImageFile = (file: File): string => {
+    if (!SUPPORTED_TYPES.has(file.type)) {
+      return '不支持的格式，请上传 JPG / PNG / GIF / WebP 图片';
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      return `文件过大（最大 ${MAX_FILE_SIZE / 1024 / 1024}MB），请压缩后再上传`;
+    }
+    return '';
   };
 
   const handleCompress = async () => {
@@ -192,7 +214,7 @@ export default function ImageCompress() {
           onClick={() => fileInputRef.current?.click()}
           className="glass-card p-12 cursor-pointer border-2 border-dashed border-white/10 hover:border-[#ffd369]/40 transition-all mb-6"
         >
-          <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileSelect} aria-label="选择图片文件" className="sr-only" />
+          <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/gif,image/webp" onChange={handleFileSelect} aria-label="选择图片文件" className="sr-only" />
           <Upload size={48} className="mx-auto text-[#333] mb-4" />
           <p className="text-[#666] text-sm text-center">拖拽图片到此处，或点击选择图片文件</p>
           <p className="text-[#444] text-xs text-center mt-2">支持 JPG、PNG、WebP 等常见格式</p>
@@ -224,6 +246,7 @@ export default function ImageCompress() {
                   setOriginalPreview('');
                   setResultBlobUrl('');
                   setResult(null);
+                  setError('');
                 }}
                 className="p-2 hover:bg-red-500/10 rounded-lg transition-colors"
               >

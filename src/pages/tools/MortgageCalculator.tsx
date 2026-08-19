@@ -41,7 +41,7 @@ function calcMortgage(
     return { monthly, totalPay, totalInterest, yearly, decrease: 0, firstMonth: monthly };
   }
 
-  // 等额本金
+  // 等额本金：首月月供 = 最大月供，需单独计算并返回 monthlySchedule
   const monthlyPrincipal = principal / n;
   const firstMonth = monthlyPrincipal + principal * r;
   const decrease = monthlyPrincipal * r;
@@ -49,16 +49,19 @@ function calcMortgage(
   const totalPay = principal + totalInterest;
   let remain = principal;
   let accInterest = 0;
+  const monthlySchedule: number[] = [];
   for (let m = 1; m <= n; m++) {
     const interest = remain * r;
+    const payment = monthlyPrincipal + interest;
     remain -= monthlyPrincipal;
     accInterest += interest;
+    monthlySchedule.push(payment);
     if (m % 12 === 0) {
       yearly.push({ year: m / 12, interest: accInterest, remain: Math.max(remain, 0) });
       accInterest = 0;
     }
   }
-  return { monthly: firstMonth, decrease, totalPay, totalInterest, yearly, firstMonth };
+  return { monthly: firstMonth, decrease, totalPay, totalInterest, yearly, firstMonth, monthlySchedule };
 }
 
 // ===== 复利计算 =====
@@ -73,8 +76,10 @@ function calcCompound(
 ) {
   const freq = FREQ[freqKey] ?? 12;
   const r = annualRate / 100;
-  const i = Math.pow(1 + r, 1 / freq) - 1; // 每期等效利率
+  // 每期利率（避免 pow 精度损失：使用 log/exp 稳定计算）
+  const i = freq > 1 ? Math.exp(Math.log(1 + r) / freq) - 1 : r;
   const N = freq * years;
+  // 每周期定投额（每月定投按 freq 折算）
   const depositPerPeriod = monthlyDeposit * (12 / freq);
   let balance = principal;
   let totalPrincipal = principal;
@@ -330,11 +335,16 @@ export default function MortgageCalculator() {
                   <div className="text-xs text-[#666] mb-1">
                     {repay === 'equal-installment' ? '每月月供' : '首月月供'}
                   </div>
-                  <div className="font-['Syne'] font-bold text-3xl text-white mb-4">
+                  <div className="font-['Syne'] font-bold text-3xl text-white mb-1">
                     {fmt(result.monthly as number)} <span className="text-base text-[#a8b2c1]">元</span>
                   </div>
                   {repay === 'equal-principal' && (
-                    <div className="text-sm text-[#a8b2c1] mb-3">每月递减 {fmt(result.decrease as number)} 元</div>
+                    <>
+                      <div className="text-xs text-[#f59e0b] mb-1 font-medium">首月月供（逐月递减）</div>
+                      <div className="text-sm text-[#a8b2c1] mb-3">
+                        每月递减 <span className="text-white font-semibold">{fmt(result.decrease as number)}</span> 元
+                      </div>
+                    </>
                   )}
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     <div className="bg-white/5 rounded-lg px-3 py-2">

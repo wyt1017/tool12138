@@ -55,9 +55,13 @@ export default function TextCounter() {
   const [text, setText] = useState('');
   const stats = analyzeText(text);
 
-  const copyStats = () => {
+  const copyStats = async () => {
     const result = statItems.map((item) => `${item.label}: ${stats[item.key]}`).join('\n');
-    navigator.clipboard.writeText(result);
+    try {
+      await navigator.clipboard.writeText(result);
+    } catch {
+      // fallback
+    }
   };
 
   return (

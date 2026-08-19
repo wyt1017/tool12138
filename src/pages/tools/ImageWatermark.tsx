@@ -55,6 +55,10 @@ export default function ImageWatermark() {
       let y = padding + fontSize;
 
       switch (position) {
+        case 'top-left':
+          x = padding;
+          y = padding + fontSize;
+          break;
         case 'top-right':
           x = canvas.width - textWidth - padding;
           y = padding + fontSize;

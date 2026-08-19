@@ -17,7 +17,6 @@ const ZODIAC_SIGNS: { name: string; symbol: string; start: [number, number]; end
   { name: '天秤座', symbol: '♎', start: [9, 23], end: [10, 23] },
   { name: '天蝎座', symbol: '♏', start: [10, 24], end: [11, 22] },
   { name: '射手座', symbol: '♐', start: [11, 23], end: [12, 21] },
-  { name: '摩羯座', symbol: '♑', start: [12, 22], end: [1, 19] },
 ];
 
 const CHINESE_ZODIAC = ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪'];
@@ -35,7 +34,7 @@ function getZodiac(month: number, day: number): { name: string; symbol: string }
 }
 
 function getChineseZodiac(year: number): string {
-  return CHINESE_ZODIAC[(year - 4) % 12];
+  return CHINESE_ZODIAC[((year - 4) % 12 + 12) % 12];
 }
 
 function calculateAge(birthDate: Date, targetDate: Date): {

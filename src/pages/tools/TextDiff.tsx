@@ -128,9 +128,13 @@ export default function TextDiff() {
         return `${prefix} ${line.content}`;
       })
       .join('\n');
-    await navigator.clipboard.writeText(
-      `文本差异对比报告\n${'='.repeat(40)}\n新增: ${stats.add} 行 | 删除: ${stats.remove} 行 | 修改: ${stats.modify} 行 | 未变: ${stats.unchanged} 行\n${'='.repeat(40)}\n\n${report}`
-    );
+    try {
+      await navigator.clipboard.writeText(
+        `文本差异对比报告\n${'='.repeat(40)}\n新增: ${stats.add} 行 | 删除: ${stats.remove} 行 | 修改: ${stats.modify} 行 | 未变: ${stats.unchanged} 行\n${'='.repeat(40)}\n\n${report}`
+      );
+    } catch {
+      // fallback
+    }
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

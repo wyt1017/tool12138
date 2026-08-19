@@ -66,8 +66,12 @@ export default function TextShuffle() {
     setHasShuffled(true);
   }, [originalLines, shuffleCount, mode, lotteryCount, weightsArray]);
 
-  const handleCopy = useCallback(() => {
-    navigator.clipboard.writeText(shuffledLines.join('\n'));
+  const handleCopy = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(shuffledLines.join('\n'));
+    } catch {
+      // fallback
+    }
   }, [shuffledLines]);
 
   const handleReset = useCallback(() => {

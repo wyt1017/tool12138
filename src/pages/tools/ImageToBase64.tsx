@@ -8,6 +8,7 @@ export default function ImageToBase64() {
   const [base64Output, setBase64Output] = useState<string>('');
   const [formatMode, setFormatMode] = useState<'full' | 'pure'>('full');
   const [isDragging, setIsDragging] = useState(false);
+  const [error, setError] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const previewUrlRef = useRef<string>('');
 
@@ -27,7 +28,11 @@ export default function ImageToBase64() {
   }, []);
 
   const processFile = useCallback((file: File) => {
-    if (!file.type.match(/^image\/(jpeg|png|gif|webp)$/)) return;
+    if (!file.type.match(/^image\/(jpeg|png|gif|webp)$/)) {
+      setError('不支持的图片格式，请上传 JPG / PNG / GIF / WebP');
+      return;
+    }
+    setError('');
     setImageFile(file);
     setPreview(file);
     const reader = new FileReader();
@@ -69,6 +74,7 @@ export default function ImageToBase64() {
 
   const clearAll = () => {
     setImageFile(null);
+    setError('');
     if (previewUrlRef.current) {
       URL.revokeObjectURL(previewUrlRef.current);
       previewUrlRef.current = '';
@@ -95,6 +101,11 @@ export default function ImageToBase64() {
         {/* Upload Area */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
           <label className="block text-sm font-medium text-[#a8b2c1] mb-2 ml-1">上传图片</label>
+          {error && (
+            <div className="mb-3 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-sm text-red-400">
+              {error}
+            </div>
+          )}
           {!previewUrl ? (
             <div
               onDrop={handleDrop}

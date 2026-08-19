@@ -8,13 +8,18 @@ export default function Base64Tool() {
   const [mode, setMode] = useState<'encode' | 'decode'>('encode');
   const [isImage, setIsImage] = useState(false);
 
-  // 使用 TextEncoder/TextDecoder 替代废弃的 escape/unescape
+  // 使用 btoa 编码时需要将 UTF-8 字符串转换为 Latin1 字节序列
+  // 直接使用 btoa(input) 会导致中文等多字节字符编码错误
   const encode = () => {
     try {
-      const encoder = new TextEncoder();
-      const encodedBytes = encoder.encode(input);
-      const binaryString = Array.from(encodedBytes, (byte) => String.fromCharCode(byte)).join('');
-      const encoded = btoa(binaryString);
+      // 方法：将 UTF-8 字符串转为 base64，正确处理中文等多字节字符
+      const utf8Bytes = new TextEncoder().encode(input);
+      // 将 Uint8Array 转为二进制字符串（每个字节对应一个字符）
+      let binary = '';
+      for (let i = 0; i < utf8Bytes.length; i++) {
+        binary += String.fromCharCode(utf8Bytes[i]);
+      }
+      const encoded = btoa(binary);
       setOutput(encoded);
       setIsImage(false);
     } catch {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Copy, Check, Space, Eye, EyeOff, Layers, AlertCircle } from 'lucide-react';
 
@@ -77,10 +77,10 @@ export default function WhitespaceGen() {
 
   // 只检测零宽字符（真正不可见的空白字符）
   // 使用 Unicode 属性或分开匹配避免 joined character sequence 问题
-  const zeroWidthRegex = /[\u200B\u200C]|[\u200D]|[\uFEFF]/g;
-  const testVisibleLength = testInput.replace(zeroWidthRegex, '').length;
-  const testActualLength = testInput.length;
-  const testZeroWidthCount = (testInput.match(zeroWidthRegex) || []).length;
+  const zeroWidthRegex = useMemo(() => /[\u200B\u200C]|[\u200D]|[\uFEFF]/g, []);
+  const testVisibleLength = useMemo(() => testInput.replace(zeroWidthRegex, '').length, [testInput, zeroWidthRegex]);
+  const testActualLength = useMemo(() => testInput.length, [testInput]);
+  const testZeroWidthCount = useMemo(() => (testInput.match(zeroWidthRegex) || []).length, [testInput, zeroWidthRegex]);
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-12">
