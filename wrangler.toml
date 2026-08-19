@@ -1,3 +1,4 @@
+account_id = "e5bfbba3a9ab0e4688a80c49d7321a4e"
 name = "tool12138"
 compatibility_date = "2025-06-15"
 main = "src/workers/index.ts"
