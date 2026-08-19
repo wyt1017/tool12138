@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && node -e \"const fs=require('fs'); const p='dist/_redirects'; if(!fs.existsSync(p)||fs.readFileSync(p,'utf8')!==fs.readFileSync('public/_redirects','utf8')) fs.writeFileSync(p,fs.readFileSync('public/_redirects','utf8'));\"",
     "lint": "eslint .",
     "preview": "vite preview",
     "check": "tsc -b --noEmit",
