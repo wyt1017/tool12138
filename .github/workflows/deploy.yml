@@ -20,3 +20,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           command: deploy
+          wranglerVersion: "4.124.0"
