@@ -42,7 +42,8 @@ export default function ExchangeRate() {
     setError('');
     try {
       const symbols = CURRENCIES.map((c) => c.code).join(',');
-      const res = await fetch(`https://api.frankfurter.app/latest?from=${base}&to=${symbols}`, { signal });
+      const srcUrl = `https://api.frankfurter.app/latest?from=${base}&to=${symbols}`;
+      const res = await fetch(`/api/proxy?url=${encodeURIComponent(srcUrl)}`, { signal });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       if (!data.rates) throw new Error('返回数据异常');

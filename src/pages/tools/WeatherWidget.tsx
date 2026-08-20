@@ -57,10 +57,10 @@ export default function WeatherWidget() {
     setLoading(true);
     setError('');
     try {
-      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+      const srcUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
         `&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m` +
         `&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=3`;
-      const res = await fetch(url, { signal });
+      const res = await fetch(`/api/proxy?url=${encodeURIComponent(srcUrl)}`, { signal });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       const c = data.current;
@@ -100,7 +100,8 @@ export default function WeatherWidget() {
     setLoading(true);
     setError('');
     try {
-      const geo = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(name)}&count=1&language=zh&format=json`, { signal });
+      const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(name)}&count=1&language=zh&format=json`;
+      const geo = await fetch(`/api/proxy?url=${encodeURIComponent(geoUrl)}`, { signal });
       if (!geo.ok) throw new Error(`HTTP ${geo.status}`);
       const g = await geo.json();
       if (!g.results || g.results.length === 0) throw new Error('未找到该城市，请检查名称');

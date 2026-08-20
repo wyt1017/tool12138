@@ -46,7 +46,7 @@ export default function GithubCard() {
     setLanguages([]);
     const controller = new AbortController();
     try {
-      const userRes = await fetch(`https://api.github.com/users/${encodeURIComponent(name)}`, { signal: controller.signal });
+      const userRes = await fetch(`/api/proxy?url=${encodeURIComponent(`https://api.github.com/users/${encodeURIComponent(name)}`)}`, { signal: controller.signal });
       if (userRes.status === 404) throw new Error('未找到该 GitHub 用户');
       if (userRes.status === 403) throw new Error('已达到 GitHub API 匿名限流（60次/小时），请稍后再试');
       if (!userRes.ok) throw new Error(`HTTP ${userRes.status}`);
@@ -54,7 +54,7 @@ export default function GithubCard() {
 
       let langs: { name: string; pct: number; color: string }[] = [];
       try {
-        const repoRes = await fetch(`https://api.github.com/users/${encodeURIComponent(name)}/repos?per_page=100&sort=updated`, { signal: controller.signal });
+        const repoRes = await fetch(`/api/proxy?url=${encodeURIComponent(`https://api.github.com/users/${encodeURIComponent(name)}/repos?per_page=100&sort=updated`)}`, { signal: controller.signal });
         if (repoRes.ok) {
           const repos: GithubRepo[] = await repoRes.json();
           const tally: Record<string, number> = {};

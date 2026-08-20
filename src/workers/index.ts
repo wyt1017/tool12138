@@ -95,6 +95,41 @@ export default {
       }
     }
 
+    // ── 2b. 公共 API 同源代理（白名单转发，规避浏览器跨域与地区网络不可达） ──
+    if (pathname === '/api/proxy' && request.method === 'GET') {
+      const target = url.searchParams.get('url') || '';
+      const allowedPrefixes = [
+        'https://api.open-meteo.com/',
+        'https://geocoding-api.open-meteo.com/',
+        'https://api.frankfurter.app/',
+        'https://api.github.com/',
+      ];
+      if (!allowedPrefixes.some((p) => target.startsWith(p))) {
+        return new Response('Forbidden', { status: 403, headers: securityHeaders });
+      }
+      try {
+        const res = await fetch(target, {
+          headers: {
+            'User-Agent': 'same-toolbox/1.0 (https://same-toolbox.pages.dev)',
+            'Accept': 'application/json',
+          },
+        });
+        const body = await res.text();
+        return new Response(body, {
+          status: res.status,
+          headers: {
+            'Content-Type': res.headers.get('Content-Type') || 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+            'Cache-Control': res.ok ? 'public, max-age=300' : 'no-store',
+          },
+        });
+      } catch {
+        return new Response('Proxy Error', { status: 502, headers: securityHeaders });
+      }
+    }
+
     // ── 3. 排除 Vite HMR 和内部路径 ──
     if (pathname.startsWith('/@') || pathname.includes('__vite__')) {
       return new Response('', { status: 404, headers: securityHeaders });
