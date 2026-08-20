@@ -137,7 +137,12 @@ export default {
 
     // ── 3. SPA fallback：返回 index.html（允许短时间缓存，提升边缘命中率） ──
     try {
-      const indexRes = await env.ASSETS.fetch(new Request(new URL('/index.html', url), request));
+      // 针对 Cloudflare Pages Assets 绑定：必须用相对于根的绝对路径，且不携带原查询串
+      const indexUrl = new URL('/', url);
+      indexUrl.pathname = '/index.html';
+      indexUrl.search = '';
+      const indexReq = new Request(indexUrl.toString(), request);
+      const indexRes = await env.ASSETS.fetch(indexReq);
       if (!indexRes.ok) {
         return new Response('Internal Server Error', {
           status: 500,
@@ -153,7 +158,8 @@ export default {
           'Content-Security-Policy': csp,
         },
       });
-    } catch {
+    } catch (e) {
+      console.error('SPA fallback error', e);
       return new Response('Internal Server Error', {
         status: 500,
         headers: { 'Content-Type': 'text/plain; charset=utf-8', ...securityHeaders },
