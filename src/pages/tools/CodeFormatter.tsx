@@ -293,9 +293,17 @@ function formatXML(code: string, indentSize: number): string {
 }
 
 function compressCode(code: string): string {
-  return code
-    .replace(/\/\*[\s\S]*?\*\//g, '') // remove comments; lgtm[js/incomplete-multi-character-sanitization]: 压缩去注释非安全净化，输出仅进 React 受控 textarea
-    .replace(/<!--[\s\S]*?-->/g, '')   // remove HTML comments
+  // 循环移除 JS 块注释与 HTML 注释直到结果稳定，避免单次替换遗漏交错/嵌套注释
+  let result = code;
+  let previous: string;
+  do {
+    previous = result;
+    result = result
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/<!--[\s\S]*?-->/g, '');
+  } while (result !== previous);
+
+  return result
     .replace(/\s+/g, ' ')               // collapse whitespace
     .replace(/>\s+</g, '><')           // collapse between tags
     .replace(/\s*([{};,])\s*/g, '$1')  // trim around punctuation

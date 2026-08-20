@@ -72,7 +72,30 @@ export default {
       }
     }
 
-    // ── 2. 排除 Vite HMR 和内部路径 ──
+    // ── 2. HuggingFace API 代理（转发请求 + 补 CORS 头） ──
+    const hfMatch = pathname.match(/^\/api\/hf\/(.+)$/);
+    if (hfMatch) {
+      const targetUrl = `https://huggingface.co/api/${hfMatch[1]}`;
+      try {
+        const res = await fetch(targetUrl, {
+          headers: { 'User-Agent': 'same-toolbox/1.0 (https://same-toolbox.pages.dev)' },
+        });
+        const body = await res.text();
+        return new Response(body, {
+          status: res.status,
+          headers: {
+            'Content-Type': res.headers.get('Content-Type') || 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          },
+        });
+      } catch {
+        return new Response('HF API Error', { status: 502 });
+      }
+    }
+
+    // ── 3. 排除 Vite HMR 和内部路径 ──
     if (pathname.startsWith('/@') || pathname.includes('__vite__')) {
       return new Response('', { status: 404, headers: securityHeaders });
     }

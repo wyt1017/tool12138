@@ -12,6 +12,10 @@ function formatFileSize(bytes: number): string {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
+// 仅允许 blob: URL 作为 <img> 的 src，杜绝 javascript: 等危险协议注入
+const toSafeBlobUrl = (url: string): string | null =>
+  /^blob:/i.test(url) ? url : null;
+
 function compressImage(
   file: File,
   quality: number,
@@ -189,6 +193,7 @@ export default function ImageCompress() {
   };
 
   const compressionRate = result ? ((1 - result.blob.size / result.originalSize) * 100).toFixed(1) : null;
+  const originalPreviewSrc = toSafeBlobUrl(originalPreview);
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-12">
@@ -231,7 +236,7 @@ export default function ImageCompress() {
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-[#ffd369]/15 flex items-center justify-center overflow-hidden">
-                  {originalPreview && <img src={originalPreview} alt="" className="w-full h-full object-cover" />} {/* lgtm[js/xss-through-dom]: originalPreview 恒为 URL.createObjectURL 生成的 blob: URL，非外部输入 */}
+                  {originalPreviewSrc && <img src={originalPreviewSrc} alt="" className="w-full h-full object-cover" />}
                 </div>
                 <div>
                   <p className="text-white font-medium text-sm">{file.name}</p>
@@ -335,7 +340,7 @@ export default function ImageCompress() {
                     <span className="ml-auto text-xs text-[#555]">{result.originalWidth} × {result.originalHeight}</span>
                   </div>
                   <div className="rounded-lg overflow-hidden bg-black/20 flex items-center justify-center min-h-[200px]">
-                    {originalPreview && <img src={originalPreview} alt="原图" className="max-w-full max-h-[300px] object-contain" />} {/* lgtm[js/xss-through-dom]: originalPreview 恒为 URL.createObjectURL 生成的 blob: URL，非外部输入 */}
+                    {originalPreviewSrc && <img src={originalPreviewSrc} alt="原图" className="max-w-full max-h-[300px] object-contain" />}
                   </div>
                 </div>
 

@@ -53,3 +53,22 @@ screenshots
 ai-weekly-video/
 .codebuddy/
 .obsidian-toolbox/
+
+# 一次性抓取脚本与临时数据文件（不入库）
+*.har
+extract.js
+scrape_*.py
+extract_*.py
+parse_rsc*.py
+process_rsc_data.py
+structure_prompts.py
+fetch_rsc.py
+find_api.py
+final_scrape.py
+full_scrape.py
+prompts_*.json
+prompt123_*.json
+parsed_prompts.json
+raw_data.json
+hf-model-preview.html
+public/hf-model-preview.html
