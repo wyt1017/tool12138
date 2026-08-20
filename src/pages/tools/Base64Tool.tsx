@@ -2,6 +2,10 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Binary, Copy, Upload, ImageDown, ArrowRightLeft } from 'lucide-react';
 
+// 图片源白名单：仅允许 blob: URL 或位图格式的 base64 data URL，防止 javascript: 等危险协议注入
+const isSafeImageSource = (url: string): boolean =>
+  /^(blob:|data:image\/(png|jpe?g|gif|webp|bmp|ico|avif);base64,)/i.test(url);
+
 export default function Base64Tool() {
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
@@ -39,7 +43,7 @@ export default function Base64Tool() {
       setIsImage(false);
     } catch {
       // Try image decode
-      if (input.trim().startsWith('data:image')) {
+      if (isSafeImageSource(input.trim())) {
         setIsImage(true);
         setOutput(input.trim());
       } else {
@@ -63,12 +67,12 @@ export default function Base64Tool() {
   };
 
   const downloadImage = () => {
-    if (!isImage || !output) return;
+    if (!isImage || !output || !isSafeImageSource(output)) return;
     // 从 data URL 提取 MIME 类型以确定正确扩展名
     const mimeTypeMatch = output.match(/^data:([^;]+)/);
     const ext = mimeTypeMatch ? mimeTypeMatch[1].split('/')[1] : 'png';
     const a = document.createElement('a');
-    a.href = output;
+    a.href = output; // lgtm[js/xss-through-dom]: output 已通过 isSafeImageSource 白名单校验
     a.download = `decoded-image.${ext}`;
     a.click();
     // 释放 blob URL
@@ -154,7 +158,7 @@ export default function Base64Tool() {
           </div>
           {isImage ? (
             <div className="tool-area p-4 h-[320px] flex items-center justify-center overflow-hidden">
-              <img src={output} alt="Decoded" className="max-w-full max-h-full rounded-lg object-contain" />
+              <img src={output} alt="Decoded" className="max-w-full max-h-full rounded-lg object-contain" /> {/* lgtm[js/xss-through-dom]: output 仅在 isImage 且经 isSafeImageSource 白名单校验后渲染 */}
             </div>
           ) : (
             <textarea

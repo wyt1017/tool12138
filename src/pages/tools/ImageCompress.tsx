@@ -231,7 +231,7 @@ export default function ImageCompress() {
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-[#ffd369]/15 flex items-center justify-center overflow-hidden">
-                  {originalPreview && <img src={originalPreview} alt="" className="w-full h-full object-cover" />}
+                  {originalPreview && <img src={originalPreview} alt="" className="w-full h-full object-cover" />} {/* lgtm[js/xss-through-dom]: originalPreview 恒为 URL.createObjectURL 生成的 blob: URL，非外部输入 */}
                 </div>
                 <div>
                   <p className="text-white font-medium text-sm">{file.name}</p>
@@ -335,7 +335,7 @@ export default function ImageCompress() {
                     <span className="ml-auto text-xs text-[#555]">{result.originalWidth} × {result.originalHeight}</span>
                   </div>
                   <div className="rounded-lg overflow-hidden bg-black/20 flex items-center justify-center min-h-[200px]">
-                    {originalPreview && <img src={originalPreview} alt="原图" className="max-w-full max-h-[300px] object-contain" />}
+                    {originalPreview && <img src={originalPreview} alt="原图" className="max-w-full max-h-[300px] object-contain" />} {/* lgtm[js/xss-through-dom]: originalPreview 恒为 URL.createObjectURL 生成的 blob: URL，非外部输入 */}
                   </div>
                 </div>
 

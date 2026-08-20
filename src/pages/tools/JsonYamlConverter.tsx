@@ -20,9 +20,15 @@ export default function JsonYamlConverter() {
 
     if (typeof obj !== 'object') {
       if (typeof obj === 'string') {
-        return obj.includes('\n') || obj.includes(':') || obj.includes('#')
-          ? `"${obj.replace(/"/g, '\\"')}"`
-          : obj;
+        // 含换行、冒号、井号、双引号或反斜杠时需加引号并完整转义
+        if (!/[\n:#"\\]/.test(obj)) return obj;
+        const escaped = obj
+          .replace(/\\/g, '\\\\')
+          .replace(/"/g, '\\"')
+          .replace(/\n/g, '\\n')
+          .replace(/\r/g, '\\r')
+          .replace(/\t/g, '\\t');
+        return `"${escaped}"`;
       }
       return String(obj);
     }

@@ -294,7 +294,7 @@ function formatXML(code: string, indentSize: number): string {
 
 function compressCode(code: string): string {
   return code
-    .replace(/\/\*[\s\S]*?\*\//g, '') // remove comments
+    .replace(/\/\*[\s\S]*?\*\//g, '') // remove comments; lgtm[js/incomplete-multi-character-sanitization]: 压缩去注释非安全净化，输出仅进 React 受控 textarea
     .replace(/<!--[\s\S]*?-->/g, '')   // remove HTML comments
     .replace(/\s+/g, ' ')               // collapse whitespace
     .replace(/>\s+</g, '><')           // collapse between tags
