@@ -1,17 +1,39 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Binary, Copy, Upload, ImageDown, ArrowRightLeft } from 'lucide-react';
 
-// 图片源白名单：仅允许 blob: URL 或位图格式的 base64 data URL，防止 javascript: 等危险协议注入
-// 返回安全 URL 或 null，调用方在结果为 null 时直接中断，作为 XSS 净化栅栏
-const sanitizeImageSource = (url: string): string | null =>
-  /^(?:blob:|data:image\/(?:png|jpe?g|gif|webp|bmp|ico|avif);base64,)/i.test(url) ? url : null;
+// 将图片 data URL 转换为 blob URL。经 new Blob 中转生成对象 URL（与 Base64FileDecoder 相同的安全模式），
+// 仅接受白名单内的位图格式，杜绝 javascript: 等危险协议流入 img/a。
+const dataUrlToBlobUrl = (dataUrl: string): string | null => {
+  const match = dataUrl.match(/^data:image\/(?:png|jpe?g|gif|webp|bmp|ico|avif);base64,([A-Za-z0-9+/=]+)$/i);
+  if (!match) return null;
+  try {
+    const binary = atob(match[1]);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    const mimeType = dataUrl.match(/^data:([^;]+)/)?.[1] || 'image/png';
+    const blob = new Blob([bytes], { type: mimeType });
+    return URL.createObjectURL(blob);
+  } catch {
+    return null;
+  }
+};
 
 export default function Base64Tool() {
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
   const [mode, setMode] = useState<'encode' | 'decode'>('encode');
   const [isImage, setIsImage] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState('');
+
+  // 释放旧 blob URL，防止内存泄漏
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
 
   // 使用 btoa 编码时需要将 UTF-8 字符串转换为 Latin1 字节序列
   // 直接使用 btoa(input) 会导致中文等多字节字符编码错误
@@ -27,6 +49,7 @@ export default function Base64Tool() {
       const encoded = btoa(binary);
       setOutput(encoded);
       setIsImage(false);
+      setPreviewUrl('');
     } catch {
       setOutput('编码失败：输入内容包含无法编码的字符');
     }
@@ -42,12 +65,14 @@ export default function Base64Tool() {
       const decoded = new TextDecoder().decode(bytes);
       setOutput(decoded);
       setIsImage(false);
+      setPreviewUrl('');
     } catch {
       // Try image decode
-      const safeUrl = sanitizeImageSource(input.trim());
-      if (safeUrl) {
+      const blobUrl = dataUrlToBlobUrl(input.trim());
+      if (blobUrl) {
         setIsImage(true);
-        setOutput(safeUrl);
+        setOutput(input.trim());
+        setPreviewUrl(blobUrl);
       } else {
         setOutput('解码失败：无效的Base64字符串');
       }
@@ -63,35 +88,35 @@ export default function Base64Tool() {
       const base64 = result.split(',')[1];
       setInput(base64);
       setOutput(result);
-      setIsImage(true);
+      const blobUrl = dataUrlToBlobUrl(result);
+      if (blobUrl) {
+        setIsImage(true);
+        setPreviewUrl(blobUrl);
+      } else {
+        setIsImage(false);
+        setPreviewUrl('');
+      }
     };
     reader.readAsDataURL(file);
   };
 
   const downloadImage = () => {
-    if (!isImage || !output) return;
-    const safeUrl = sanitizeImageSource(output);
-    if (!safeUrl) return;
+    if (!isImage || !previewUrl) return;
     // 从 data URL 提取 MIME 类型以确定正确扩展名
-    const mimeTypeMatch = safeUrl.match(/^data:([^;]+)/);
+    const mimeTypeMatch = output.match(/^data:([^;]+)/);
     const ext = mimeTypeMatch ? mimeTypeMatch[1].split('/')[1] : 'png';
     const a = document.createElement('a');
-    a.href = safeUrl;
+    a.href = previewUrl;
     a.download = `decoded-image.${ext}`;
     a.click();
-    // 释放 blob URL
-    if (safeUrl.startsWith('blob:')) {
-      URL.revokeObjectURL(safeUrl);
-    }
   };
 
   const swapInOut = () => {
     setInput(output);
     setOutput('');
     setIsImage(false);
+    setPreviewUrl('');
   };
-
-  const imageSrc = isImage ? sanitizeImageSource(output) : null;
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-12">
@@ -162,9 +187,9 @@ export default function Base64Tool() {
               </div>
             )}
           </div>
-          {imageSrc ? (
+          {isImage && previewUrl ? (
             <div className="tool-area p-4 h-[320px] flex items-center justify-center overflow-hidden">
-              <img src={imageSrc} alt="Decoded" className="max-w-full max-h-full rounded-lg object-contain" />
+              <img src={previewUrl} alt="Decoded" className="max-w-full max-h-full rounded-lg object-contain" />
             </div>
           ) : (
             <textarea
@@ -191,7 +216,7 @@ export default function Base64Tool() {
         <button onClick={swapInOut} disabled={!output} className="btn-secondary">
           <ArrowRightLeft size={15} className="inline mr-1.5" /> 交换输入输出
         </button>
-        <button onClick={() => { setInput(''); setOutput(''); setIsImage(false); }} className="btn-secondary">
+        <button onClick={() => { setInput(''); setOutput(''); setIsImage(false); setPreviewUrl(''); }} className="btn-secondary">
           清空
         </button>
       </motion.div>

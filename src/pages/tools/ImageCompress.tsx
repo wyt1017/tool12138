@@ -12,9 +12,17 @@ function formatFileSize(bytes: number): string {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
-// 仅允许 blob: URL 作为 <img> 的 src，杜绝 javascript: 等危险协议注入
-const toSafeBlobUrl = (url: string): string | null =>
-  /^blob:/i.test(url) ? url : null;
+// 通过 FileReader 读取文件字节并经 new Blob 中转生成预览 URL（与 Base64FileDecoder 相同的安全模式），
+// 避免用户文件直接作为 createObjectURL 参数流入 img src
+const createPreviewUrl = (file: File, onReady: (url: string) => void) => {
+  const reader = new FileReader();
+  reader.onload = () => {
+    const buffer = reader.result as ArrayBuffer;
+    const blob = new Blob([buffer], { type: file.type });
+    onReady(URL.createObjectURL(blob));
+  };
+  reader.readAsArrayBuffer(file);
+};
 
 function compressImage(
   file: File,
@@ -89,6 +97,8 @@ export default function ImageCompress() {
   const [resultBlobUrl, setResultBlobUrl] = useState<string>('');
   const [result, setResult] = useState<{ blob: Blob; width: number; height: number; originalSize: number; originalWidth: number; originalHeight: number } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  // 用于丢弃过期 FileReader 回调，保证只应用最后一次选择的预览
+  const previewRequestRef = useRef(0);
 
   // 清理 blob URL 防止内存泄漏
   useEffect(() => {
@@ -116,7 +126,10 @@ export default function ImageCompress() {
     if (resultBlobUrl) URL.revokeObjectURL(resultBlobUrl);
     setResultBlobUrl('');
     setFile(droppedFile);
-    setOriginalPreview(URL.createObjectURL(droppedFile));
+    const requestId = ++previewRequestRef.current;
+    createPreviewUrl(droppedFile, (url) => {
+      if (requestId === previewRequestRef.current) setOriginalPreview(url);
+    });
     setResult(null);
   };
 
@@ -132,7 +145,10 @@ export default function ImageCompress() {
     if (resultBlobUrl) URL.revokeObjectURL(resultBlobUrl);
     setResultBlobUrl('');
     setFile(selectedFile);
-    setOriginalPreview(URL.createObjectURL(selectedFile));
+    const requestId = ++previewRequestRef.current;
+    createPreviewUrl(selectedFile, (url) => {
+      if (requestId === previewRequestRef.current) setOriginalPreview(url);
+    });
     setResult(null);
   };
 
@@ -193,7 +209,6 @@ export default function ImageCompress() {
   };
 
   const compressionRate = result ? ((1 - result.blob.size / result.originalSize) * 100).toFixed(1) : null;
-  const originalPreviewSrc = toSafeBlobUrl(originalPreview);
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-12">
@@ -236,7 +251,7 @@ export default function ImageCompress() {
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-[#ffd369]/15 flex items-center justify-center overflow-hidden">
-                  {originalPreviewSrc && <img src={originalPreviewSrc} alt="" className="w-full h-full object-cover" />}
+                  {originalPreview && <img src={originalPreview} alt="" className="w-full h-full object-cover" />}
                 </div>
                 <div>
                   <p className="text-white font-medium text-sm">{file.name}</p>
@@ -340,7 +355,7 @@ export default function ImageCompress() {
                     <span className="ml-auto text-xs text-[#555]">{result.originalWidth} × {result.originalHeight}</span>
                   </div>
                   <div className="rounded-lg overflow-hidden bg-black/20 flex items-center justify-center min-h-[200px]">
-                    {originalPreviewSrc && <img src={originalPreviewSrc} alt="原图" className="max-w-full max-h-[300px] object-contain" />}
+                    {originalPreview && <img src={originalPreview} alt="原图" className="max-w-full max-h-[300px] object-contain" />}
                   </div>
                 </div>
 
