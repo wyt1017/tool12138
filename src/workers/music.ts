@@ -9,7 +9,7 @@ import { createHash } from "crypto";
 // url/lrc 接口的访问令牌（前端同源请求携带；防止接口被外部无谓调用）
 const MUSIC_TOKEN = "same-toolbox-music-2026";
 
-const SERVERS = ["netease", "tencent", "kugou", "baidu", "kuwo"];
+const SERVERS = ["netease", "tencent", "kugou", "baidu", "kuwo", "youtube"];
 const TYPES = ["search", "song", "album", "artist", "playlist", "lrc", "url", "pic"];
 
 // 网易云音源回退源：官方 eapi 在 Cloudflare Workers 海外出口下对音源接口风控返回空，
@@ -79,6 +79,147 @@ async function crossServerFallback(name: string, artist: string): Promise<string
     }
   }
   return "";
+}
+
+// ── 海外可用音源：YouTube Music / InnerTube（ANDROID_VR 客户端） ──
+// 国内平台对海外 Cloudflare Worker 的取音源接口做了地区门禁（搜索开放、取源返回空）。
+// YouTube 全球可达、无需 API Key / Cookie / JS 签名解密，可作为稳定的兜底音源，
+// 正好解决「太多音乐没有音源」「有源却不播放」（Worker 拿不到 URL）这两个问题。
+const YT_INNERTUBE = "https://www.youtube.com/youtubei/v1";
+const YT_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
+const YT_CONTEXT = { client: { clientName: "ANDROID_VR", clientVersion: "1.24.60" } };
+
+async function ytApi(endpoint: string, payload: Record<string, unknown>): Promise<any> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 8000);
+  try {
+    const res = await fetch(`${YT_INNERTUBE}/${endpoint}?key=${YT_KEY}&prettyPrint=false`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "User-Agent": "Mozilla/5.0" },
+      body: JSON.stringify({ context: YT_CONTEXT, ...payload }),
+      signal: ctrl.signal,
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// 从播放响应里挑出码率最高的纯音频流（webm/opus 或 mp4）；
+// ANDROID_VR 直接返回已签名 URL，无需再解析 cipher。
+function pickYtAudio(data: any): string {
+  const fmts: Array<any> = data?.streamingData?.adaptiveFormats || [];
+  let best: any = null;
+  for (const f of fmts) {
+    const mime = f.mimeType || "";
+    if (!/^audio\/(webm|mp4|ogg)/.test(mime)) continue;
+    if (!f.url) continue;
+    if (!best || (f.bitrate || 0) > (best.bitrate || 0)) best = f;
+  }
+  return best ? String(best.url) : "";
+}
+
+// 解析搜索结果，取普通视频条目，输出与其它源一致的字段供前端复用
+function parseYtSearch(data: any): Array<Record<string, unknown>> {
+  const out: Array<Record<string, unknown>> = [];
+  const sections =
+    data?.contents?.twoColumnSearchResultsRenderer?.primaryContents?.sectionListRenderer
+      ?.contents || [];
+  for (const sec of sections) {
+    const items = sec?.itemSectionRenderer?.contents || [];
+    for (const it of items) {
+      const v = it?.videoRenderer;
+      if (!v || !v.videoId) continue;
+      const title = v.title?.runs?.[0]?.text || "";
+      if (!title) continue;
+      out.push({
+        id: v.videoId,
+        name: title,
+        artist: (v.ownerText?.runs || []).map((r: any) => r.text).join(" "),
+        url_id: v.videoId,
+        lyric_id: "",
+        duration: v.lengthText?.simpleText || "",
+        source: "youtube",
+      });
+    }
+  }
+  return out;
+}
+
+// 用「歌名+歌手」在 YouTube 官方 InnerTube 重搜，返回第一个视频 id（无验证码）
+async function ytFirstVideoId(name: string, artist: string): Promise<string> {
+  const keyword = `${name} ${artist}`.trim() || name;
+  const data = await ytApi("search", { query: keyword });
+  const list = parseYtSearch(data);
+  return list.length ? String(list[0].id) : "";
+}
+
+// 用视频 id 从 YouTube 官方 InnerTube 取音频流
+async function youtubeStreamByVid(vid: string): Promise<string> {
+  const player = await ytApi("player", { videoId: vid });
+  return pickYtAudio(player);
+}
+
+// ── 海外兜底音源 2：Invidious（YouTube 开源镜像，多实例自动切换） ──
+// 当 YouTube 官方 InnerTube 被风控/变更时，退到 Invidious 公共镜像取同一批音频流，
+// 与官方接口互为冗余，显著提高海外取源成功率。
+const INVIDIOUS_INSTANCES = [
+  "https://yewtu.be",
+  "https://inv.nadeko.net",
+  "https://invidious.nerdvpn.de",
+  "https://inv.tux.pizza",
+];
+
+async function invidiousFetch(instance: string, path: string): Promise<any | null> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 8000);
+  try {
+    const res = await fetch(`${instance}${path}`, {
+      headers: { "User-Agent": "Mozilla/5.0" },
+      signal: ctrl.signal,
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// 在多个镜像实例间按序尝试，命中第一个可用的即返回；全部失败返回 null
+async function invidiousBest(action: (instance: string) => Promise<any | null>): Promise<any | null> {
+  for (const inst of INVIDIOUS_INSTANCES) {
+    const out = await action(inst);
+    if (out != null) return out;
+  }
+  return null;
+}
+
+// 从 Invidious 视频详情里挑出码率最高的纯音频流
+function pickInvAudio(video: any): string {
+  const fmts: Array<any> = video?.adaptiveFormats || [];
+  let best: any = null;
+  for (const f of fmts) {
+    const mime = f.type || f.mimeType || "";
+    if (!/^audio\//.test(mime)) continue;
+    if (!f.url) continue;
+    if (!best || (f.bitrate || 0) > (best.bitrate || 0)) best = f;
+  }
+  return best ? String(best.url) : "";
+}
+
+// 用视频 id 在 Invidious 镜像取流（多实例按序尝试）
+// 说明：公共实例的搜索接口多被抗体验证码拦截，因此只使用其 /videos/<id> 取流接口做镜像兜底，
+// 视频 id 由上方 YouTube 官方 InnerTube 搜索获得，避免走被拦截的 Invidious 搜索 API。
+async function invidiousStream(vid: string): Promise<string> {
+  const detail = await invidiousBest((inst) =>
+    invidiousFetch(inst, `/api/v1/videos/${encodeURIComponent(vid)}?fields=adaptiveFormats,title,lengthSeconds`)
+  );
+  return pickInvAudio(detail);
 }
 
 // 针对 Netease provider 做两处适配：
@@ -151,6 +292,20 @@ export async function handleMusicRequest(query: URLSearchParams): Promise<Respon
     if (query.get("token") !== MUSIC_TOKEN) return json({ error: "unauthorized" }, 401);
   }
 
+  // YouTube 内置源直接走 InnerTube，不经过 @meting/core
+  if (server === "youtube") {
+    if (type === "search") {
+      return json(parseYtSearch(await ytApi("search", { query: id })));
+    }
+    if (type === "url") {
+      const streamUrl = pickYtAudio(await ytApi("player", { videoId: id }));
+      if (!streamUrl) return json({ error: "no free source" }, 404);
+      return json({ url: streamUrl });
+    }
+    if (type === "lrc") return json({ lyric: "", tlyric: "" });
+    return json({ error: "unsupported" }, 400);
+  }
+
   const meting = new Meting(server);
   patchNetease(meting);
   meting.format(true);
@@ -201,8 +356,17 @@ export async function handleMusicRequest(query: URLSearchParams): Promise<Respon
     let url = data?.url ? String(data.url) : "";
     // 官方 eapi 接口在海外 Worker 出口下常被风控返回空，先回退到公共网易云代理实例
     if (!url) url = await fallbackSongUrl(id);
-    // 仍取不到 → 用歌名+歌手在其它平台重搜，大幅提升可播覆盖率
+    // 仍取不到 → 用歌名+歌手在其它国内平台重搜，提升可播覆盖率
     if (!url && name) url = await crossServerFallback(name, artist);
+    // 国内平台均被海外地区门禁挡下 → 用歌名+歌手到 YouTube 重搜取源（海外可达）
+    if (!url && name) {
+      const vid = await ytFirstVideoId(name, artist);
+      if (vid) {
+        url = await youtubeStreamByVid(vid);
+        // YouTube 官方取流失败 → 退到 Invidious 镜像（多实例）按同一视频 id 取流
+        if (!url) url = await invidiousStream(vid);
+      }
+    }
     if (!url) return json({ error: "no free source" }, 404);
     url = url.replace(/^http:\/\//, "https://");
     if (server === "netease") {
