@@ -89,6 +89,9 @@ const YT_INNERTUBE = "https://www.youtube.com/youtubei/v1";
 const YT_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
 const YT_CONTEXT = { client: { clientName: "ANDROID_VR", clientVersion: "1.24.60" } };
 
+// 调试开关：debug=1 时 ytApi 把上游错误状态带出来，便于排查 Worker 内调 InnerTube 失败的原因
+let YT_DEBUG = false;
+
 async function ytApi(endpoint: string, payload: Record<string, unknown>): Promise<any> {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 8000);
@@ -99,9 +102,16 @@ async function ytApi(endpoint: string, payload: Record<string, unknown>): Promis
       body: JSON.stringify({ context: YT_CONTEXT, ...payload }),
       signal: ctrl.signal,
     });
-    if (!res.ok) return null;
+    if (!res.ok) {
+      if (YT_DEBUG) {
+        const text = await res.text();
+        return { __dbg: { endpoint, status: res.status, body: text.slice(0, 300) } };
+      }
+      return null;
+    }
     return await res.json();
-  } catch {
+  } catch (e) {
+    if (YT_DEBUG) return { __dbg: { endpoint, error: String(e) } };
     return null;
   } finally {
     clearTimeout(timer);
@@ -267,7 +277,8 @@ function json(data: unknown, status = 200): Response {
     status,
     headers: {
       "Content-Type": "application/json; charset=utf-8",
-      "Cache-Control": "public, max-age=300",
+      // 仅缓存成功响应；错误响应禁缓存，避免「修复后 5 分钟内仍返回旧错误」
+      "Cache-Control": status === 200 ? "public, max-age=300" : "no-store",
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type, Authorization",
@@ -298,8 +309,14 @@ export async function handleMusicRequest(query: URLSearchParams): Promise<Respon
 
   // YouTube 内置源直接走 InnerTube，不经过 @meting/core
   if (server === "youtube") {
+    YT_DEBUG = query.get("debug") === "1";
     if (type === "search") {
-      return json(parseYtSearch(await ytApi("search", { query: id })));
+      const data = await ytApi("search", { query: id });
+      if (YT_DEBUG && data?.__dbg) return json(data.__dbg);
+      if (YT_DEBUG) {
+        return json({ dbg: "search ok but empty parse", keys: Object.keys(data || {}) });
+      }
+      return json(parseYtSearch(data));
     }
     if (type === "url") {
       const streamUrl = pickYtAudio(await ytApi("player", { videoId: id }));
