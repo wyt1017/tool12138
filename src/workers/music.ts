@@ -43,24 +43,32 @@ async function gdJson(path: string): Promise<any | null> {
   }
 }
 
-// injahow 网易中继：type=url 会 302 到网易 CDN mp3，res.url 即最终直链
+// injahow 网易中继：type=url 对普通歌曲 302 到网易 CDN（取 Location 直链）；
+// 少量歌曲直接 200 返回音频字节（此时把端点本身作为代理播放地址返回）。
 async function injahowUrl(id: string): Promise<string> {
+  const endpoint = `https://api.injahow.cn/meting/?server=netease&type=url&id=${encodeURIComponent(id)}`;
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 10000);
   try {
-    const res = await fetch(`https://api.injahow.cn/meting/?server=netease&type=url&id=${encodeURIComponent(id)}`, {
+    const res = await fetch(endpoint, {
       headers: { "User-Agent": "Mozilla/5.0" },
       signal: ctrl.signal,
-      redirect: "follow",
+      redirect: "manual",
     });
+    // 302 → 直接用 CDN 直链
+    if (res.status >= 300 && res.status < 400) {
+      const loc = res.headers.get("Location");
+      return loc ? String(loc) : "";
+    }
     if (!res.ok) return "";
     const ct = res.headers.get("Content-Type") || "";
     if (ct.includes("json")) {
       const j = (await res.json()) as { url?: string };
       return j.url ? String(j.url) : "";
     }
-    // 响应体是音频（跟随 302 后的 CDN 直链），取最终 URL
-    return res.url || "";
+    // 200 且直接返回音频 → 端点即代理播放地址
+    if (/^audio\/|octet-stream/.test(ct)) return endpoint;
+    return "";
   } catch {
     return "";
   } finally {
@@ -68,11 +76,12 @@ async function injahowUrl(id: string): Promise<string> {
   }
 }
 
-// 跨平台音源回退（gdstudio 中继版）：用「歌名+歌手」在腾讯/酷狗/酷我/百度依次重搜，
-// 返回第一个可播放的音源。国内服务器取源，不受海外出口 IP 门禁影响。
+// 跨平台音源回退（gdstudio 中继版）：用「歌名+歌手」重搜取直链。
+// 实测 gdstudio 仅支持 netease / kuwo 两个源（tencent/kugou 返回 source not supported），
+// 酷我版权库大，作为网易缺源时的补充效果最好。
 async function crossServerFallback(name: string, artist: string): Promise<string> {
   const keyword = `${name} ${artist}`.trim() || name;
-  for (const srv of ["tencent", "kugou", "kuwo", "baidu"]) {
+  for (const srv of ["kuwo"]) {
     const list = await gdJson(`?types=search&source=${srv}&name=${encodeURIComponent(keyword)}`);
     if (!Array.isArray(list)) continue;
     for (const it of list.slice(0, 3)) {
