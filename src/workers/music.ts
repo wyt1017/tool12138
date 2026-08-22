@@ -355,6 +355,58 @@ export async function handleMusicRequest(query: URLSearchParams): Promise<Respon
   // 版本探针：用于排查「部署成功但线上行为像旧代码」的问题
   if (server === "__ping") return json({ ok: true, build: "v20260822b" });
 
+  // 可用性探测：从 Worker 真实运行环境批量测试候选音源接口，返回状态矩阵（诊断用）
+  if (server === "__probe") {
+    const targets: Array<{ name: string; url: string; init?: RequestInit }> = [
+      { name: "injahow-netease-url", url: "https://api.injahow.cn/meting/?server=netease&type=url&id=5257138" },
+      { name: "gdstudio-netease-url", url: "https://music-api.gdstudio.xyz/api.php?types=url&id=5257138&source=netease&br=128" },
+      { name: "gdstudio-kuwo-search", url: "https://music-api.gdstudio.xyz/api.php?types=search&source=kuwo&keyword=%E5%B1%8B%E9%A1%B6" },
+      { name: "piped-kavin", url: "https://pipedapi.kavin.rocks/streams/lHT_F3h6_BY" },
+      { name: "piped-adminforge", url: "https://pipedapi.adminforge.de/streams/lHT_F3h6_BY" },
+      { name: "piped-private.coffee", url: "https://api.piped.private.coffee/streams/lHT_F3h6_BY" },
+      { name: "invidious-yewtu", url: "https://yewtu.be/api/v1/videos/lHT_F3h6_BY?fields=adaptiveFormats" },
+      { name: "invidious-nerdvpn", url: "https://invidious.nerdvpn.de/api/v1/videos/lHT_F3h6_BY?fields=adaptiveFormats" },
+      {
+        name: "cobalt-kwiatekmiki",
+        url: "https://cobalt-api.kwiatekmiki.com/",
+        init: {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({ url: "https://www.youtube.com/watch?v=lHT_F3h6_BY", downloadMode: "audio" }),
+        },
+      },
+      {
+        name: "cobalt-capi.3kh0",
+        url: "https://capi.3kh0.net/",
+        init: {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({ url: "https://www.youtube.com/watch?v=lHT_F3h6_BY", downloadMode: "audio" }),
+        },
+      },
+    ];
+    const results = await Promise.all(
+      targets.map(async (t) => {
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 10000);
+        try {
+          const res = await fetch(t.url, {
+            ...t.init,
+            headers: { "User-Agent": "Mozilla/5.0", ...(t.init?.headers || {}) },
+            signal: ctrl.signal,
+          });
+          const text = (await res.text()).slice(0, 500);
+          return { name: t.name, status: res.status, ok: res.ok, body: text };
+        } catch (e) {
+          return { name: t.name, status: 0, ok: false, body: String(e) };
+        } finally {
+          clearTimeout(timer);
+        }
+      })
+    );
+    return json(results);
+  }
+
   const type = query.get("type") || "search";
   const id = (query.get("id") || "").trim();
   // 跨平台音源回退需要歌名/歌手做「以歌搜歌」
