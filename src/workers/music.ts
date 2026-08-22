@@ -12,6 +12,25 @@ const MUSIC_TOKEN = "same-toolbox-music-2026";
 const SERVERS = ["netease", "tencent", "kugou", "baidu", "kuwo"];
 const TYPES = ["search", "song", "album", "artist", "playlist", "lrc", "url", "pic"];
 
+// 网易云音源回退源：官方 eapi 在 Cloudflare Workers 海外出口下对音源接口风控返回空，
+// 这里回退到公共网易云代理实例（其服务器从国内获取音源，返回可直连的 CDN 地址）。
+const FALLBACK_URL_API = "https://music-api.gdstudio.xyz/api.php";
+
+async function fallbackSongUrl(id: string): Promise<string> {
+  const url = `${FALLBACK_URL_API}?types=url&id=${encodeURIComponent(id)}&source=netease&br=128`;
+  try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 12000);
+    const res = await fetch(url, { signal: ctrl.signal, headers: { "User-Agent": "Mozilla/5.0" } });
+    clearTimeout(timer);
+    if (!res.ok) return "";
+    const j = (await res.json()) as { url?: string };
+    return j.url ? String(j.url) : "";
+  } catch {
+    return "";
+  }
+}
+
 // 针对 Netease provider 做两处适配：
 // 1. eapi 加密：Workers 运行时 AES-ECB 不可用（createCipheriv 报 iv 为 null），用 aes-js 纯 JS 实现替换；
 // 2. 搜索结果格式：默认 format 不含时长/封面，这里补全 duration / cover，供前端直接使用。
@@ -126,8 +145,11 @@ export async function handleMusicRequest(query: URLSearchParams): Promise<Respon
   }
 
   if (type === "url") {
-    if (!data?.url) return json({ error: "no free source" }, 404);
-    let url = String(data.url).replace("http://", "https://");
+    let url = data?.url ? String(data.url) : "";
+    // 官方 eapi 接口在海外 Worker 出口下常被风控返回空，回退到公共网易云代理实例
+    if (!url) url = await fallbackSongUrl(id);
+    if (!url) return json({ error: "no free source" }, 404);
+    url = url.replace(/^http:\/\//, "https://");
     if (server === "netease") {
       url = url.replace("://m7c.", "://m7.").replace("://m8c.", "://m8.");
     }
