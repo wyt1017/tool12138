@@ -381,10 +381,8 @@ export async function handleMusicRequest(query: URLSearchParams): Promise<Respon
   // 可用性探测：从 Worker 真实运行环境批量测试候选音源接口，返回状态矩阵（诊断用）
   if (server === "__probe") {
     const targets: Array<{ name: string; url: string; init?: RequestInit }> = [
-      { name: "antiserver-228908", url: "http://antiserver.kuwo.cn/anti.s?type=convert_url&rid=MUSIC_228908&format=mp3&response=url" },
-      { name: "antiserver-3249166", url: "http://antiserver.kuwo.cn/anti.s?type=convert_url&rid=MUSIC_3249166&format=mp3&response=url" },
-      { name: "antiserver-533068292", url: "http://antiserver.kuwo.cn/anti.s?type=convert_url&rid=MUSIC_533068292&format=mp3&response=url" },
-      { name: "kw-mobile-info-228908", url: "https://m.kuwo.cn/newh5/singlesong/info?mid=228908" },
+      { name: "mp3-228908-head", url: "https://kw-bj.kuwo.cn/9548e802db1737ba23e116a14d15e874/6a89841d/nf/resource/n1/69/32/588957081.mp3", init: { method: "HEAD" } },
+      { name: "antiserver-109852", url: "http://antiserver.kuwo.cn/anti.s?type=convert_url&rid=MUSIC_109852&format=mp3&response=url" },
     ];
     const results = await Promise.all(
       targets.map(async (t) => {
