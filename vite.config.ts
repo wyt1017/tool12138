@@ -4,25 +4,22 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import path from 'path';
 import { fileURLToPath } from 'url';
 import https from 'https';
+import http from 'http';
 import type { Connect, Plugin } from 'vite';
 import type { IncomingMessage, ServerResponse } from 'http';
-import { HttpsProxyAgent } from 'https-proxy-agent';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const systemProxy = process.env.HTTPS_PROXY || process.env.HTTPS_PROXY || process.env.HTTP_PROXY || process.env.http_proxy;
-
-// 与 Worker 端一致的公共 API 代理白名单
-const PROXY_ALLOWED_PREFIXES = [
-  'https://api.open-meteo.com/',
-  'https://geocoding-api.open-meteo.com/',
-  'https://api.frankfurter.app/',
-  'https://api.github.com/',
+// 可代理的目标域名白名单
+const PROXY_ALLOWED_HOSTS = [
+  'api.open-meteo.com',
+  'geocoding-api.open-meteo.com',
+  'api.frankfurter.app',
+  'api.github.com',
+  'huggingface.co',
+  'music.163.com',
 ];
 
-const proxyAgent = systemProxy ? new HttpsProxyAgent(systemProxy) : undefined;
-
-// 本地 dev 服务 /api/proxy：从 ?url= 读取目标并转发（走系统代理，规避浏览器直连失败）
 function createApiProxyPlugin(): Plugin {
   return {
     name: 'same-toolbox-api-proxy',
@@ -31,24 +28,30 @@ function createApiProxyPlugin(): Plugin {
         if (req.method !== 'GET') return next();
         const q = new URL(req.url || '', 'http://localhost');
         const targetUrl = q.searchParams.get('url') || '';
-        if (!PROXY_ALLOWED_PREFIXES.some((p) => targetUrl.startsWith(p))) {
+        const t = new URL(targetUrl);
+        if (!PROXY_ALLOWED_HOSTS.includes(t.hostname)) {
           res.statusCode = 403;
           res.setHeader('Content-Type', 'application/json');
           res.end(JSON.stringify({ error: 'Forbidden' }));
           return;
         }
-        const t = new URL(targetUrl);
-        const upstream = https.request({
-          method: 'GET',
+        const isHttps = t.protocol === 'https:';
+        const mod = isHttps ? https : http;
+        const { host, ...forwardHeaders } = req.headers;
+        const opts: https.RequestOptions = {
+          method: req.method,
           hostname: t.hostname,
-          port: t.port || 443,
+          servername: t.hostname,
+          port: t.port || (isHttps ? 443 : 80),
           path: t.pathname + t.search,
           headers: {
+            ...forwardHeaders,
+            host: t.host,
+            'accept-encoding': 'identity',
             'User-Agent': 'same-toolbox/1.0 (https://same-toolbox.pages.dev)',
-            'Accept': 'application/json',
           },
-          agent: proxyAgent,
-        }, (r) => {
+        };
+        const upstream = mod.request(opts, (r) => {
           const chunks: Buffer[] = [];
           r.on('data', (c) => chunks.push(c));
           r.on('end', () => {
@@ -59,12 +62,14 @@ function createApiProxyPlugin(): Plugin {
             res.end(Buffer.concat(chunks));
           });
         });
-        upstream.on('error', () => {
+        upstream.on('error', (e) => {
+          console.error('upstream error:', e.message);
           res.statusCode = 502;
           res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify({ error: 'Proxy Error' }));
+          res.end(JSON.stringify({ error: 'Proxy Error: ' + e.message }));
         });
-        upstream.end();
+        // Pipe request body
+        req.pipe(upstream);
       });
     },
   };
@@ -90,26 +95,12 @@ export default defineConfig(({ mode }) => ({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  plugins: [
-    createApiProxyPlugin(),
-    react(mode === 'development' ? {
-      babel: {
-        plugins: ['react-dev-locator'],
-      },
-    } : undefined),
-    tsconfigPaths()
-  ],
+  plugins: [createApiProxyPlugin(), react(mode === 'development' ? {
+    babel: { plugins: ['react-dev-locator'] },
+  } : undefined), tsconfigPaths()],
   server: {
     allowedHosts: true,
-    proxy: systemProxy ? {
-      '/api/hf': {
-        target: 'https://huggingface.co/api',
-        changeOrigin: true,
-        rewrite: p => p.replace(/^\/api\/hf/, ''),
-        headers: { 'User-Agent': 'same-toolbox/1.0 (https://same-toolbox.pages.dev)' },
-        agent: systemProxy ? new HttpsProxyAgent(systemProxy) : undefined,
-      },
-    } : {
+    proxy: {
       '/api/hf': {
         target: 'https://huggingface.co/api',
         changeOrigin: true,

@@ -3,6 +3,7 @@ import { Search, ArrowRight, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { searchTools } from '@/data/tools';
 import { useState } from 'react';
+import HeroMiniPlayer from './HeroMiniPlayer';
 
 export default function HeroSection() {
   const navigate = useNavigate();
@@ -123,23 +124,13 @@ export default function HeroSection() {
           </div>
         </motion.form>
 
-        {/* Stats */}
+        {/* Quick Player */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="flex items-center justify-center gap-8 mt-12 text-sm"
         >
-          {[
-            { label: '实用工具', value: '40+' },
-            { label: '完全免费', value: '100%' },
-            { label: '隐私安全', value: '本地' },
-          ].map((stat) => (
-            <div key={stat.label} className="text-center">
-              <div className="font-['Syne'] font-bold text-lg text-white">{stat.value}</div>
-              <div className="text-[#555] text-xs mt-0.5">{stat.label}</div>
-            </div>
-          ))}
+          <HeroMiniPlayer />
         </motion.div>
       </div>
     </section>

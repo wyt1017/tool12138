@@ -1,10 +1,5 @@
-interface Env {
-  ASSETS: { fetch: (req: Request) => Promise<Response> };
-  GITHUB_TOKEN?: string;
-}
-
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: { ASSETS: { fetch: (req: Request) => Promise<Response> } }): Promise<Response> {
     const url = new URL(request.url);
 
     // ── 0. 强制 HTTPS ──
@@ -38,7 +33,8 @@ export default {
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
       "font-src 'self' data: https://fonts.gstatic.com; " +
       "img-src 'self' data: blob: https:; " +
-      "connect-src 'self' data: https://api.frankfurter.app https://api.github.com https://api.open-meteo.com https://geocoding-api.open-meteo.com; " +
+      "connect-src 'self' data: https://api.frankfurter.app https://api.github.com https://api.open-meteo.com https://geocoding-api.open-meteo.com https://music.163.com; " +
+      "media-src 'self' https:; " +
       "frame-ancestors 'none'; " +
       "base-uri 'self'; " +
       "form-action 'self';";
@@ -77,6 +73,29 @@ export default {
       }
     }
 
+    // ── 2. HuggingFace API 代理（转发请求 + 补 CORS 头） ──
+    const hfMatch = pathname.match(/^\/api\/hf\/(.+)$/);
+    if (hfMatch) {
+      const targetUrl = `https://huggingface.co/api/${hfMatch[1]}`;
+      try {
+        const res = await fetch(targetUrl, {
+          headers: { 'User-Agent': 'same-toolbox/1.0 (https://same-toolbox.pages.dev)' },
+        });
+        const body = await res.text();
+        return new Response(body, {
+          status: res.status,
+          headers: {
+            'Content-Type': res.headers.get('Content-Type') || 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          },
+        });
+      } catch {
+        return new Response('HF API Error', { status: 502 });
+      }
+    }
+
     // ── 2b. 公共 API 同源代理（白名单转发，规避浏览器跨域与地区网络不可达） ──
     if (pathname === '/api/proxy' && request.method === 'GET') {
       const target = url.searchParams.get('url') || '';
@@ -85,24 +104,19 @@ export default {
         'https://geocoding-api.open-meteo.com/',
         'https://api.frankfurter.app/',
         'https://api.github.com/',
+        'https://music.163.com/',
       ];
       if (!allowedPrefixes.some((p) => target.startsWith(p))) {
         return new Response('Forbidden', { status: 403, headers: securityHeaders });
       }
-      const headers: Record<string, string> = {
-        'User-Agent': 'same-toolbox/1.0 (https://same-toolbox.pages.dev)',
-        'Accept': 'application/json',
-      };
-      // GitHub 带 token 可将匿名限流从 60 次/小时提升到 5000 次/小时
-      if (target.startsWith('https://api.github.com/') && env.GITHUB_TOKEN) {
-        headers['Authorization'] = `Bearer ${env.GITHUB_TOKEN}`;
-      }
-
       try {
-        const res = await fetch(target, { headers });
+        const res = await fetch(target, {
+          headers: {
+            'User-Agent': 'same-toolbox/1.0 (https://same-toolbox.pages.dev)',
+            'Accept': 'application/json',
+          },
+        });
         const body = await res.text();
-        // 成功响应分级缓存：GitHub 资料变化慢，缓存更久，减少重复回源
-        const maxAge = target.startsWith('https://api.github.com/') ? 3600 : 300;
         return new Response(body, {
           status: res.status,
           headers: {
@@ -110,12 +124,10 @@ export default {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET, OPTIONS',
             'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-            'Cache-Control': res.ok ? `public, max-age=${maxAge}` : 'no-store',
+            'Cache-Control': res.ok ? 'public, max-age=300' : 'no-store',
           },
         });
-      } catch (e) {
-        // 记录失败的源，便于用 wrangler tail 定位是哪个 API 在抛错
-        console.error('proxy fetch failed', target, e);
+      } catch {
         return new Response('Proxy Error', { status: 502, headers: securityHeaders });
       }
     }
@@ -138,7 +150,7 @@ export default {
         status: 200,
         headers: {
           'Content-Type': 'text/html; charset=utf-8',
-          'Cache-Control': 'public, max-age=300, stale-while-revalidate=86400',
+          'Cache-Control': 'public, max-age=60, stale-while-revalidate=86400',
           ...securityHeaders,
           'Content-Security-Policy': csp,
         },

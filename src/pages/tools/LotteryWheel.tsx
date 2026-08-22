@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Dice1, Copy, Plus, Trash2, Play, RotateCcw } from 'lucide-react';
 
@@ -28,17 +28,70 @@ function weightedPick(prizes: Prize[]): number {
   return prizes.length - 1;
 }
 
+/**
+ * 权重信息汇总，用于健壮性校验
+ * @returns total 总权重（已归一为非负）；hasValid 是否满足「至少一个权重大于 0」且列表非空
+ */
+function getWeightInfo(prizes: Prize[]): { total: number; hasValid: boolean } {
+  const total = prizes.reduce((s, p) => s + Math.max(p.weight || 0, 0), 0);
+  return { total, hasValid: total > 0 && prizes.length > 0 };
+}
+
+const CONFETTI_COUNT = 22;
+
+/** 抽中后从转盘中心爆出的环形彩带 */
+function WheelConfetti({ winner, color }: { winner: string; color: string }) {
+  const particles = useMemo(
+    () =>
+      Array.from({ length: CONFETTI_COUNT }, (_, i) => {
+        const angle = (i / CONFETTI_COUNT) * Math.PI * 2;
+        const dist = 70 + Math.random() * 110;
+        return {
+          dx: Math.cos(angle) * dist,
+          dy: Math.sin(angle) * dist - 50,
+          rot: (Math.random() - 0.5) * 540,
+          w: 5 + Math.random() * 8,
+          h: 5 + Math.random() * 8,
+          c: [color, '#ffd369', '#6bcb77', '#00d9ff', '#a78bfa', '#ffffff'][i % 6],
+          delay: Math.random() * 0.18,
+          dur: 0.7 + Math.random() * 0.5,
+        };
+      }),
+    [winner, color],
+  );
+  return (
+    <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+      {particles.map((p, i) => (
+        <motion.span
+          key={`${winner}-${i}`}
+          className="absolute rounded-[2px]"
+          style={{ width: p.w, height: p.h, background: p.c }}
+          initial={{ x: 0, y: 0, opacity: 1, scale: 1, rotate: 0 }}
+          animate={{ x: p.dx, y: p.dy, opacity: 0, scale: 0.5, rotate: p.rot }}
+          transition={{ delay: p.delay, duration: p.dur, ease: 'easeOut' }}
+        />
+      ))}
+    </div>
+  );
+}
+
 export default function LotteryWheel() {
   const [tab, setTab] = useState<'wheel' | 'draw'>('wheel');
 
   // ===== 转盘 =====
   const [prizes, setPrizes] = useState<Prize[]>(DEFAULT_PRIZES);
   const [rotation, setRotation] = useState(0);
-  const [spinning, setSpinning] = useState(false);
-  const [winner, setWinner] = useState<string | null>(null);
+  const [spinState, setSpinState] = useState<{ spinning: boolean; winner: string | null; winnerColor: string | null }>({
+    spinning: false,
+    winner: null,
+    winnerColor: null,
+  });
+  const { spinning, winner, winnerColor } = spinState;
   const [wheelHistory, setWheelHistory] = useState<string[]>([]);
 
-  const totalWeight = prizes.reduce((s, p) => s + Math.max(p.weight, 0), 0) || 1;
+  const weightInfo = getWeightInfo(prizes);
+  const totalWeight = weightInfo.total || 1;
+  const hasValidWeight = weightInfo.hasValid;
   const segments = (() => {
     let acc = 0;
     return prizes.map((p) => {
@@ -53,7 +106,7 @@ export default function LotteryWheel() {
     .join(', ');
 
   const spin = () => {
-    if (spinning || prizes.length === 0) return;
+    if (spinning || !hasValidWeight) return;
     const idx = weightedPick(prizes);
     if (idx < 0) return;
     const seg = segments[idx];
@@ -64,28 +117,30 @@ export default function LotteryWheel() {
     let delta = targetMod - currentMod;
     if (delta < 0) delta += 360;
     const next = rotation + spins * 360 + delta;
-    setSpinning(true);
-    setWinner(null);
+    setSpinState({ spinning: true, winner: null, winnerColor: null });
     setRotation(next);
   };
 
   const onSpinEnd = () => {
-    setSpinning(false);
     const currentMod = ((rotation % 360) + 360) % 360;
     const pointerLocal = (360 - currentMod) % 360;
     const idx = segments.findIndex((s) => pointerLocal >= s.start && pointerLocal < s.end);
     const w = idx >= 0 ? prizes[idx].name : '';
-    setWinner(w);
+    setSpinState({
+      spinning: false,
+      winner: w,
+      winnerColor: idx >= 0 ? PALETTE[idx % PALETTE.length] : color,
+    });
     if (w) setWheelHistory((h) => [w, ...h].slice(0, 20));
   };
 
   const updatePrize = (i: number, patch: Partial<Prize>) => {
     setPrizes((prev) => prev.map((p, j) => (j === i ? { ...p, ...patch } : p)));
-    setWinner(null);
+    setSpinState((s) => (s.winner !== null ? { ...s, winner: null, winnerColor: null } : s));
   };
   const removePrize = (i: number) => {
     setPrizes((prev) => prev.filter((_, j) => j !== i));
-    setWinner(null);
+    setSpinState((s) => (s.winner !== null ? { ...s, winner: null, winnerColor: null } : s));
   };
   const addPrize = () => setPrizes((prev) => [...prev, { name: `奖项 ${prev.length + 1}`, weight: 1 }]);
 
@@ -168,27 +223,45 @@ export default function LotteryWheel() {
                 }}
                 onTransitionEnd={onSpinEnd}
               />
-              {/* 指针 */}
+              {/* 指针：顶部朝下的三角 + 中心圆点，带发光 */}
               <div
-                className="absolute top-0 left-1/2 -translate-x-1/2 -mt-1 w-0 h-0"
-                style={{ borderLeft: '10px solid transparent', borderRight: '10px solid transparent', borderTop: '18px solid #fff' }}
+                className={`absolute top-0 left-1/2 -translate-x-1/2 -mt-1 z-10 w-0 h-0 drop-shadow-lg ${
+                  spinning ? 'animate-pulse-glow' : ''
+                }`}
+                style={{ borderLeft: '10px solid transparent', borderRight: '10px solid transparent', borderTop: '24px solid #fff' }}
               />
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 -mt-[6px] w-3 h-3 rounded-full bg-white shadow-[0_0_12px_rgba(255,255,255,0.9)] z-10" />
               {/* 中心 GO */}
               <button
                 onClick={spin}
-                disabled={spinning}
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-[#111] border-2 flex items-center justify-center text-white text-sm font-bold disabled:opacity-50"
+                disabled={spinning || !hasValidWeight}
+                aria-label={spinning ? '转盘旋转中' : '开始旋转'}
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-[#111] border-2 flex items-center justify-center text-white text-sm font-bold disabled:opacity-40 disabled:cursor-not-allowed"
                 style={{ borderColor: color }}
               >
                 {spinning ? '...' : 'GO'}
               </button>
+              {/* 抽中彩带 */}
+              {winner && !spinning && winnerColor && (
+                <WheelConfetti winner={winner} color={winnerColor} />
+              )}
             </div>
+
+            {!hasValidWeight && (
+              <p className="text-center text-xs text-[#e94560] mb-3">请至少保留一个权重大于 0 的奖项</p>
+            )}
 
             {winner && !spinning && (
               <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
                 className="text-center mb-4">
-                <div className="text-xs text-[#666] mb-1">🎉 中奖</div>
-                <div className="font-['Syne'] font-bold text-2xl text-white">{winner}</div>
+                <div className="text-xs text-[#666] mb-2">🎉 中奖</div>
+                <div
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full"
+                  style={{ background: `${winnerColor ?? color}1a`, border: `1px solid ${winnerColor ?? color}50` }}
+                >
+                  <span className="w-2.5 h-2.5 rounded-full" style={{ background: winnerColor ?? color }} />
+                  <span className="font-['Syne'] font-bold text-xl text-white">{winner}</span>
+                </div>
               </motion.div>
             )}
 
@@ -237,7 +310,15 @@ export default function LotteryWheel() {
             </div>
             {wheelHistory.length > 0 && (
               <div className="mt-4 pt-3 border-t border-white/5">
-                <div className="text-xs text-[#666] mb-2">最近中奖</div>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-xs text-[#666]">最近中奖</div>
+                  <button
+                    onClick={() => setWheelHistory([])}
+                    className="text-[10px] text-[#666] hover:text-[#e94560] flex items-center gap-1"
+                  >
+                    <RotateCcw size={10} /> 清空
+                  </button>
+                </div>
                 <div className="flex flex-wrap gap-1.5">
                   {wheelHistory.map((h, i) => (
                     <span key={i} className="bg-white/5 rounded px-2 py-0.5 text-xs text-[#a8b2c1]">{h}</span>

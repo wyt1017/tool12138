@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import useSEO from '@/hooks/useSEO';
 import Header from './Header';
 import Footer from './Footer';
+import MusicMiniPlayer from './MusicMiniPlayer';
 
 export default function Layout() {
   useSEO();
@@ -18,6 +19,7 @@ export default function Layout() {
         <Outlet />
       </main>
       <Footer />
+      <MusicMiniPlayer />
     </motion.div>
   );
 }

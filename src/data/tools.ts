@@ -2,7 +2,7 @@ export interface Tool {
   id: string;
   name: string;
   description: string;
-  category: 'text' | 'dev' | 'design' | 'generator' | 'convert' | 'calculator';
+  category: 'text' | 'dev' | 'design' | 'generator' | 'convert' | 'calculator' | 'utility';
   icon: string;
   path: string;
   hot?: boolean;
@@ -18,11 +18,12 @@ export interface CategoryInfo {
 
 export const categories: CategoryInfo[] = [
   { key: 'text', label: '文本工具', color: '#00d9ff', bgColor: 'rgba(0, 217, 255, 0.1)' },
+  { key: 'convert', label: '转换编解码', color: '#f472b6', bgColor: 'rgba(244, 114, 182, 0.1)' },
   { key: 'dev', label: '开发工具', color: '#e94560', bgColor: 'rgba(233, 69, 96, 0.1)' },
   { key: 'design', label: '设计工具', color: '#ffd369', bgColor: 'rgba(255, 211, 105, 0.1)' },
-  { key: 'generator', label: '生成器', color: '#6bcb77', bgColor: 'rgba(107, 203, 119, 0.1)' },
-  { key: 'convert', label: '转换编解码', color: '#f472b6', bgColor: 'rgba(244, 114, 182, 0.1)' },
   { key: 'calculator', label: '计算器', color: '#a78bfa', bgColor: 'rgba(167, 139, 250, 0.1)' },
+  { key: 'generator', label: '生成器', color: '#6bcb77', bgColor: 'rgba(107, 203, 119, 0.1)' },
+  { key: 'utility', label: '效率工具', color: '#4facfe', bgColor: 'rgba(79, 172, 254, 0.1)' },
 ];
 
 export const tools: Tool[] = [
@@ -42,8 +43,8 @@ export const tools: Tool[] = [
   { id: 'regex-tester', name: '正则表达式测试', description: '在线测试正则表达式，实时匹配高亮显示捕获组结果', category: 'dev', icon: 'Regex', path: '/tools/regex-tester', tags: ['正则', 'RegExp', 'Regex', '匹配', '测试'] },
   { id: 'password-generator', name: '随机密码生成', description: '自定义长度和字符类型，生成高强度安全随机密码', category: 'generator', icon: 'KeyRound', path: '/tools/password-generator', tags: ['密码', '随机', '生成', '安全', '强度'] },
   { id: 'base-converter', name: '进制转换器', description: '二进制、八进制、十进制、十六进制互相转换', category: 'calculator', icon: 'Calculator', path: '/tools/base-converter', tags: ['进制', '二进制', '八进制', '十六进制', '十进制'] },
-  { id: 'hash-generator', name: 'MD5/SHA哈希生成', description: '计算文本的MD5、SHA1、SHA256、SHA512哈希值', category: 'generator', icon: 'ShieldCheck', path: '/tools/hash-generator', tags: ['MD5', 'SHA', '哈希', 'Hash', '加密', '摘要'] },
-  { id: 'uuid-generator', name: 'UUID/GUID生成器', description: '批量生成UUID v4唯一标识符，支持多种格式输出', category: 'generator', icon: 'Fingerprint', path: '/tools/uuid-generator', tags: ['UUID', 'GUID', '唯一标识', '生成', 'ID'] },
+  { id: 'hash-generator', name: 'MD5/SHA哈希生成', description: '计算文本的MD5、SHA1、SHA256、SHA512哈希值', category: 'dev', icon: 'ShieldCheck', path: '/tools/hash-generator', tags: ['MD5', 'SHA', '哈希', 'Hash', '加密', '摘要'] },
+  { id: 'uuid-generator', name: 'UUID/GUID生成器', description: '批量生成UUID v4唯一标识符，支持多种格式输出', category: 'dev', icon: 'Fingerprint', path: '/tools/uuid-generator', tags: ['UUID', 'GUID', '唯一标识', '生成', 'ID'] },
   { id: 'text-replace', name: '文本替换', description: '全局查找替换文本内容，支持正则表达式模式匹配', category: 'text', icon: 'Replace', path: '/tools/text-replace', tags: ['替换', '查找', '正则', '文本', '批量'] },
 
   // ===== 第3批：新增工具 (10个) =====
@@ -61,8 +62,8 @@ export const tools: Tool[] = [
   // ===== 第4批：扩展工具 (14个) =====
   { id: 'text-diff', name: '文本差异对比', description: '逐行比较两段文本，高亮显示增删改部分，支持并排/统一视图', category: 'text', icon: 'GitCompare', path: '/tools/text-diff', hot: true, tags: ['差异', '对比', 'Diff', '比较', '高亮'] },
   { id: 'text-sorter', name: '文本排序工具', description: '按字母升序/降序、按字符串长度、按数字大小排序文本行', category: 'text', icon: 'ArrowUpDown', path: '/tools/text-sorter', tags: ['排序', '字母', '长度', '数字', '升序', '降序'] },
-  { id: 'password-strength', name: '密码强度检测', description: '输入密码后实时分析长度、大小写、数字、符号组合强度等级', category: 'text', icon: 'Shield', path: '/tools/password-strength', hot: true, tags: ['密码', '强度', '安全', '检测', '分析'] },
-  { id: 'file-hash', name: '文件哈希计算', description: '上传文件后计算MD5、SHA-1、SHA-256等哈希值，本地计算不上传', category: 'generator', icon: 'FileCheck', path: '/tools/file-hash', tags: ['文件', '哈希', 'MD5', 'SHA', '校验', '上传'] },
+  { id: 'password-strength', name: '密码强度检测', description: '输入密码后实时分析长度、大小写、数字、符号组合强度等级', category: 'dev', icon: 'Shield', path: '/tools/password-strength', hot: true, tags: ['密码', '强度', '安全', '检测', '分析'] },
+  { id: 'file-hash', name: '文件哈希计算', description: '上传文件后计算MD5、SHA-1、SHA-256等哈希值，本地计算不上传', category: 'dev', icon: 'FileCheck', path: '/tools/file-hash', tags: ['文件', '哈希', 'MD5', 'SHA', '校验', '上传'] },
   { id: 'image-compress', name: '图片压缩工具', description: '上传图片并调整压缩比例，预览压缩前后大小及效果，支持下载', category: 'design', icon: 'ImageDown', path: '/tools/image-compress', hot: true, tags: ['图片', '压缩', '大小', '预览', '下载'] },
   { id: 'image-to-base64', name: '图片转Base64', description: '将图片文件转为Base64字符串，支持复制和预览', category: 'convert', icon: 'Image', path: '/tools/image-to-base64', tags: ['图片', 'Base64', '转换', '编码', '预览'] },
   { id: 'random-number', name: '随机数生成器', description: '自定义范围、生成个数、是否含小数，批量生成随机数', category: 'generator', icon: 'Dice5', path: '/tools/random-number', tags: ['随机数', '范围', '批量', '整数', '小数'] },
@@ -105,18 +106,20 @@ export const tools: Tool[] = [
   { id: 'base64-file-decoder', name: 'Base64文件还原工具', description: '将Base64字符串解码并还原为原始文件，提供下载', category: 'convert', icon: 'FileDown', path: '/tools/base64-file-decoder', tags: ['Base64', '解码', '文件', '还原', '下载'] },
 
   // ===== 第7批：纯前端新增工具（无后端） =====
-  { id: 'pomodoro-todo', name: '番茄钟·倒计时·待办', description: '专注番茄计时、自定义倒计时与本地待办清单，数据保存在浏览器', category: 'generator', icon: 'Timer', path: '/tools/pomodoro-todo', hot: true, tags: ['番茄钟', '倒计时', '待办', '专注', '计时', '清单'] },
+  { id: 'pomodoro-todo', name: '番茄钟·倒计时·待办', description: '专注番茄计时、自定义倒计时与本地待办清单，数据保存在浏览器', category: 'utility', icon: 'Timer', path: '/tools/pomodoro-todo', hot: true, tags: ['番茄钟', '倒计时', '待办', '专注', '计时', '清单'] },
   { id: 'exchange-rate', name: '汇率看板', description: '实时多币种汇率换算，数据来自 Frankfurter 欧洲央行参考汇率', category: 'calculator', icon: 'TrendingUp', path: '/tools/exchange-rate', hot: true, tags: ['汇率', '货币', '换算', '外汇', 'Exchange'] },
   { id: 'github-card', name: 'GitHub卡片生成器', description: '输入用户名自动生成 SVG 统计卡，可下载或复制代码嵌入 README', category: 'dev', icon: 'Github', path: '/tools/github-card', tags: ['GitHub', '卡片', 'SVG', '统计', 'README', '头像'] },
-  { id: 'weather-widget', name: '天气小部件', description: '实时天气与三日预报，支持城市搜索与定位，数据来自 Open-Meteo', category: 'design', icon: 'Cloud', path: '/tools/weather-widget', hot: true, tags: ['天气', '预报', '气温', '城市', 'Weather', '定位'] },
-  { id: 'stopwatch', name: '秒表', description: '毫秒级高精度计时，支持计圈、最快/最慢圈识别，数据本地保存', category: 'generator', icon: 'Timer', path: '/tools/stopwatch', tags: ['秒表', '计时', 'Stopwatch', 'Lap', '计圈'] },
-  { id: 'world-clock', name: '世界时钟', description: '实时显示全球城市时间，支持添加删除城市，时差一目了然', category: 'generator', icon: 'Globe', path: '/tools/world-clock', tags: ['世界时钟', '时区', 'World', 'Clock', '时差'] },
+  { id: 'weather-widget', name: '天气小部件', description: '实时天气与三日预报，支持城市搜索与定位，数据来自 Open-Meteo', category: 'utility', icon: 'Cloud', path: '/tools/weather-widget', hot: true, tags: ['天气', '预报', '气温', '城市', 'Weather', '定位'] },
+  { id: 'stopwatch', name: '秒表', description: '毫秒级高精度计时，支持计圈、最快/最慢圈识别，数据本地保存', category: 'utility', icon: 'Timer', path: '/tools/stopwatch', tags: ['秒表', '计时', 'Stopwatch', 'Lap', '计圈'] },
+  { id: 'world-clock', name: '世界时钟', description: '实时显示全球城市时间，支持添加删除城市，时差一目了然', category: 'utility', icon: 'Globe', path: '/tools/world-clock', tags: ['世界时钟', '时区', 'World', 'Clock', '时差'] },
   { id: 'percentage-calculator', name: '百分比计算器', description: '三种常见百分比场景一键换算：占比、基准值、增长率', category: 'calculator', icon: 'Percent', path: '/tools/percentage-calculator', tags: ['百分比', 'Percent', '计算器', '换算'] },
-  { id: 'typing-speed-test', name: '打字速度测试', description: '英文打字速度测试，实时准确率统计，WPM 评分，历史记录保存', category: 'generator', icon: 'Keyboard', path: '/tools/typing-speed-test', tags: ['打字', '速度', 'WPM', 'Typing', '测试'] },
+  { id: 'typing-speed-test', name: '打字速度测试', description: '英文打字速度测试，实时准确率统计，WPM 评分，历史记录保存', category: 'utility', icon: 'Keyboard', path: '/tools/typing-speed-test', tags: ['打字', '速度', 'WPM', 'Typing', '测试'] },
   { id: 'image-crop', name: '图片裁剪', description: '上传图片拖拽选区裁剪，支持 1:1、4:3、16:9 等多比例预设，导出 PNG/JPEG/WebP', category: 'design', icon: 'Crop', path: '/tools/image-crop', tags: ['裁剪', '图片', 'Crop', '比例', '尺寸'] },
   { id: 'mortgage-calculator', name: '房贷/复利计算器', description: '房贷月供（等额本息/等额本金）与复利投资收益测算，含增长曲线', category: 'calculator', icon: 'Landmark', path: '/tools/mortgage-calculator', tags: ['房贷', '按揭', '等额本息', '等额本金', '复利', '理财'] },
-  { id: 'lottery-wheel', name: '抽奖转盘/抽签', description: '可自定义奖项与权重的概率转盘，以及随机抽签工具', category: 'generator', icon: 'Dice1', path: '/tools/lottery-wheel', tags: ['抽奖', '转盘', '抽签', '概率', '随机'] },
-  { id: 'fortune', name: '运势/抽签/心理测试', description: '每日运势、灵签抽签与趣味心理测试三合一', category: 'generator', icon: 'Sparkles', path: '/tools/fortune', tags: ['运势', '抽签', '灵签', '心理测试', '趣味'] },
+  { id: 'lottery-wheel', name: '抽奖转盘/抽签', description: '可自定义奖项与权重的概率转盘，以及随机抽签工具', category: 'utility', icon: 'Dice1', path: '/tools/lottery-wheel', tags: ['抽奖', '转盘', '抽签', '概率', '随机'] },
+  { id: 'fortune', name: '运势/抽签/心理测试', description: '每日运势、灵签抽签与趣味心理测试三合一', category: 'utility', icon: 'Sparkles', path: '/tools/fortune', tags: ['运势', '抽签', '灵签', '心理测试', '趣味'] },
+  { id: 'music-player', name: '音乐播放器', description: '搜索歌曲在线试听，支持歌词同步滚动与全局迷你播放器', category: 'utility', icon: 'Music2', path: '/tools/music-player', tags: ['音乐', '播放器', '歌词', '网易云', 'Music'] },
+  { id: 'music-player-mock', name: '音乐播放器（本地 Mock）', description: '音乐播放器离线测试版：本地模拟搜索与歌词数据，无需真实 API', category: 'utility', icon: 'Music2', path: '/tools/music-player-mock', tags: ['音乐', '播放器', '歌词', '网易云', 'Music', 'Mock', '本地', '测试'] },
 ];
 
 export function getToolByPath(path: string): Tool | undefined {

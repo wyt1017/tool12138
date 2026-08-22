@@ -71,6 +71,12 @@ function simulateOnSpinEnd(finalRotation: number, segments: Segment[]): number {
   return segments.findIndex((s) => pointerLocal >= s.start && pointerLocal < s.end);
 }
 
+// 与 LotteryWheel.tsx 中的 getWeightInfo 保持一致（供独立测试）
+function getWeightInfo(prizes: Prize[]): { total: number; hasValid: boolean } {
+  const total = prizes.reduce((s, p) => s + Math.max(p.weight || 0, 0), 0);
+  return { total, hasValid: total > 0 && prizes.length > 0 };
+}
+
 // ===== 测试用例 =====
 
 describe('weightedPick', () => {
@@ -288,5 +294,46 @@ describe('已知角度验证', () => {
       const resultIdx = simulateOnSpinEnd(finalRotation, segments);
       expect(resultIdx).toBe(0);
     }
+  });
+});
+
+describe('getWeightInfo（健壮性校验）', () => {
+  it('空列表：hasValid 为 false，total 为 0', () => {
+    expect(getWeightInfo([])).toEqual({ total: 0, hasValid: false });
+  });
+
+  it('所有权重为 0：hasValid 为 false', () => {
+    const prizes: Prize[] = [
+      { name: 'A', weight: 0 },
+      { name: 'B', weight: 0 },
+    ];
+    expect(getWeightInfo(prizes)).toEqual({ total: 0, hasValid: false });
+  });
+
+  it('至少一个权重大于 0：hasValid 为 true，total 正确求和', () => {
+    const prizes: Prize[] = [
+      { name: 'A', weight: 1 },
+      { name: 'B', weight: 3 },
+      { name: 'C', weight: 0 },
+    ];
+    expect(getWeightInfo(prizes)).toEqual({ total: 4, hasValid: true });
+  });
+
+  it('负权重按 0 归一，不影响 hasValid', () => {
+    const prizes: Prize[] = [
+      { name: 'A', weight: -5 },
+      { name: 'B', weight: 2 },
+    ];
+    expect(getWeightInfo(prizes)).toEqual({ total: 2, hasValid: true });
+  });
+
+  it('单个正权重奖项：hasValid 为 true', () => {
+    const prizes: Prize[] = [{ name: '唯一奖', weight: 3 }];
+    expect(getWeightInfo(prizes)).toEqual({ total: 3, hasValid: true });
+  });
+
+  it('权重为 undefined/缺失按 0 处理（不抛错）', () => {
+    const prizes = [{ name: 'A' }] as Prize[];
+    expect(getWeightInfo(prizes)).toEqual({ total: 0, hasValid: false });
   });
 });
