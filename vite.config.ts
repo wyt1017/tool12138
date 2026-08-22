@@ -41,18 +41,26 @@ function createApiProxyPlugin(): Plugin {
         for (const [k, v] of Object.entries(req.headers)) {
           if (k !== 'host') forwardHeaders[k] = v as string;
         }
+        // 网易云老接口会校验 Referer/Cookie，统一补齐浏览器上下文头（覆盖浏览器自带头）
+        const headers: Record<string, string> = {
+          ...forwardHeaders,
+          host: t.host,
+          'accept-encoding': 'identity',
+          'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+        };
+        if (t.hostname === 'music.163.com') {
+          headers['Referer'] = 'https://music.163.com/';
+          headers['Origin'] = 'https://music.163.com';
+          headers['Cookie'] = 'os=pc; appver=2.9.7; osver=Microsoft-Windows-10';
+        }
         const opts: https.RequestOptions = {
           method: req.method,
           hostname: t.hostname,
           servername: t.hostname,
           port: t.port || (isHttps ? 443 : 80),
           path: t.pathname + t.search,
-          headers: {
-            ...forwardHeaders,
-            host: t.host,
-            'accept-encoding': 'identity',
-            'User-Agent': 'same-toolbox/1.0 (https://same-toolbox.pages.dev)',
-          },
+          headers,
         };
         const upstream = mod.request(opts, (r) => {
           const chunks: Buffer[] = [];

@@ -109,13 +109,19 @@ export default {
       if (!allowedPrefixes.some((p) => target.startsWith(p))) {
         return new Response('Forbidden', { status: 403, headers: securityHeaders });
       }
+      // 网易云老接口会校验 Referer/Cookie，服务器端请求需补齐浏览器上下文头
+      const upstreamHeaders: Record<string, string> = {
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+        'Accept': 'application/json, text/plain, */*',
+      };
+      if (target.startsWith('https://music.163.com/')) {
+        upstreamHeaders['Referer'] = 'https://music.163.com/';
+        upstreamHeaders['Origin'] = 'https://music.163.com';
+        upstreamHeaders['Cookie'] = 'os=pc; appver=2.9.7; osver=Microsoft-Windows-10';
+      }
       try {
-        const res = await fetch(target, {
-          headers: {
-            'User-Agent': 'same-toolbox/1.0 (https://same-toolbox.pages.dev)',
-            'Accept': 'application/json',
-          },
-        });
+        const res = await fetch(target, { headers: upstreamHeaders });
         const body = await res.text();
         return new Response(body, {
           status: res.status,
