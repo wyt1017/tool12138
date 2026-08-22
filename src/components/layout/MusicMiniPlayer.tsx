@@ -1,8 +1,7 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import {
   Play,
   Pause,
-  SkipBack,
   SkipForward,
   Music2,
   Loader2,
@@ -14,11 +13,24 @@ const BAR_W = 230;
 const GAP = 8;
 const PAD = 16;
 // 拖动判定阈值（px）：超过才视为拖动，否则视为点击
-const DRAG_THRESHOLD = 4;
+const DRAG_THRESHOLD = 6;
+// 双击间隔（ms）：两次点击在此间隔内视为双击 → 切下一首
+const DBL_TAP_MS = 300;
+// 进度环半径
+const RING_R = 23;
+const RING_C = 2 * Math.PI * RING_R;
 
 export default function MusicMiniPlayer() {
-  const { currentSong, playing, loadingUrlId, play, pause, next, prev } =
-    useMusicPlayer();
+  const {
+    currentSong,
+    playing,
+    loadingUrlId,
+    currentTime,
+    duration,
+    play,
+    pause,
+    next,
+  } = useMusicPlayer();
 
   // open = 悬浮信息条是否展开；pos = 小球位置
   const [open, setOpen] = useState(false);
@@ -26,11 +38,11 @@ export default function MusicMiniPlayer() {
   const dragRef = useRef<{
     startX: number;
     startY: number;
-    // 按下时指针相对容器左上角的偏移，拖动时按「指针位置 - 偏移」定位，保证跟手
     offsetX: number;
     offsetY: number;
     moved: boolean;
   } | null>(null);
+  const lastTapRef = useRef(0);
 
   // 用 ref 同步，避免 window 监听闭包读到旧值
   const openRef = useRef(open);
@@ -43,15 +55,13 @@ export default function MusicMiniPlayer() {
   }, [pos]);
 
   // ── 拖拽：使用 window 原生监听，指针移出元素也能持续收到 move，保证跟手 ──
-  const handleMove = (e: PointerEvent) => {
+  const handleMove = useCallback((e: PointerEvent) => {
     const d = dragRef.current;
     if (!d) return;
     const dx = e.clientX - d.startX;
     const dy = e.clientY - d.startY;
-    // 未超过阈值视为点击，不移动小球、不标记为拖动
     if (!d.moved && Math.hypot(dx, dy) < DRAG_THRESHOLD) return;
     d.moved = true;
-    // 信息条在球左侧，展开时整体宽度更大，需按展开状态约束右边界
     const w = openRef.current ? BAR_W + GAP + BALL : BALL;
     setPos({
       x: Math.max(
@@ -63,30 +73,45 @@ export default function MusicMiniPlayer() {
         Math.min(window.innerHeight - BALL - PAD, e.clientY - d.offsetY),
       ),
     });
-  };
+  }, []);
 
-  const handleUp = () => {
+  const handleUp = useCallback(() => {
     const d = dragRef.current;
     if (d && !d.moved) {
-      const next = !openRef.current;
-      setOpen(next);
-      // 展开时若左侧放不下信息条，把整体右移保证不超出屏幕
-      const p = posRef.current;
-      if (next && p) {
-        const minX = PAD + BAR_W + GAP;
-        if (p.x < minX) {
-          setPos({
-            ...p,
-            x: Math.min(window.innerWidth - BALL - PAD, minX),
-          });
-        }
+      // 单击：展开/收起信息条
+      const now = Date.now();
+      const elapsed = now - lastTapRef.current;
+      if (elapsed < DBL_TAP_MS) {
+        // 双击 → 切下一首
+        next();
+        lastTapRef.current = 0;
+      } else {
+        lastTapRef.current = now;
+        // 延迟展开，等下一次 tap 判断是否双击
+        setTimeout(() => {
+          if (Date.now() - lastTapRef.current >= DBL_TAP_MS) {
+            const willOpen = !openRef.current;
+            setOpen(willOpen);
+            // 展开时若左侧放不下信息条，把整体右移保证不超出屏幕
+            const p = posRef.current;
+            if (willOpen && p) {
+              const minX = PAD + BAR_W + GAP;
+              if (p.x < minX) {
+                setPos({
+                  ...p,
+                  x: Math.min(window.innerWidth - BALL - PAD, minX),
+                });
+              }
+            }
+          }
+        }, DBL_TAP_MS);
       }
     }
     dragRef.current = null;
     window.removeEventListener("pointermove", handleMove);
     window.removeEventListener("pointerup", handleUp);
     window.removeEventListener("pointercancel", handleUp);
-  };
+  }, [next, handleMove]);
 
   const handlePointerDown = (e: React.PointerEvent) => {
     if (e.button !== 0) return;
@@ -110,8 +135,7 @@ export default function MusicMiniPlayer() {
       window.removeEventListener("pointerup", handleUp);
       window.removeEventListener("pointercancel", handleUp);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [handleMove, handleUp]);
 
   // 首次渲染把小球放到右下角
   useEffect(() => {
@@ -123,6 +147,7 @@ export default function MusicMiniPlayer() {
   }, [pos]);
 
   const stop = (e: React.SyntheticEvent) => e.stopPropagation();
+  const progress = duration > 0 ? currentTime / duration : 0;
 
   return (
     <div
@@ -160,15 +185,6 @@ export default function MusicMiniPlayer() {
             <div className="flex items-center gap-0.5">
               <button
                 onPointerDown={stop}
-                onClick={prev}
-                disabled={!currentSong}
-                className="p-1.5 text-white/60 hover:text-white transition-colors rounded-full hover:bg-white/5 disabled:opacity-30"
-                aria-label="上一曲"
-              >
-                <SkipBack size={15} />
-              </button>
-              <button
-                onPointerDown={stop}
                 onClick={() => (playing ? pause() : play())}
                 disabled={!currentSong}
                 className="w-8 h-8 rounded-full bg-gradient-to-br from-[#a78bfa] to-[#00d9ff] flex items-center justify-center text-white hover:opacity-90 transition-opacity disabled:opacity-30"
@@ -195,7 +211,7 @@ export default function MusicMiniPlayer() {
           </div>
         )}
 
-        {/* 小球：封面 / 图标 */}
+        {/* 小球：封面 / 图标 + 进度环 */}
         <div className="relative w-12 h-12 rounded-full overflow-hidden border border-white/15 shadow-lg bg-[#1a1a2e]">
           {currentSong?.cover ? (
             <img
@@ -218,6 +234,43 @@ export default function MusicMiniPlayer() {
             <span className="absolute inset-0 rounded-full bg-gradient-to-r from-[#a78bfa] to-[#00d9ff] opacity-50 pulse-ring pointer-events-none" />
           )}
         </div>
+
+        {/* 进度环：贴在小球外圈，显示播放进度 */}
+        {currentSong && (
+          <svg
+            className="absolute inset-0 pointer-events-none -rotate-90"
+            viewBox="0 0 48 48"
+            width={BALL}
+            height={BALL}
+          >
+            <circle
+              cx="24"
+              cy="24"
+              r={RING_R}
+              fill="none"
+              stroke="rgba(255,255,255,0.08)"
+              strokeWidth="2"
+            />
+            <circle
+              cx="24"
+              cy="24"
+              r={RING_R}
+              fill="none"
+              stroke="url(#mp-grad)"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeDasharray={RING_C}
+              strokeDashoffset={RING_C * (1 - progress)}
+              style={{ transition: "stroke-dashoffset 0.25s linear" }}
+            />
+            <defs>
+              <linearGradient id="mp-grad" x1="0" y1="0" x2="48" y2="48">
+                <stop offset="0%" stopColor="#a78bfa" />
+                <stop offset="100%" stopColor="#00d9ff" />
+              </linearGradient>
+            </defs>
+          </svg>
+        )}
       </div>
     </div>
   );

@@ -266,7 +266,13 @@ function shufflePickIndex(): number {
   return shuffleOrder[0];
 }
 
+// 自动跳过计数器：防止「全部歌曲无音源」时无限递归跳过
+let autoSkipCount = 0;
+
 async function loadAndPlay(song: SongMeta, list?: SongMeta[], manual = false) {
+  // 手动切歌时重置计数器
+  if (manual) autoSkipCount = 0;
+
   if (audio) {
     audio.pause();
     audio.src = "";
@@ -297,10 +303,24 @@ async function loadAndPlay(song: SongMeta, list?: SongMeta[], manual = false) {
   emit();
 
   if (!urlResult) {
-    error = "该歌曲暂无免费音源，试试其他歌曲";
-    emit();
+    // 无音源时自动跳到下一首，超过播放列表长度则停止（避免无限循环）
+    autoSkipCount++;
+    if (autoSkipCount > playlist.length) {
+      error = "播放列表中的歌曲均无可用音源";
+      autoSkipCount = 0;
+      emit();
+      return;
+    }
+    const target = pickNext();
+    if (target && target.id !== song.id) {
+      loadAndPlay(target);
+    } else {
+      error = "该歌曲暂无免费音源，试试其他歌曲";
+      emit();
+    }
     return;
   }
+  autoSkipCount = 0;
 
   const a = new Audio(urlResult);
   a.volume = volume;
@@ -319,10 +339,6 @@ async function loadAndPlay(song: SongMeta, list?: SongMeta[], manual = false) {
       emit();
     }
   });
-  a.addEventListener("suspended", () => {
-    error = "音频缓冲中，请稍候";
-    emit();
-  });
 
   a.play()
     .then(() => {
@@ -335,9 +351,17 @@ async function loadAndPlay(song: SongMeta, list?: SongMeta[], manual = false) {
       playing = false;
       emit();
     });
+
+  // 节流 timeupdate：原生每秒触发 4~60 次不等，节流到 250ms 一次，
+  // 减少不必要的 React re-render，同时保持进度条手感流畅。
+  let lastEmit = 0;
   a.addEventListener("timeupdate", () => {
     currentTime = a.currentTime;
-    emit();
+    const now = performance.now();
+    if (now - lastEmit >= 250) {
+      lastEmit = now;
+      emit();
+    }
   });
   a.addEventListener("ended", () => {
     // 单曲循环：原地重播
@@ -458,6 +482,25 @@ function cycleMode() {
   emit();
 }
 
+/** 清空播放列表并停止播放 */
+function clearPlaylist() {
+  if (audio) {
+    audio.pause();
+    audio.src = "";
+    audio = null;
+  }
+  playlist = [];
+  currentSong = null;
+  playing = false;
+  currentTime = 0;
+  duration = 0;
+  lyrics = [];
+  error = "";
+  autoSkipCount = 0;
+  persistPlaylist();
+  emit();
+}
+
 /** 加入播放列表；若当前无播放歌曲则自动开播 */
 function addToPlaylist(song: SongMeta) {
   if (playlist.some((s) => s.id === song.id)) return;
@@ -516,6 +559,7 @@ export function useMusicPlayer() {
     loadAndPlay,
     addToPlaylist,
     removeFromPlaylist,
+    clearPlaylist,
     searchSongs,
     formatTime,
   };

@@ -66,6 +66,7 @@ export default function MusicPlayerPage() {
     cycleMode,
     loadAndPlay,
     removeFromPlaylist,
+    clearPlaylist,
   } = useMusicPlayer();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -76,7 +77,7 @@ export default function MusicPlayerPage() {
   const lyricBoxRef = useRef<HTMLDivElement>(null);
   const activeLrc = getActiveLrcIndex(lyrics, currentTime);
 
-  // 输入关键词实时搜索（400ms 防抖）
+  // 输入关键词实时搜索（350ms 防抖 + 过期请求丢弃）
   useEffect(() => {
     const q = searchQuery.trim();
     if (!q) {
@@ -85,12 +86,19 @@ export default function MusicPlayerPage() {
       return;
     }
     setSearching(true);
+    let cancelled = false;
     const timer = setTimeout(async () => {
       const list = await searchSongs(q);
-      setResults(list);
-      setSearching(false);
-    }, 400);
-    return () => clearTimeout(timer);
+      // 如果在等待期间用户又输入了新关键词，丢弃这次结果
+      if (!cancelled) {
+        setResults(list);
+        setSearching(false);
+      }
+    }, 350);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
   }, [searchQuery, searchSongs]);
 
   // 歌词自动滚动到当前行
@@ -392,6 +400,15 @@ export default function MusicPlayerPage() {
               <span className="text-xs text-[#a8b2c1] flex items-center gap-1.5">
                 <ListMusic size={12} /> 播放列表（{playlist.length}）
               </span>
+              {playlist.length > 0 && (
+                <button
+                  onClick={clearPlaylist}
+                  className="flex items-center gap-1 text-xs text-[#a8b2c1] hover:text-[#f472b6] transition-colors"
+                  aria-label="清空播放列表"
+                >
+                  <Trash2 size={12} /> 清空
+                </button>
+              )}
             </div>
             <div className="max-h-[220px] overflow-y-auto space-y-1 pr-1">
               {playlist.length === 0 ? (
