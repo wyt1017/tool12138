@@ -101,9 +101,17 @@ async function searchSongs(keyword: string): Promise<SongMeta[]> {
   }
 }
 
-async function fetchSongUrl(id: number): Promise<string | null> {
+async function fetchSongUrl(song: SongMeta): Promise<string | null> {
   try {
-    const res = await musicFetch({ server: "netease", type: "url", id: String(id), token: MUSIC_TOKEN });
+    const res = await musicFetch({
+      server: "netease",
+      type: "url",
+      id: String(song.id),
+      // 携带歌名/歌手，供 Worker 端网易云取不到音源时跨平台重搜（提升可播覆盖率）
+      name: song.name,
+      artist: song.artists,
+      token: MUSIC_TOKEN,
+    });
     const json = (await res.json()) as { url?: string };
     return json.url ? String(json.url) : null;
   } catch {
@@ -281,7 +289,7 @@ async function loadAndPlay(song: SongMeta, list?: SongMeta[], manual = false) {
   if (manual) resetShuffleForManual();
 
   const [urlResult, lyricsResult] = await Promise.all([
-    fetchSongUrl(song.id),
+    fetchSongUrl(song),
     fetchLyrics(song.id),
   ]);
   loadingUrlId = null;
@@ -297,12 +305,36 @@ async function loadAndPlay(song: SongMeta, list?: SongMeta[], manual = false) {
   const a = new Audio(urlResult);
   a.volume = volume;
   audio = a;
+
+  // 音源加载失败（403 / VIP 限制 / CDN 掉线 / 音频损坏）时：优先自动切到下一首可播的歌曲，
+  // 若没有下一首才提示错误，避免「有音源却一直卡在原地无法播放」。
+  a.addEventListener("error", () => {
+    if (audio !== a) return;
+    const target = pickNext();
+    if (target && target.id !== song.id) {
+      loadAndPlay(target);
+    } else {
+      error = "音频加载失败，请重试或切换歌曲";
+      playing = false;
+      emit();
+    }
+  });
+  a.addEventListener("suspended", () => {
+    error = "音频缓冲中，请稍候";
+    emit();
+  });
+
   a.play()
     .then(() => {
       playing = true;
+      error = "";
       emit();
     })
-    .catch(() => {});
+    .catch(() => {
+      // 自动播放被浏览器拦截等场景：保持暂停态，用户可再次点击播放重试
+      playing = false;
+      emit();
+    });
   a.addEventListener("timeupdate", () => {
     currentTime = a.currentTime;
     emit();

@@ -151,28 +151,36 @@ export default {
     }
 
     // ── 3. SPA fallback：返回 index.html（允许短时间缓存，提升边缘命中率） ──
-    try {
-      const indexRes = await env.ASSETS.fetch(new Request(new URL('/index.html', url), request));
-      if (!indexRes.ok) {
-        return new Response('Internal Server Error', {
-          status: 500,
-          headers: { 'Content-Type': 'text/plain; charset=utf-8', ...securityHeaders },
+    // 用全新的纯 GET 请求获取 index.html（不复用入站请求的 method/body/headers，避免偶发 ASSETS 取回异常），
+    // 并在网络抖动 / 部署切换瞬间自动重试，降低刷新页面时偶现 Internal Server Error。
+    const indexUrl = new URL('/index.html', url);
+    let indexRes: Response | null = null;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const indexReq = new Request(indexUrl, {
+          method: 'GET',
+          headers: { 'Accept': 'text/html' },
         });
+        indexRes = await env.ASSETS.fetch(indexReq);
+        if (indexRes.ok) break;
+      } catch {
+        indexRes = null; // 网络/运行时抖动，重试
       }
-      return new Response(indexRes.body, {
-        status: 200,
-        headers: {
-          'Content-Type': 'text/html; charset=utf-8',
-          'Cache-Control': 'public, max-age=60, stale-while-revalidate=86400',
-          ...securityHeaders,
-          'Content-Security-Policy': csp,
-        },
-      });
-    } catch {
+    }
+    if (!indexRes || !indexRes.ok) {
       return new Response('Internal Server Error', {
         status: 500,
         headers: { 'Content-Type': 'text/plain; charset=utf-8', ...securityHeaders },
       });
     }
+    return new Response(indexRes.body, {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'public, max-age=60, stale-while-revalidate=86400',
+        ...securityHeaders,
+        'Content-Security-Policy': csp,
+      },
+    });
   },
 };

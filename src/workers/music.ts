@@ -31,6 +31,56 @@ async function fallbackSongUrl(id: string): Promise<string> {
   }
 }
 
+// 给单次 Promise 加超时，避免某个上游平台无响应导致整个请求挂起
+function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
+  return Promise.race([
+    p,
+    new Promise<never>((_, reject) => {
+      const t = setTimeout(() => reject(new Error("timeout")), ms);
+      // unref 让超时定时器不阻塞进程退出（lib/运行时均支持）
+      const anyTimer = t as any;
+      if (typeof anyTimer.unref === "function") anyTimer.unref();
+    }),
+  ]);
+}
+
+// 跨平台音源回退：netease 官方在海外 Worker 出口下对部分歌曲（含 VIP 限制）取不到音源时，
+// 用「歌名 + 歌手」在腾讯/酷狗/百度/酷我依次重搜，返回第一个可播放的音源，
+// 显著提高可播歌曲覆盖率（解决「太多音乐没有音源」）。
+async function crossServerFallback(name: string, artist: string): Promise<string> {
+  const keyword = `${name} ${artist}`.trim() || name;
+  const targets = ["tencent", "kugou", "baidu", "kuwo"];
+  for (const srv of targets) {
+    try {
+      const m = new Meting(srv);
+      m.format(true);
+      const raw = await withTimeout(m.search(keyword, { type: 1, limit: 5 }), 8000);
+      const list = JSON.parse(raw) as Array<{
+        id: number | string;
+        url_id?: number | string;
+      }>;
+      if (!Array.isArray(list) || list.length === 0) continue;
+      for (const it of list) {
+        const uid = it.url_id ?? it.id;
+        if (uid == null) continue;
+        try {
+          const urlRaw = await withTimeout(m.url(String(uid), 128), 8000);
+          const u = JSON.parse(urlRaw) as { url?: string };
+          let url = u?.url ? String(u.url) : "";
+          if (!url) continue;
+          url = url.replace(/^http:\/\//, "https://");
+          return url;
+        } catch {
+          continue;
+        }
+      }
+    } catch {
+      continue;
+    }
+  }
+  return "";
+}
+
 // 针对 Netease provider 做两处适配：
 // 1. eapi 加密：Workers 运行时 AES-ECB 不可用（createCipheriv 报 iv 为 null），用 aes-js 纯 JS 实现替换；
 // 2. 搜索结果格式：默认 format 不含时长/封面，这里补全 duration / cover，供前端直接使用。
@@ -88,6 +138,9 @@ export async function handleMusicRequest(query: URLSearchParams): Promise<Respon
   const server = query.get("server") || "netease";
   const type = query.get("type") || "search";
   const id = (query.get("id") || "").trim();
+  // 跨平台音源回退需要歌名/歌手做「以歌搜歌」
+  const name = (query.get("name") || "").trim();
+  const artist = (query.get("artist") || "").trim();
 
   if (!SERVERS.includes(server)) return json({ error: "invalid server" }, 400);
   if (!TYPES.includes(type)) return json({ error: "invalid type" }, 400);
@@ -146,8 +199,10 @@ export async function handleMusicRequest(query: URLSearchParams): Promise<Respon
 
   if (type === "url") {
     let url = data?.url ? String(data.url) : "";
-    // 官方 eapi 接口在海外 Worker 出口下常被风控返回空，回退到公共网易云代理实例
+    // 官方 eapi 接口在海外 Worker 出口下常被风控返回空，先回退到公共网易云代理实例
     if (!url) url = await fallbackSongUrl(id);
+    // 仍取不到 → 用歌名+歌手在其它平台重搜，大幅提升可播覆盖率
+    if (!url && name) url = await crossServerFallback(name, artist);
     if (!url) return json({ error: "no free source" }, 404);
     url = url.replace(/^http:\/\//, "https://");
     if (server === "netease") {
