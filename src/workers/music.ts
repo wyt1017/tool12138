@@ -203,10 +203,37 @@ async function ytFirstVideoId(name: string, artist: string): Promise<string> {
   return list.length ? String(list[0].id) : "";
 }
 
-// 用视频 id 从 YouTube 官方 InnerTube 取音频流
+// 用视频 id 从 YouTube 官方 InnerTube 取音频流。
+// 注意：数据中心 IP（Cloudflare Worker 出口）会被 YouTube 要求 PoToken 校验
+// （实测 ANDROID_VR player 返回 LOGIN_REQUIRED "Sign in to confirm you're not a bot"），
+// 因此按序轮试多个客户端：嵌入式 TV 客户端（可绕过 bot 校验）→ ANDROID_VR → ANDROID。
+async function ytPlayerData(vid: string): Promise<{ data: any; client: string } | null> {
+  const clients: Array<{ name: string; version: string; embed?: boolean; sdk?: number }> = [
+    { name: "TVHTML5_SIMPLY_EMBEDDED_PLAYER", version: "2.0", embed: true },
+    { name: "ANDROID_VR", version: "1.24.60" },
+    { name: "ANDROID", version: "19.09.37", sdk: 30 },
+  ];
+  for (const c of clients) {
+    const client: Record<string, unknown> = { clientName: c.name, clientVersion: c.version };
+    if (c.sdk) client.androidSdkVersion = c.sdk;
+    const context: Record<string, unknown> = { client };
+    if (c.embed) context.thirdParty = { embedUrl: "https://www.google.com" };
+    const data = await ytApi("player", {
+      context,
+      videoId: vid,
+      contentCheckOk: true,
+      racyCheckOk: true,
+    });
+    if (data && (data.streamingData?.adaptiveFormats || []).some((f: any) => f.url)) {
+      return { data, client: c.name };
+    }
+  }
+  return null;
+}
+
 async function youtubeStreamByVid(vid: string): Promise<string> {
-  const player = await ytApi("player", { videoId: vid });
-  return pickYtAudio(player);
+  const r = await ytPlayerData(vid);
+  return r ? pickYtAudio(r.data) : "";
 }
 
 // ── 海外兜底音源 2：Invidious（YouTube 开源镜像，多实例自动切换） ──
@@ -356,24 +383,23 @@ export async function handleMusicRequest(query: URLSearchParams): Promise<Respon
       return json(list);
     }
     if (type === "url") {
-      const player = await ytApi("player", { videoId: id });
+      const r = await ytPlayerData(id);
       if (YT_DEBUG) {
-        const fmts = player?.streamingData?.adaptiveFormats || [];
+        const fmts = r?.data?.streamingData?.adaptiveFormats || [];
         return json({
           dbg: "player",
-          playability: player?.playabilityStatus?.status,
-          reason: player?.playabilityStatus?.reason,
+          hitClient: r?.client || null,
+          playability: r?.data?.playabilityStatus?.status,
+          reason: r?.data?.playabilityStatus?.reason,
           formatCount: fmts.length,
           sample: fmts.slice(0, 3).map((f: any) => ({
             itag: f.itag,
             mime: f.mimeType,
             hasUrl: !!f.url,
-            hasCipher: !!f.signatureCipher,
           })),
-          keys: Object.keys(player || {}),
         });
       }
-      const streamUrl = pickYtAudio(player);
+      const streamUrl = r ? pickYtAudio(r.data) : "";
       if (!streamUrl) return json({ error: "no free source" }, 404);
       return json({ url: streamUrl });
     }
