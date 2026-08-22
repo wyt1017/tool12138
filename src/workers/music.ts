@@ -132,13 +132,19 @@ function pickYtAudio(data: any): string {
   return best ? String(best.url) : "";
 }
 
-// 解析搜索结果，取普通视频条目，输出与其它源一致的字段供前端复用
+// 解析搜索结果，输出与其它源一致的字段供前端复用。
+// 注意：InnerTube 不同客户端返回结构不同——
+//  - Web 结构：contents.twoColumnSearchResultsRenderer...itemSectionRenderer[].videoRenderer
+//  - ANDROID_VR（Music 应用）结构：contents.sectionListRenderer[].musicShelfRenderer[].musicResponsiveListItemRenderer
+// 两种都要解析，否则搜索结果恒为空。
 function parseYtSearch(data: any): Array<Record<string, unknown>> {
   const out: Array<Record<string, unknown>> = [];
-  const sections =
+
+  // 结构一：Web 客户端
+  const webSections =
     data?.contents?.twoColumnSearchResultsRenderer?.primaryContents?.sectionListRenderer
       ?.contents || [];
-  for (const sec of sections) {
+  for (const sec of webSections) {
     const items = sec?.itemSectionRenderer?.contents || [];
     for (const it of items) {
       const v = it?.videoRenderer;
@@ -156,6 +162,32 @@ function parseYtSearch(data: any): Array<Record<string, unknown>> {
       });
     }
   }
+
+  // 结构二：ANDROID_VR / Music 客户端
+  const musicSections = data?.contents?.sectionListRenderer?.contents || [];
+  for (const sec of musicSections) {
+    const items = sec?.musicShelfRenderer?.contents || [];
+    for (const it of items) {
+      const m = it?.musicResponsiveListItemRenderer;
+      const vid = m?.playlistItemData?.videoId;
+      if (!m || !vid) continue;
+      const flex = (m.flexColumns || []).map(
+        (c: any) => c?.musicResponsiveListItemFlexColumnRenderer?.text?.runs || []
+      );
+      const title = (flex[0] || []).map((r: any) => r.text).join("");
+      if (!title) continue;
+      out.push({
+        id: vid,
+        name: title,
+        artist: (flex[1] || []).map((r: any) => r.text).join(" "),
+        url_id: vid,
+        lyric_id: "",
+        duration: (flex[2] || []).map((r: any) => r.text).join(""),
+        source: "youtube",
+      });
+    }
+  }
+
   return out;
 }
 
@@ -313,10 +345,11 @@ export async function handleMusicRequest(query: URLSearchParams): Promise<Respon
     if (type === "search") {
       const data = await ytApi("search", { query: id });
       if (YT_DEBUG && data?.__dbg) return json(data.__dbg);
+      const list = parseYtSearch(data);
       if (YT_DEBUG) {
-        return json({ dbg: "search ok but empty parse", keys: Object.keys(data || {}) });
+        return json({ dbg: list.length ? "ok" : "empty parse", sample: JSON.stringify(data?.contents).slice(0, 400) });
       }
-      return json(parseYtSearch(data));
+      return json(list);
     }
     if (type === "url") {
       const streamUrl = pickYtAudio(await ytApi("player", { videoId: id }));
