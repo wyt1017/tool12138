@@ -381,13 +381,10 @@ export async function handleMusicRequest(query: URLSearchParams): Promise<Respon
   // 可用性探测：从 Worker 真实运行环境批量测试候选音源接口，返回状态矩阵（诊断用）
   if (server === "__probe") {
     const targets: Array<{ name: string; url: string; init?: RequestInit }> = [
-      { name: "injahow-netease-url", url: "https://api.injahow.cn/meting/?server=netease&type=url&id=5257138" },
-      { name: "injahow-netease-vip", url: "https://api.injahow.cn/meting/?server=netease&type=url&id=186016" },
-      { name: "gdstudio-netease-url", url: "https://music-api.gdstudio.xyz/api.php?types=url&id=5257138&source=netease&br=128" },
-      { name: "gdstudio-netease-vip", url: "https://music-api.gdstudio.xyz/api.php?types=url&id=186016&source=netease&br=128" },
-      { name: "gdstudio-kuwo-search", url: "https://music-api.gdstudio.xyz/api.php?types=search&source=kuwo&name=%E5%B1%8B%E9%A1%B6" },
-      { name: "antiserver-kuwo-228908", url: "http://antiserver.kuwo.cn/anti.s?type=convert_url&rid=MUSIC_228908&format=mp3&response=url" },
-      { name: "antiserver-kuwo-109852", url: "http://antiserver.kuwo.cn/anti.s?type=convert_url&rid=MUSIC_109852&format=mp3&response=url" },
+      { name: "antiserver-228908", url: "http://antiserver.kuwo.cn/anti.s?type=convert_url&rid=MUSIC_228908&format=mp3&response=url" },
+      { name: "antiserver-3249166", url: "http://antiserver.kuwo.cn/anti.s?type=convert_url&rid=MUSIC_3249166&format=mp3&response=url" },
+      { name: "antiserver-533068292", url: "http://antiserver.kuwo.cn/anti.s?type=convert_url&rid=MUSIC_533068292&format=mp3&response=url" },
+      { name: "kw-mobile-info-228908", url: "https://m.kuwo.cn/newh5/singlesong/info?mid=228908" },
     ];
     const results = await Promise.all(
       targets.map(async (t) => {
@@ -399,10 +396,16 @@ export async function handleMusicRequest(query: URLSearchParams): Promise<Respon
             headers: { "User-Agent": "Mozilla/5.0", ...(t.init?.headers || {}) },
             signal: ctrl.signal,
           });
-          const text = (await res.text()).slice(0, 500);
-          return { name: t.name, status: res.status, ok: res.ok, body: text };
+          const text = (await res.text()).slice(0, 300);
+          return {
+            name: t.name,
+            status: res.status,
+            ct: res.headers.get("Content-Type"),
+            cl: res.headers.get("Content-Length"),
+            body: text,
+          };
         } catch (e) {
-          return { name: t.name, status: 0, ok: false, body: String(e) };
+          return { name: t.name, status: 0, ct: null, cl: null, body: String(e) };
         } finally {
           clearTimeout(timer);
         }
