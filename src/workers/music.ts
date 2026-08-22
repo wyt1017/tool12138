@@ -356,7 +356,24 @@ export async function handleMusicRequest(query: URLSearchParams): Promise<Respon
       return json(list);
     }
     if (type === "url") {
-      const streamUrl = pickYtAudio(await ytApi("player", { videoId: id }));
+      const player = await ytApi("player", { videoId: id });
+      if (YT_DEBUG) {
+        const fmts = player?.streamingData?.adaptiveFormats || [];
+        return json({
+          dbg: "player",
+          playability: player?.playabilityStatus?.status,
+          reason: player?.playabilityStatus?.reason,
+          formatCount: fmts.length,
+          sample: fmts.slice(0, 3).map((f: any) => ({
+            itag: f.itag,
+            mime: f.mimeType,
+            hasUrl: !!f.url,
+            hasCipher: !!f.signatureCipher,
+          })),
+          keys: Object.keys(player || {}),
+        });
+      }
+      const streamUrl = pickYtAudio(player);
       if (!streamUrl) return json({ error: "no free source" }, 404);
       return json({ url: streamUrl });
     }
