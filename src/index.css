@@ -214,6 +214,16 @@ h1, h2, h3, h4, h5, h6 {
   animation: pulse-ring 1.6s ease-out infinite;
 }
 
+/* 封面旋转（播放时缓转，移除 class 即停止） */
+@keyframes cover-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.cover-spin {
+  animation: cover-spin 24s linear infinite;
+}
+
 /* 歌词列表上下渐隐 */
 .mask-fade-y {
   mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%);

@@ -37,7 +37,10 @@ function createApiProxyPlugin(): Plugin {
         }
         const isHttps = t.protocol === 'https:';
         const mod = isHttps ? https : http;
-        const { host, ...forwardHeaders } = req.headers;
+        const forwardHeaders: Record<string, string> = {};
+        for (const [k, v] of Object.entries(req.headers)) {
+          if (k !== 'host') forwardHeaders[k] = v as string;
+        }
         const opts: https.RequestOptions = {
           method: req.method,
           hostname: t.hostname,

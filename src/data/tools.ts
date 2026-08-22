@@ -119,7 +119,6 @@ export const tools: Tool[] = [
   { id: 'lottery-wheel', name: '抽奖转盘/抽签', description: '可自定义奖项与权重的概率转盘，以及随机抽签工具', category: 'utility', icon: 'Dice1', path: '/tools/lottery-wheel', tags: ['抽奖', '转盘', '抽签', '概率', '随机'] },
   { id: 'fortune', name: '运势/抽签/心理测试', description: '每日运势、灵签抽签与趣味心理测试三合一', category: 'utility', icon: 'Sparkles', path: '/tools/fortune', tags: ['运势', '抽签', '灵签', '心理测试', '趣味'] },
   { id: 'music-player', name: '音乐播放器', description: '搜索歌曲在线试听，支持歌词同步滚动与全局迷你播放器', category: 'utility', icon: 'Music2', path: '/tools/music-player', tags: ['音乐', '播放器', '歌词', '网易云', 'Music'] },
-  { id: 'music-player-mock', name: '音乐播放器（本地 Mock）', description: '音乐播放器离线测试版：本地模拟搜索与歌词数据，无需真实 API', category: 'utility', icon: 'Music2', path: '/tools/music-player-mock', tags: ['音乐', '播放器', '歌词', '网易云', 'Music', 'Mock', '本地', '测试'] },
 ];
 
 export function getToolByPath(path: string): Tool | undefined {

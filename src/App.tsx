@@ -107,7 +107,6 @@ const MortgageCalculator = lazy(() => import('@/pages/tools/MortgageCalculator')
 const LotteryWheel = lazy(() => import('@/pages/tools/LotteryWheel'));
 const Fortune = lazy(() => import('@/pages/tools/Fortune'));
 const MusicPlayer = lazy(() => import('@/pages/tools/MusicPlayer'));
-const MusicPlayerMock = lazy(() => import('@/pages/tools/MusicPlayerMock'));
 
 export default function App() {
   return (
@@ -203,7 +202,6 @@ export default function App() {
           <Route path="/tools/lottery-wheel" element={<Suspense fallback={<LoadingSpinner />}><LotteryWheel /></Suspense>} />
           <Route path="/tools/fortune" element={<Suspense fallback={<LoadingSpinner />}><Fortune /></Suspense>} />
           <Route path="/tools/music-player" element={<Suspense fallback={<LoadingSpinner />}><MusicPlayer /></Suspense>} />
-          <Route path="/tools/music-player-mock" element={<Suspense fallback={<LoadingSpinner />}><MusicPlayerMock /></Suspense>} />
           <Route path="/about" element={<About />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
