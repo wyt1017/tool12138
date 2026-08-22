@@ -1,7 +1,7 @@
 # 默认规则（必须放最前，具体规则在后覆盖）
 # HTML 只做短缓存 + 长后台刷新：避免部署后旧 HTML 引用已下线的哈希资源而 404
 /*
-  Cache-Control: public, max-age=60, stale-while-revalidate=604800
+  Cache-Control: public, max-age=300, stale-while-revalidate=604800
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY

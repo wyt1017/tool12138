@@ -21,6 +21,8 @@ export type PlayMode = "order" | "shuffle" | "loop";
 // ── localStorage 持久化（播放列表 + 音量） ──
 const LS_PLAYLIST = "music.playlist";
 const LS_VOLUME = "music.volume";
+// 音乐 API 访问令牌（与 Worker 端一致，url/lrc 接口校验用）
+const MUSIC_TOKEN = "same-toolbox-music-2026";
 
 function loadPlaylist(): SongMeta[] {
   try {
@@ -49,10 +51,11 @@ function formatTime(sec: number): string {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-// 同源代理请求：开发环境走 Vite 中间件，生产环境走 Worker /api/proxy，
-// 统一规避浏览器跨域限制（网易云 API 未开放 CORS）。
-async function proxyFetch(url: string): Promise<Response> {
-  return fetch(`/api/proxy?url=${encodeURIComponent(url)}`);
+// 音乐 API 请求：开发环境走 Vite 中间件，生产环境走 Worker /api/music，
+// 统一使用 @meting/core 的网易云 eapi 加密请求（Android 客户端 UA），规避海外 IP 封锁与跨域。
+async function musicFetch(params: Record<string, string>): Promise<Response> {
+  const qs = new URLSearchParams(params);
+  return fetch(`/api/music?${qs.toString()}`);
 }
 
 function parseLyric(lrc: string): LyricLine[] {
@@ -76,93 +79,43 @@ function parseLyric(lrc: string): LyricLine[] {
 }
 
 async function searchSongs(keyword: string): Promise<SongMeta[]> {
-  const src = `https://music.163.com/api/search/get/web?s=${encodeURIComponent(
-    keyword,
-  )}&type=1&offset=0&limit=10&total=true`;
   try {
-    const res = await proxyFetch(src);
-    const json = (await res.json()) as {
-      result?: {
-        songs?: Array<{
-          id: number;
-          name: string;
-          artists: Array<{ name: string }>;
-        }>;
-      };
-    };
-    const songs = (json.result?.songs ?? []).slice(0, 10);
-    if (songs.length === 0) return [];
-    const base: SongMeta[] = songs.map((s) => ({
+    const res = await musicFetch({ server: "netease", type: "search", id: keyword, limit: "10" });
+    const json = (await res.json()) as Array<{
+      id: number;
+      name: string;
+      artist?: string[];
+      duration?: number;
+      cover?: string;
+    }>;
+    if (!Array.isArray(json)) return [];
+    return json.map((s) => ({
       id: s.id,
       name: s.name,
-      artists: (s.artists ?? []).map((a) => a.name).join(", "),
+      artists: (s.artist ?? []).join(", "),
+      duration: s.duration && s.duration > 0 ? s.duration : undefined,
+      cover: s.cover || undefined,
     }));
-    // 用详情接口补充封面与时长（一次批量请求）
-    const details = await fetchSongDetails(songs.map((s) => s.id));
-    return base.map((s) => ({ ...s, ...(details.get(s.id) ?? {}) }));
   } catch {
     return [];
   }
 }
 
-// 批量详情：ids=[1,2,3] 返回时长（毫秒）与专辑封面
-async function fetchSongDetails(
-  ids: number[],
-): Promise<Map<number, { duration?: number; cover?: string }>> {
-  const map = new Map<number, { duration?: number; cover?: string }>();
-  if (ids.length === 0) return map;
-  const src = `https://music.163.com/api/song/detail?ids=[${ids.join(",")}]`;
-  try {
-    const res = await proxyFetch(src);
-    const json = (await res.json()) as {
-      songs?: Array<{
-        id: number;
-        duration?: number;
-        album?: { picUrl?: string };
-      }>;
-    };
-    for (const s of json.songs ?? []) {
-      map.set(s.id, {
-        duration: s.duration ? Math.round(s.duration / 1000) : undefined,
-        cover: s.album?.picUrl
-          ? s.album.picUrl.replace(/^http:\/\//, "https://")
-          : undefined,
-      });
-    }
-  } catch {
-    // 详情失败不影响搜索结果
-  }
-  return map;
-}
-
 async function fetchSongUrl(id: number): Promise<string | null> {
-  // 优先 v1 接口；部分歌曲/地区为空时回退到 player/url（实测可返回免费 CDN 地址）
-  const v1 = `https://music.163.com/api/song/enhance/url/v1?id=${id}&br=128000`;
-  const legacy = `https://music.163.com/api/song/enhance/player/url?ids=[${id}]&br=128000`;
-  for (const src of [v1, legacy]) {
-    try {
-      const res = await proxyFetch(src);
-      const json = (await res.json()) as {
-        data?: Array<{ url?: string | null }>;
-      };
-      const url = json.data?.[0]?.url;
-      if (url) {
-        // 网易云返回的 CDN 地址为 http，统一升级为 https 以避免混合内容被拦截
-        return url.replace(/^http:\/\//, "https://");
-      }
-    } catch {
-      // 尝试下一个
-    }
+  try {
+    const res = await musicFetch({ server: "netease", type: "url", id: String(id), token: MUSIC_TOKEN });
+    const json = (await res.json()) as { url?: string };
+    return json.url ? String(json.url) : null;
+  } catch {
+    return null;
   }
-  return null;
 }
 
 async function fetchLyrics(id: number): Promise<LyricLine[]> {
-  const src = `https://music.163.com/api/song/lyric?id=${id}&lv=1&kv=1&tv=-1`;
   try {
-    const res = await proxyFetch(src);
-    const json = (await res.json()) as { lrc?: { lyric?: string } };
-    return parseLyric(json.lrc?.lyric ?? "");
+    const res = await musicFetch({ server: "netease", type: "lrc", id: String(id), token: MUSIC_TOKEN });
+    const json = (await res.json()) as { lyric?: string };
+    return parseLyric(json.lyric ?? "");
   } catch {
     return [];
   }

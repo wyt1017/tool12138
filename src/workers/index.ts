@@ -1,3 +1,5 @@
+import { handleMusicRequest } from "./music";
+
 export default {
   async fetch(request: Request, env: { ASSETS: { fetch: (req: Request) => Promise<Response> } }): Promise<Response> {
     const url = new URL(request.url);
@@ -94,6 +96,11 @@ export default {
       } catch {
         return new Response('HF API Error', { status: 502 });
       }
+    }
+
+    // ── 2b. 音乐 API（@meting/core eapi 加密请求网易云，绕过海外 IP 封锁） ──
+    if (pathname === '/api/music' && request.method === 'GET') {
+      return handleMusicRequest(url.searchParams);
     }
 
     // ── 2b. 公共 API 同源代理（白名单转发，规避浏览器跨域与地区网络不可达） ──

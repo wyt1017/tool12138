@@ -7,6 +7,7 @@ import https from 'https';
 import http from 'http';
 import type { Connect, Plugin } from 'vite';
 import type { IncomingMessage, ServerResponse } from 'http';
+import { handleMusicRequest } from './src/workers/music';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -24,6 +25,19 @@ function createApiProxyPlugin(): Plugin {
   return {
     name: 'same-toolbox-api-proxy',
     configureServer(server) {
+      // 音乐 API：与 Worker 生产环境共用同一套 @meting/core 加密请求逻辑
+      server.middlewares.use('/api/music', async (req: IncomingMessage, res: ServerResponse) => {
+        if (req.method !== 'GET') {
+          res.statusCode = 405;
+          res.end();
+          return;
+        }
+        const q = new URL(req.url || '', 'http://localhost').searchParams;
+        const resp = await handleMusicRequest(q);
+        res.statusCode = resp.status;
+        resp.headers.forEach((v, k) => res.setHeader(k, v));
+        res.end(Buffer.from(await resp.arrayBuffer()));
+      });
       server.middlewares.use('/api/proxy', (req: IncomingMessage, res: ServerResponse, next: Connect.NextFunction) => {
         if (req.method !== 'GET') return next();
         const q = new URL(req.url || '', 'http://localhost');

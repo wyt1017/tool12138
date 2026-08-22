@@ -3,6 +3,9 @@ name = "tool12138"
 compatibility_date = "2025-06-15"
 main = "src/workers/index.ts"
 
+# @meting/core 依赖 node:crypto / url / Buffer，需要 Node 兼容标志
+compatibility_flags = ["nodejs_compat"]
+
 [assets]
 directory = "dist"
 binding = "ASSETS"
