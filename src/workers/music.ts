@@ -133,41 +133,45 @@ function pickYtAudio(data: any): string {
 }
 
 // 解析搜索结果，输出与其它源一致的字段供前端复用。
-// 注意：InnerTube 不同客户端返回结构不同——
-//  - Web 结构：contents.twoColumnSearchResultsRenderer...itemSectionRenderer[].videoRenderer
-//  - ANDROID_VR（Music 应用）结构：contents.sectionListRenderer[].musicShelfRenderer[].musicResponsiveListItemRenderer
-// 两种都要解析，否则搜索结果恒为空。
+// 注意：InnerTube 不同客户端返回结构不同，实测——
+//  - Web：contents.twoColumnSearchResultsRenderer...itemSectionRenderer[].videoRenderer
+//  - ANDROID_VR：contents.sectionListRenderer[].itemSectionRenderer[].compactVideoRenderer（实测）
+//  - Music 应用：contents.sectionListRenderer[].musicShelfRenderer[].musicResponsiveListItemRenderer
+// 三种都解析，否则搜索结果恒为空。
 function parseYtSearch(data: any): Array<Record<string, unknown>> {
   const out: Array<Record<string, unknown>> = [];
 
-  // 结构一：Web 客户端
+  const pushItem = (v: any) => {
+    const vid = v?.videoId;
+    if (!vid) return;
+    const title = v.title?.runs?.[0]?.text || v.title?.simpleText || "";
+    if (!title) return;
+    const artistRuns = v.ownerText?.runs || v.shortBylineText?.runs || [];
+    out.push({
+      id: vid,
+      name: title,
+      artist: artistRuns.map((r: any) => r.text).join(" "),
+      url_id: vid,
+      lyric_id: "",
+      duration: v.lengthText?.simpleText || "",
+      source: "youtube",
+    });
+  };
+
+  // Web 结构
   const webSections =
     data?.contents?.twoColumnSearchResultsRenderer?.primaryContents?.sectionListRenderer
       ?.contents || [];
-  for (const sec of webSections) {
-    const items = sec?.itemSectionRenderer?.contents || [];
-    for (const it of items) {
-      const v = it?.videoRenderer;
-      if (!v || !v.videoId) continue;
-      const title = v.title?.runs?.[0]?.text || "";
-      if (!title) continue;
-      out.push({
-        id: v.videoId,
-        name: title,
-        artist: (v.ownerText?.runs || []).map((r: any) => r.text).join(" "),
-        url_id: v.videoId,
-        lyric_id: "",
-        duration: v.lengthText?.simpleText || "",
-        source: "youtube",
-      });
-    }
-  }
+  // Android / Music 结构（顶层 sectionListRenderer）
+  const androidSections = data?.contents?.sectionListRenderer?.contents || [];
 
-  // 结构二：ANDROID_VR / Music 客户端
-  const musicSections = data?.contents?.sectionListRenderer?.contents || [];
-  for (const sec of musicSections) {
-    const items = sec?.musicShelfRenderer?.contents || [];
-    for (const it of items) {
+  for (const sec of [...webSections, ...androidSections]) {
+    // 普通/紧凑视频条目
+    for (const it of sec?.itemSectionRenderer?.contents || []) {
+      pushItem(it?.videoRenderer || it?.compactVideoRenderer);
+    }
+    // Music 应用条目
+    for (const it of sec?.musicShelfRenderer?.contents || []) {
       const m = it?.musicResponsiveListItemRenderer;
       const vid = m?.playlistItemData?.videoId;
       if (!m || !vid) continue;
