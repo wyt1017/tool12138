@@ -76,7 +76,28 @@ async function injahowUrl(id: string): Promise<string> {
   }
 }
 
-// 跨平台音源回退（gdstudio 中继版）：用「歌名+歌手」重搜取直链。
+// 酷我官方 antiserver 取直链（实测 2026-08：海外 Worker 出口可达，按 rid 返回真实资源直链，
+// 含付费曲 pay3_v2；gdstudio 的 types=url 取流端点已 503，故酷我取流统一走这里）。
+async function kuwoDirectUrl(rid: string | number): Promise<string> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 8000);
+  try {
+    const res = await fetch(
+      `http://antiserver.kuwo.cn/anti.s?type=convert_url&rid=MUSIC_${rid}&format=mp3&response=url`,
+      { headers: { "User-Agent": "Mozilla/5.0" }, signal: ctrl.signal }
+    );
+    if (!res.ok) return "";
+    const text = (await res.text()).trim();
+    if (!/^https?:\/\//.test(text)) return "";
+    return text.replace(/^http:\/\//, "https://");
+  } catch {
+    return "";
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// 跨平台音源回退（国内中继版）：用「歌名+歌手」重搜取直链。
 // 实测 gdstudio 仅支持 netease / kuwo 两个源（tencent/kugou 返回 source not supported），
 // 酷我版权库大，作为网易缺源时的补充效果最好。
 async function crossServerFallback(name: string, artist: string, trace?: string[]): Promise<string> {
@@ -91,13 +112,11 @@ async function crossServerFallback(name: string, artist: string, trace?: string[
     for (const it of list.slice(0, 3)) {
       const uid = it?.url_id ?? it?.id;
       if (uid == null) continue;
-      const u = await gdJson(`?types=url&source=${srv}&id=${encodeURIComponent(String(uid))}&br=128`);
-      let url = u?.url ? String(u.url) : "";
+      const url = await kuwoDirectUrl(uid);
       if (!url) {
         trace?.push(`url-${uid}: empty`);
         continue;
       }
-      url = url.replace(/^http:\/\//, "https://");
       return url;
     }
   }
