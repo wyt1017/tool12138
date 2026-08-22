@@ -501,12 +501,16 @@ export async function handleMusicRequest(query: URLSearchParams): Promise<Respon
   }
 
   if (type === "url") {
+    const dbg: Record<string, unknown> = { eapi: data?.url ? String(data.url) : "" };
     let url = data?.url ? String(data.url) : "";
     // 官方 eapi 接口在海外 Worker 出口下常被风控返回空 → 依次走国内中继：gdstudio → injahow
     if (!url) url = await fallbackSongUrl(id);
+    dbg.gdstudio = url ? "hit" : "miss";
     if (!url) url = await injahowUrl(id);
-    // 仍取不到 → 用歌名+歌手经 gdstudio 在腾讯/酷狗/酷我/百度重搜（国内中继，海外可达）
+    dbg.injahow = url ? "hit" : "miss";
+    // 仍取不到 → 用歌名+歌手经 gdstudio 在酷我重搜（国内中继，海外可达）
     if (!url && name) url = await crossServerFallback(name, artist);
+    dbg.kuwo = url ? "hit" : "miss";
     // 最后兜底：YouTube 重搜取源（数据中心 IP 常被 PoToken 拦截，命中概率低但保留）
     if (!url && name) {
       const vid = await ytFirstVideoId(name, artist);
@@ -515,6 +519,7 @@ export async function handleMusicRequest(query: URLSearchParams): Promise<Respon
         if (!url) url = await invidiousStream(vid);
       }
     }
+    if (query.get("debug") === "1") return json({ ...dbg, final: url ? "ok" : "empty" });
     if (!url) return json({ error: "no free source" }, 404);
     url = url.replace(/^http:\/\//, "https://");
     if (server === "netease") {
