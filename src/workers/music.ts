@@ -76,8 +76,9 @@ async function injahowUrl(id: string): Promise<string> {
   }
 }
 
-// 酷我官方 antiserver 取直链（实测 2026-08：海外 Worker 出口可达，按 rid 返回真实资源直链，
-// 含付费曲 pay3_v2；gdstudio 的 types=url 取流端点已 503，故酷我取流统一走这里）。
+// 酷我官方 antiserver 取直链（实测 2026-08：海外 Worker 出口可达）。
+// 陷阱：受限曲目会返回统一的 ~180KB 试听片段（非完整歌曲，播放出来是十几秒杂曲），
+// 因此取到直链后必须校验 Content-Length，小于阈值视为无效，由调用方继续尝试下一候选。
 async function kuwoDirectUrl(rid: string | number): Promise<string> {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 8000);
@@ -89,7 +90,12 @@ async function kuwoDirectUrl(rid: string | number): Promise<string> {
     if (!res.ok) return "";
     const text = (await res.text()).trim();
     if (!/^https?:\/\//.test(text)) return "";
-    return text.replace(/^http:\/\//, "https://");
+    const url = text.replace(/^http:\/\//, "https://");
+    // 校验资源完整性：HEAD 看 Content-Length（试听片段 ~180KB；完整歌 128kbps 下 ≥1MB）
+    const head = await fetch(url, { method: "HEAD", signal: ctrl.signal });
+    const len = Number(head.headers.get("Content-Length") || 0);
+    if (!head.ok || len < 600_000) return "";
+    return url;
   } catch {
     return "";
   } finally {
@@ -109,7 +115,7 @@ async function crossServerFallback(name: string, artist: string, trace?: string[
       continue;
     }
     trace?.push(`${srv}: search-${list.length}`);
-    for (const it of list.slice(0, 3)) {
+    for (const it of list.slice(0, 5)) {
       const uid = it?.url_id ?? it?.id;
       if (uid == null) continue;
       const url = await kuwoDirectUrl(uid);
