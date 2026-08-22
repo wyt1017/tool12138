@@ -79,17 +79,24 @@ async function injahowUrl(id: string): Promise<string> {
 // 跨平台音源回退（gdstudio 中继版）：用「歌名+歌手」重搜取直链。
 // 实测 gdstudio 仅支持 netease / kuwo 两个源（tencent/kugou 返回 source not supported），
 // 酷我版权库大，作为网易缺源时的补充效果最好。
-async function crossServerFallback(name: string, artist: string): Promise<string> {
+async function crossServerFallback(name: string, artist: string, trace?: string[]): Promise<string> {
   const keyword = `${name} ${artist}`.trim() || name;
   for (const srv of ["kuwo"]) {
     const list = await gdJson(`?types=search&source=${srv}&name=${encodeURIComponent(keyword)}`);
-    if (!Array.isArray(list)) continue;
+    if (!Array.isArray(list)) {
+      trace?.push(`${srv}: search-fail`);
+      continue;
+    }
+    trace?.push(`${srv}: search-${list.length}`);
     for (const it of list.slice(0, 3)) {
       const uid = it?.url_id ?? it?.id;
       if (uid == null) continue;
       const u = await gdJson(`?types=url&source=${srv}&id=${encodeURIComponent(String(uid))}&br=128`);
       let url = u?.url ? String(u.url) : "";
-      if (!url) continue;
+      if (!url) {
+        trace?.push(`url-${uid}: empty`);
+        continue;
+      }
       url = url.replace(/^http:\/\//, "https://");
       return url;
     }
@@ -379,6 +386,7 @@ export async function handleMusicRequest(query: URLSearchParams): Promise<Respon
       { name: "gdstudio-kuwo-search", url: "https://music-api.gdstudio.xyz/api.php?types=search&source=kuwo&name=%E5%B1%8B%E9%A1%B6" },
       { name: "gdstudio-tencent-search", url: "https://music-api.gdstudio.xyz/api.php?types=search&source=tencent&name=%E5%B1%8B%E9%A1%B6" },
       { name: "gdstudio-kugou-search", url: "https://music-api.gdstudio.xyz/api.php?types=search&source=kugou&name=%E5%B1%8B%E9%A1%B6" },
+      { name: "gdstudio-kuwo-url", url: "https://music-api.gdstudio.xyz/api.php?types=url&source=kuwo&id=109852&br=128" },
     ];
     const results = await Promise.all(
       targets.map(async (t) => {
@@ -509,8 +517,9 @@ export async function handleMusicRequest(query: URLSearchParams): Promise<Respon
     if (!url) url = await injahowUrl(id);
     dbg.injahow = url ? "hit" : "miss";
     // 仍取不到 → 用歌名+歌手经 gdstudio 在酷我重搜（国内中继，海外可达）
-    if (!url && name) url = await crossServerFallback(name, artist);
-    dbg.kuwo = url ? "hit" : "miss";
+    const kuwoTrace: string[] = [];
+    if (!url && name) url = await crossServerFallback(name, artist, kuwoTrace);
+    dbg.kuwo = kuwoTrace.join(" | ") || (url ? "hit" : "skip");
     // 最后兜底：YouTube 重搜取源（数据中心 IP 常被 PoToken 拦截，命中概率低但保留）
     if (!url && name) {
       const vid = await ytFirstVideoId(name, artist);
