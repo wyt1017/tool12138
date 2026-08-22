@@ -382,11 +382,12 @@ export async function handleMusicRequest(query: URLSearchParams): Promise<Respon
   if (server === "__probe") {
     const targets: Array<{ name: string; url: string; init?: RequestInit }> = [
       { name: "injahow-netease-url", url: "https://api.injahow.cn/meting/?server=netease&type=url&id=5257138" },
+      { name: "injahow-netease-vip", url: "https://api.injahow.cn/meting/?server=netease&type=url&id=186016" },
       { name: "gdstudio-netease-url", url: "https://music-api.gdstudio.xyz/api.php?types=url&id=5257138&source=netease&br=128" },
+      { name: "gdstudio-netease-vip", url: "https://music-api.gdstudio.xyz/api.php?types=url&id=186016&source=netease&br=128" },
       { name: "gdstudio-kuwo-search", url: "https://music-api.gdstudio.xyz/api.php?types=search&source=kuwo&name=%E5%B1%8B%E9%A1%B6" },
-      { name: "gdstudio-tencent-search", url: "https://music-api.gdstudio.xyz/api.php?types=search&source=tencent&name=%E5%B1%8B%E9%A1%B6" },
-      { name: "gdstudio-kugou-search", url: "https://music-api.gdstudio.xyz/api.php?types=search&source=kugou&name=%E5%B1%8B%E9%A1%B6" },
-      { name: "gdstudio-kuwo-url", url: "https://music-api.gdstudio.xyz/api.php?types=url&source=kuwo&id=109852&br=128" },
+      { name: "antiserver-kuwo-228908", url: "http://antiserver.kuwo.cn/anti.s?type=convert_url&rid=MUSIC_228908&format=mp3&response=url" },
+      { name: "antiserver-kuwo-109852", url: "http://antiserver.kuwo.cn/anti.s?type=convert_url&rid=MUSIC_109852&format=mp3&response=url" },
     ];
     const results = await Promise.all(
       targets.map(async (t) => {
