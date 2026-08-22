@@ -277,6 +277,10 @@ function json(data: unknown, status = 200): Response {
 
 export async function handleMusicRequest(query: URLSearchParams): Promise<Response> {
   const server = query.get("server") || "netease";
+
+  // 版本探针：用于排查「部署成功但线上行为像旧代码」的问题
+  if (server === "__ping") return json({ ok: true, build: "v20260822b" });
+
   const type = query.get("type") || "search";
   const id = (query.get("id") || "").trim();
   // 跨平台音源回退需要歌名/歌手做「以歌搜歌」
