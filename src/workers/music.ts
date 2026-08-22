@@ -13,69 +13,76 @@ const SERVERS = ["netease", "tencent", "kugou", "baidu", "kuwo", "youtube"];
 const TYPES = ["search", "song", "album", "artist", "playlist", "lrc", "url", "pic"];
 
 // 网易云音源回退源：官方 eapi 在 Cloudflare Workers 海外出口下对音源接口风控返回空，
-// 这里回退到公共网易云代理实例（其服务器从国内获取音源，返回可直连的 CDN 地址）。
-const FALLBACK_URL_API = "https://music-api.gdstudio.xyz/api.php";
-
+// 这里回退到 gdstudio 公共中继（其服务器从国内获取音源，返回可直连的 CDN 地址）。
 async function fallbackSongUrl(id: string): Promise<string> {
-  const url = `${FALLBACK_URL_API}?types=url&id=${encodeURIComponent(id)}&source=netease&br=128`;
+  const j = await gdJson(`?types=url&id=${encodeURIComponent(id)}&source=netease&br=128`);
+  return j?.url ? String(j.url) : "";
+}
+
+// ── 国内中转型接口（实测 2026-08：数据中心 IP 下唯一可行的海外路线） ──
+// YouTube/Piped/Invidious/Cobalt 均对 Cloudflare Worker 出口 IP 封锁（PoToken/403/宕机），
+// 而 gdstudio / injahow 由国内服务器取源、返回海外可直连的 CDN 地址，实测可用。
+
+// gdstudio 多源中继：支持 netease/tencent/kugou/kuwo/baidu 搜索与取直链
+const GDSTUDIO = "https://music-api.gdstudio.xyz/api.php";
+
+async function gdJson(path: string): Promise<any | null> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 8000);
   try {
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 12000);
-    const res = await fetch(url, { signal: ctrl.signal, headers: { "User-Agent": "Mozilla/5.0" } });
-    clearTimeout(timer);
-    if (!res.ok) return "";
-    const j = (await res.json()) as { url?: string };
-    return j.url ? String(j.url) : "";
+    const res = await fetch(`${GDSTUDIO}${path}`, {
+      headers: { "User-Agent": "Mozilla/5.0" },
+      signal: ctrl.signal,
+    });
+    if (!res.ok) return null;
+    return await res.json();
   } catch {
-    return "";
+    return null;
+  } finally {
+    clearTimeout(timer);
   }
 }
 
-// 给单次 Promise 加超时，避免某个上游平台无响应导致整个请求挂起
-function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
-  return Promise.race([
-    p,
-    new Promise<never>((_, reject) => {
-      const t = setTimeout(() => reject(new Error("timeout")), ms);
-      // unref 让超时定时器不阻塞进程退出（lib/运行时均支持）
-      const anyTimer = t as any;
-      if (typeof anyTimer.unref === "function") anyTimer.unref();
-    }),
-  ]);
+// injahow 网易中继：type=url 会 302 到网易 CDN mp3，res.url 即最终直链
+async function injahowUrl(id: string): Promise<string> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 10000);
+  try {
+    const res = await fetch(`https://api.injahow.cn/meting/?server=netease&type=url&id=${encodeURIComponent(id)}`, {
+      headers: { "User-Agent": "Mozilla/5.0" },
+      signal: ctrl.signal,
+      redirect: "follow",
+    });
+    if (!res.ok) return "";
+    const ct = res.headers.get("Content-Type") || "";
+    if (ct.includes("json")) {
+      const j = (await res.json()) as { url?: string };
+      return j.url ? String(j.url) : "";
+    }
+    // 响应体是音频（跟随 302 后的 CDN 直链），取最终 URL
+    return res.url || "";
+  } catch {
+    return "";
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
-// 跨平台音源回退：netease 官方在海外 Worker 出口下对部分歌曲（含 VIP 限制）取不到音源时，
-// 用「歌名 + 歌手」在腾讯/酷狗/百度/酷我依次重搜，返回第一个可播放的音源，
-// 显著提高可播歌曲覆盖率（解决「太多音乐没有音源」）。
+// 跨平台音源回退（gdstudio 中继版）：用「歌名+歌手」在腾讯/酷狗/酷我/百度依次重搜，
+// 返回第一个可播放的音源。国内服务器取源，不受海外出口 IP 门禁影响。
 async function crossServerFallback(name: string, artist: string): Promise<string> {
   const keyword = `${name} ${artist}`.trim() || name;
-  const targets = ["tencent", "kugou", "baidu", "kuwo"];
-  for (const srv of targets) {
-    try {
-      const m = new Meting(srv);
-      m.format(true);
-      const raw = await withTimeout(m.search(keyword, { type: 1, limit: 5 }), 8000);
-      const list = JSON.parse(raw) as Array<{
-        id: number | string;
-        url_id?: number | string;
-      }>;
-      if (!Array.isArray(list) || list.length === 0) continue;
-      for (const it of list) {
-        const uid = it.url_id ?? it.id;
-        if (uid == null) continue;
-        try {
-          const urlRaw = await withTimeout(m.url(String(uid), 128), 8000);
-          const u = JSON.parse(urlRaw) as { url?: string };
-          let url = u?.url ? String(u.url) : "";
-          if (!url) continue;
-          url = url.replace(/^http:\/\//, "https://");
-          return url;
-        } catch {
-          continue;
-        }
-      }
-    } catch {
-      continue;
+  for (const srv of ["tencent", "kugou", "kuwo", "baidu"]) {
+    const list = await gdJson(`?types=search&source=${srv}&name=${encodeURIComponent(keyword)}`);
+    if (!Array.isArray(list)) continue;
+    for (const it of list.slice(0, 3)) {
+      const uid = it?.url_id ?? it?.id;
+      if (uid == null) continue;
+      const u = await gdJson(`?types=url&source=${srv}&id=${encodeURIComponent(String(uid))}&br=128`);
+      let url = u?.url ? String(u.url) : "";
+      if (!url) continue;
+      url = url.replace(/^http:\/\//, "https://");
+      return url;
     }
   }
   return "";
@@ -360,30 +367,9 @@ export async function handleMusicRequest(query: URLSearchParams): Promise<Respon
     const targets: Array<{ name: string; url: string; init?: RequestInit }> = [
       { name: "injahow-netease-url", url: "https://api.injahow.cn/meting/?server=netease&type=url&id=5257138" },
       { name: "gdstudio-netease-url", url: "https://music-api.gdstudio.xyz/api.php?types=url&id=5257138&source=netease&br=128" },
-      { name: "gdstudio-kuwo-search", url: "https://music-api.gdstudio.xyz/api.php?types=search&source=kuwo&keyword=%E5%B1%8B%E9%A1%B6" },
-      { name: "piped-kavin", url: "https://pipedapi.kavin.rocks/streams/lHT_F3h6_BY" },
-      { name: "piped-adminforge", url: "https://pipedapi.adminforge.de/streams/lHT_F3h6_BY" },
-      { name: "piped-private.coffee", url: "https://api.piped.private.coffee/streams/lHT_F3h6_BY" },
-      { name: "invidious-yewtu", url: "https://yewtu.be/api/v1/videos/lHT_F3h6_BY?fields=adaptiveFormats" },
-      { name: "invidious-nerdvpn", url: "https://invidious.nerdvpn.de/api/v1/videos/lHT_F3h6_BY?fields=adaptiveFormats" },
-      {
-        name: "cobalt-kwiatekmiki",
-        url: "https://cobalt-api.kwiatekmiki.com/",
-        init: {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify({ url: "https://www.youtube.com/watch?v=lHT_F3h6_BY", downloadMode: "audio" }),
-        },
-      },
-      {
-        name: "cobalt-capi.3kh0",
-        url: "https://capi.3kh0.net/",
-        init: {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify({ url: "https://www.youtube.com/watch?v=lHT_F3h6_BY", downloadMode: "audio" }),
-        },
-      },
+      { name: "gdstudio-kuwo-search", url: "https://music-api.gdstudio.xyz/api.php?types=search&source=kuwo&name=%E5%B1%8B%E9%A1%B6" },
+      { name: "gdstudio-tencent-search", url: "https://music-api.gdstudio.xyz/api.php?types=search&source=tencent&name=%E5%B1%8B%E9%A1%B6" },
+      { name: "gdstudio-kugou-search", url: "https://music-api.gdstudio.xyz/api.php?types=search&source=kugou&name=%E5%B1%8B%E9%A1%B6" },
     ];
     const results = await Promise.all(
       targets.map(async (t) => {
@@ -507,16 +493,16 @@ export async function handleMusicRequest(query: URLSearchParams): Promise<Respon
 
   if (type === "url") {
     let url = data?.url ? String(data.url) : "";
-    // 官方 eapi 接口在海外 Worker 出口下常被风控返回空，先回退到公共网易云代理实例
+    // 官方 eapi 接口在海外 Worker 出口下常被风控返回空 → 依次走国内中继：gdstudio → injahow
     if (!url) url = await fallbackSongUrl(id);
-    // 仍取不到 → 用歌名+歌手在其它国内平台重搜，提升可播覆盖率
+    if (!url) url = await injahowUrl(id);
+    // 仍取不到 → 用歌名+歌手经 gdstudio 在腾讯/酷狗/酷我/百度重搜（国内中继，海外可达）
     if (!url && name) url = await crossServerFallback(name, artist);
-    // 国内平台均被海外地区门禁挡下 → 用歌名+歌手到 YouTube 重搜取源（海外可达）
+    // 最后兜底：YouTube 重搜取源（数据中心 IP 常被 PoToken 拦截，命中概率低但保留）
     if (!url && name) {
       const vid = await ytFirstVideoId(name, artist);
       if (vid) {
         url = await youtubeStreamByVid(vid);
-        // YouTube 官方取流失败 → 退到 Invidious 镜像（多实例）按同一视频 id 取流
         if (!url) url = await invidiousStream(vid);
       }
     }
