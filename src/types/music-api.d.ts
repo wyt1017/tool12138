@@ -1,11 +1,16 @@
 // @meting/core 与 aes-js 无官方类型声明，这里提供最小环境声明供类型检查使用
 declare module "@meting/core" {
+  export interface MetingProvider {
+    name: string;
+    [key: string]: unknown;
+  }
+
   export default class Meting {
     constructor(server?: string);
-    provider: any;
+    provider: MetingProvider;
     header: Record<string, string>;
     isFormat: boolean;
-    temp: Record<string, any>;
+    temp: Record<string, unknown>;
     site(server: string): this;
     cookie(c: string): this;
     format(v: boolean): this;

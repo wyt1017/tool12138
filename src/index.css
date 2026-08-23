@@ -59,10 +59,50 @@ h1, h2, h3, h4, h5, h6 {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* --cat-color 由卡片组件按分类注入；未设置时回退到品牌青色 */
 .glass-card:hover {
-  border-color: rgba(0, 217, 255, 0.2);
+  border-color: color-mix(in srgb, var(--cat-color, #00d9ff) 30%, transparent);
   transform: translateY(-4px);
-  box-shadow: 0 20px 60px rgba(0, 217, 255, 0.08), 0 8px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 60px color-mix(in srgb, var(--cat-color, #00d9ff) 14%, transparent),
+    0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* 工具卡片：分类色驱动 hover 效果，--cat-color 由 ToolCard 注入 */
+.tool-title {
+  transition: color 0.3s ease;
+}
+.glass-card:hover .tool-title {
+  color: var(--cat-color, #00d9ff);
+}
+.tool-icon {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.glass-card:hover .tool-icon {
+  transform: scale(1.1);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--cat-color, #00d9ff) 35%, transparent);
+}
+
+/* 热门工具紧凑卡片：同样由 --cat-color 驱动 hover */
+.hot-card {
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+.hot-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: color-mix(in srgb, var(--cat-color, #00d9ff) 25%, transparent);
+}
+.hot-title {
+  transition: color 0.3s ease;
+}
+.hot-card:hover .hot-title {
+  color: var(--cat-color, #00d9ff);
+}
+.hot-cta {
+  opacity: 0;
+  transition: color 0.3s ease, opacity 0.3s ease;
+}
+.hot-card:hover .hot-cta {
+  color: var(--cat-color, #00d9ff);
+  opacity: 1;
 }
 
 /* 渐变文字 */

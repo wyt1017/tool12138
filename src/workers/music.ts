@@ -6,6 +6,79 @@ import Meting from "@meting/core";
 import aesjs from "aes-js";
 import { createHash } from "crypto";
 
+// ── 外部接口 JSON 的类型（替代 any，满足 eslint no-explicit-any） ──
+// 网易云 / gdstudio / injahow / InnerTube / Invidious 等未建模 JSON：
+// 以 Json（任意键 → unknown）为边界，深层访问时按需收窄为下方具名结构。
+type Json = Record<string, unknown>;
+
+// YouTube 搜索结果（InnerTube 三种客户端结构通用）
+interface TextRun {
+  text?: string;
+}
+interface TextBlock {
+  runs?: TextRun[];
+  simpleText?: string;
+}
+interface VideoRenderer {
+  videoId?: string;
+  title?: TextBlock;
+  ownerText?: { runs?: TextRun[] };
+  shortBylineText?: { runs?: TextRun[] };
+  lengthText?: { simpleText?: string };
+}
+interface MusicResponsiveListItem {
+  playlistItemData?: { videoId?: string };
+  flexColumns?: Array<{
+    musicResponsiveListItemFlexColumnRenderer?: { text?: TextBlock };
+  }>;
+}
+interface SearchSection {
+  itemSectionRenderer?: {
+    contents?: Array<{ videoRenderer?: VideoRenderer; compactVideoRenderer?: VideoRenderer }>;
+  };
+  musicShelfRenderer?: {
+    contents?: Array<{ musicResponsiveListItemRenderer?: MusicResponsiveListItem }>;
+  };
+}
+interface SearchContents {
+  twoColumnSearchResultsRenderer?: {
+    primaryContents?: { sectionListRenderer?: { contents?: SearchSection[] } };
+  };
+  sectionListRenderer?: { contents?: SearchSection[] };
+}
+
+// 音频流 / 播放响应（InnerTube player + Invidious 共用字段）
+interface AudioFormat {
+  url?: string;
+  mimeType?: string;
+  type?: string;
+  bitrate?: number;
+  itag?: number;
+}
+interface StreamingData {
+  adaptiveFormats?: AudioFormat[];
+}
+interface PlayerResponse {
+  streamingData?: StreamingData;
+  playabilityStatus?: { status?: string; reason?: string };
+}
+interface InvidiousVideo {
+  adaptiveFormats?: AudioFormat[];
+}
+
+// 网易云 eapi 加密所需的最小结构
+interface EapiRequest {
+  url: string;
+  body: unknown;
+}
+interface NeteaseSong {
+  id: string | number;
+  name?: string;
+  al?: { name?: string; picUrl?: string };
+  ar?: Array<{ name?: string }>;
+  dt?: number;
+}
+
 // url/lrc 接口的访问令牌（前端同源请求携带；防止接口被外部无谓调用）
 const MUSIC_TOKEN = "same-toolbox-music-2026";
 
@@ -26,7 +99,7 @@ async function fallbackSongUrl(id: string): Promise<string> {
 // gdstudio 多源中继：支持 netease/tencent/kugou/kuwo/baidu 搜索与取直链
 const GDSTUDIO = "https://music-api.gdstudio.xyz/api.php";
 
-async function gdJson(path: string): Promise<any | null> {
+async function gdJson(path: string): Promise<Json | null> {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 8000);
   try {
@@ -140,7 +213,7 @@ const YT_CONTEXT = { client: { clientName: "ANDROID_VR", clientVersion: "1.24.60
 // 调试开关：debug=1 时 ytApi 把上游错误状态带出来，便于排查 Worker 内调 InnerTube 失败的原因
 let YT_DEBUG = false;
 
-async function ytApi(endpoint: string, payload: Record<string, unknown>): Promise<any> {
+async function ytApi(endpoint: string, payload: Record<string, unknown>): Promise<Json | null> {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 8000);
   try {
@@ -168,16 +241,16 @@ async function ytApi(endpoint: string, payload: Record<string, unknown>): Promis
 
 // 从播放响应里挑出码率最高的纯音频流（webm/opus 或 mp4）；
 // ANDROID_VR 直接返回已签名 URL，无需再解析 cipher。
-function pickYtAudio(data: any): string {
-  const fmts: Array<any> = data?.streamingData?.adaptiveFormats || [];
-  let best: any = null;
+function pickYtAudio(data: PlayerResponse): string {
+  const fmts = data.streamingData?.adaptiveFormats || [];
+  let best: AudioFormat | null = null;
   for (const f of fmts) {
     const mime = f.mimeType || "";
     if (!/^audio\/(webm|mp4|ogg)/.test(mime)) continue;
     if (!f.url) continue;
     if (!best || (f.bitrate || 0) > (best.bitrate || 0)) best = f;
   }
-  return best ? String(best.url) : "";
+  return best ? best.url || "" : "";
 }
 
 // 解析搜索结果，输出与其它源一致的字段供前端复用。
@@ -186,10 +259,10 @@ function pickYtAudio(data: any): string {
 //  - ANDROID_VR：contents.sectionListRenderer[].itemSectionRenderer[].compactVideoRenderer（实测）
 //  - Music 应用：contents.sectionListRenderer[].musicShelfRenderer[].musicResponsiveListItemRenderer
 // 三种都解析，否则搜索结果恒为空。
-function parseYtSearch(data: any): Array<Record<string, unknown>> {
+function parseYtSearch(data: Json | null): Array<Record<string, unknown>> {
   const out: Array<Record<string, unknown>> = [];
 
-  const pushItem = (v: any) => {
+  const pushItem = (v?: VideoRenderer) => {
     const vid = v?.videoId;
     if (!vid) return;
     const title = v.title?.runs?.[0]?.text || v.title?.simpleText || "";
@@ -198,7 +271,7 @@ function parseYtSearch(data: any): Array<Record<string, unknown>> {
     out.push({
       id: vid,
       name: title,
-      artist: artistRuns.map((r: any) => r.text).join(" "),
+      artist: artistRuns.map((r) => r.text).join(" "),
       url_id: vid,
       lyric_id: "",
       duration: v.lengthText?.simpleText || "",
@@ -206,12 +279,13 @@ function parseYtSearch(data: any): Array<Record<string, unknown>> {
     });
   };
 
+  const contents = data?.contents as SearchContents | undefined;
   // Web 结构
   const webSections =
-    data?.contents?.twoColumnSearchResultsRenderer?.primaryContents?.sectionListRenderer
+    contents?.twoColumnSearchResultsRenderer?.primaryContents?.sectionListRenderer
       ?.contents || [];
   // Android / Music 结构（顶层 sectionListRenderer）
-  const androidSections = data?.contents?.sectionListRenderer?.contents || [];
+  const androidSections = contents?.sectionListRenderer?.contents || [];
 
   for (const sec of [...webSections, ...androidSections]) {
     // 普通/紧凑视频条目
@@ -224,17 +298,17 @@ function parseYtSearch(data: any): Array<Record<string, unknown>> {
       const vid = m?.playlistItemData?.videoId;
       if (!m || !vid) continue;
       const flex = (m.flexColumns || []).map(
-        (c: any) => c?.musicResponsiveListItemFlexColumnRenderer?.text?.runs || []
+        (c) => c?.musicResponsiveListItemFlexColumnRenderer?.text?.runs || []
       );
-      const title = (flex[0] || []).map((r: any) => r.text).join("");
+      const title = (flex[0] || []).map((r) => r.text).join("");
       if (!title) continue;
       out.push({
         id: vid,
         name: title,
-        artist: (flex[1] || []).map((r: any) => r.text).join(" "),
+        artist: (flex[1] || []).map((r) => r.text).join(" "),
         url_id: vid,
         lyric_id: "",
-        duration: (flex[2] || []).map((r: any) => r.text).join(""),
+        duration: (flex[2] || []).map((r) => r.text).join(""),
         source: "youtube",
       });
     }
@@ -255,7 +329,7 @@ async function ytFirstVideoId(name: string, artist: string): Promise<string> {
 // 注意：数据中心 IP（Cloudflare Worker 出口）会被 YouTube 要求 PoToken 校验
 // （实测 ANDROID_VR player 返回 LOGIN_REQUIRED "Sign in to confirm you're not a bot"），
 // 因此按序轮试多个客户端：嵌入式 TV 客户端（可绕过 bot 校验）→ ANDROID_VR → ANDROID。
-async function ytPlayerData(vid: string): Promise<{ data: any; client: string } | null> {
+async function ytPlayerData(vid: string): Promise<{ data: PlayerResponse; client: string } | null> {
   const clients: Array<{ name: string; version: string; embed?: boolean; sdk?: number }> = [
     { name: "TVHTML5_SIMPLY_EMBEDDED_PLAYER", version: "2.0", embed: true },
     { name: "ANDROID_VR", version: "1.24.60" },
@@ -272,8 +346,9 @@ async function ytPlayerData(vid: string): Promise<{ data: any; client: string } 
       contentCheckOk: true,
       racyCheckOk: true,
     });
-    if (data && (data.streamingData?.adaptiveFormats || []).some((f: any) => f.url)) {
-      return { data, client: c.name };
+    const resp = data as PlayerResponse | null;
+    if (resp && (resp.streamingData?.adaptiveFormats || []).some((f) => f.url)) {
+      return { data: resp, client: c.name };
     }
   }
   return null;
@@ -294,7 +369,7 @@ const INVIDIOUS_INSTANCES = [
   "https://inv.tux.pizza",
 ];
 
-async function invidiousFetch(instance: string, path: string): Promise<any | null> {
+async function invidiousFetch(instance: string, path: string): Promise<Json | null> {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 8000);
   try {
@@ -312,7 +387,7 @@ async function invidiousFetch(instance: string, path: string): Promise<any | nul
 }
 
 // 在多个镜像实例间按序尝试，命中第一个可用的即返回；全部失败返回 null
-async function invidiousBest(action: (instance: string) => Promise<any | null>): Promise<any | null> {
+async function invidiousBest(action: (instance: string) => Promise<Json | null>): Promise<Json | null> {
   for (const inst of INVIDIOUS_INSTANCES) {
     const out = await action(inst);
     if (out != null) return out;
@@ -321,16 +396,16 @@ async function invidiousBest(action: (instance: string) => Promise<any | null>):
 }
 
 // 从 Invidious 视频详情里挑出码率最高的纯音频流
-function pickInvAudio(video: any): string {
-  const fmts: Array<any> = video?.adaptiveFormats || [];
-  let best: any = null;
+function pickInvAudio(video: InvidiousVideo | null): string {
+  const fmts = video?.adaptiveFormats || [];
+  let best: AudioFormat | null = null;
   for (const f of fmts) {
     const mime = f.type || f.mimeType || "";
     if (!/^audio\//.test(mime)) continue;
     if (!f.url) continue;
     if (!best || (f.bitrate || 0) > (best.bitrate || 0)) best = f;
   }
-  return best ? String(best.url) : "";
+  return best ? best.url || "" : "";
 }
 
 // 用视频 id 在 Invidious 镜像取流（多实例按序尝试）
@@ -340,7 +415,7 @@ async function invidiousStream(vid: string): Promise<string> {
   const detail = await invidiousBest((inst) =>
     invidiousFetch(inst, `/api/v1/videos/${encodeURIComponent(vid)}?fields=adaptiveFormats,title,lengthSeconds`)
   );
-  return pickInvAudio(detail);
+  return pickInvAudio(detail as InvidiousVideo | null);
 }
 
 // 针对 Netease provider 做两处适配：
@@ -349,10 +424,13 @@ async function invidiousStream(vid: string): Promise<string> {
 function patchNetease(meting: Meting) {
   const provider = meting.provider;
   if (!provider || provider.name !== "netease") return;
-  const proto = Object.getPrototypeOf(provider);
+  const proto = Object.getPrototypeOf(provider) as {
+    __patchedEapi?: boolean;
+    eapiEncrypt?: (req: EapiRequest) => EapiRequest;
+  };
   if (!proto.__patchedEapi) {
     proto.__patchedEapi = true;
-    proto.eapiEncrypt = (req: any) => {
+    proto.eapiEncrypt = (req: EapiRequest): EapiRequest => {
       const bodyStr = JSON.stringify(req.body);
       const path = req.url.replace(/https?:\/\/[^/]+/, "");
       const sign = createHash("md5")
@@ -367,12 +445,12 @@ function patchNetease(meting: Meting) {
       return req;
     };
   }
-  provider.format = (t: any) => {
+  provider.format = (t: NeteaseSong) => {
     const al = t.al || {};
     return {
       id: t.id,
       name: t.name,
-      artist: (t.ar || []).map((a: any) => a.name),
+      artist: (t.ar || []).map((a) => a.name),
       album: al.name || "",
       url_id: t.id,
       lyric_id: t.id,
@@ -474,7 +552,7 @@ export async function handleMusicRequest(query: URLSearchParams): Promise<Respon
           playability: r?.data?.playabilityStatus?.status,
           reason: r?.data?.playabilityStatus?.reason,
           formatCount: fmts.length,
-          sample: fmts.slice(0, 3).map((f: any) => ({
+          sample: fmts.slice(0, 3).map((f) => ({
             itag: f.itag,
             mime: f.mimeType,
             hasUrl: !!f.url,
@@ -528,9 +606,9 @@ export async function handleMusicRequest(query: URLSearchParams): Promise<Respon
     return json({ error: "upstream error", detail: String(e) }, 502);
   }
 
-  let data: any;
+  let data: Record<string, unknown> | null;
   try {
-    data = JSON.parse(raw);
+    data = JSON.parse(raw) as Record<string, unknown>;
   } catch {
     data = null;
   }

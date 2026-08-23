@@ -19,7 +19,7 @@ export default function HotTools() {
               <Flame size={15} />
               热门推荐
             </div>
-            <h2 className="font-['Syne'] font-bold text-2xl text-white">
+            <h2 className="font-display font-bold text-2xl text-white">
               最受欢迎的工具
             </h2>
           </div>
@@ -27,34 +27,36 @@ export default function HotTools() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {hotTools.map((tool, index) => {
               const category = categories.find((c) => c.key === tool.category);
+              const catColor = category?.color ?? '#00d9ff';
               return (
                 <motion.div
                   key={tool.id}
                   initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  transition={{ duration: 0.4, delay: Math.min(index * 0.1, 0.5) }}
                 >
                   <Link
                     to={tool.path}
-                    className="block group p-5 rounded-xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.06] hover:border-[#00d9ff]/20 transition-all duration-300"
+                    className="hot-card block group p-5 rounded-xl bg-white/[0.03] border border-white/5"
+                    style={{ ['--cat-color' as string]: catColor } as React.CSSProperties}
                   >
                     <div
                       className="w-10 h-10 rounded-lg flex items-center justify-center mb-4 transition-transform group-hover:scale-110"
                       style={{
                         backgroundColor: category?.bgColor,
-                        color: category?.color,
+                        color: catColor,
                       }}
                     >
                       <DynamicIcon name={tool.icon} size={20} />
                     </div>
-                    <h4 className="font-['Syne'] font-semibold text-white mb-1.5 group-hover:text-[#00d9ff] transition-colors">
+                    <h4 className="hot-title font-display font-semibold text-white mb-1.5">
                       {tool.name}
                     </h4>
                     <p className="text-xs text-[#666] line-clamp-2 leading-relaxed">
                       {tool.description}
                     </p>
-                    <div className="mt-3 flex items-center gap-1 text-xs text-[#00d9ff] opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="hot-cta mt-3 flex items-center gap-1 text-xs">
                       立即使用 <ArrowRight size={12} />
                     </div>
                   </Link>
