@@ -217,7 +217,8 @@ export default function MusicMiniPlayer() {
             <img
               src={currentSong.cover}
               alt={currentSong.name}
-              className={`w-full h-full object-cover ${
+              draggable={false}
+              className={`w-full h-full object-cover pointer-events-none ${
                 playing ? "cover-spin" : ""
               }`}
             />
