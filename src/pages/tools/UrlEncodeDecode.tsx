@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link2, Copy, ArrowRightLeft, Code } from 'lucide-react';
 
@@ -6,15 +6,10 @@ export default function UrlEncodeDecode() {
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
   const [mode, setMode] = useState<'encode' | 'decode'>('encode');
-  const isSwappingRef = useRef(false);
 
   useEffect(() => {
     if (!input) {
       setOutput('');
-      return;
-    }
-    if (isSwappingRef.current) {
-      isSwappingRef.current = false;
       return;
     }
 
@@ -30,10 +25,24 @@ export default function UrlEncodeDecode() {
   }, [input, mode]);
 
   const swapInOut = () => {
-    isSwappingRef.current = true;
-    setInput(output);
-    setOutput('');
-    setMode(mode === 'encode' ? 'decode' : 'encode');
+    const nextMode = mode === 'encode' ? 'decode' : 'encode';
+    setMode(nextMode);
+    // 将当前输出内容作为新输入，立即用新模式计算
+    const nextInput = output;
+    setInput(nextInput);
+    if (!nextInput) {
+      setOutput('');
+      return;
+    }
+    try {
+      if (nextMode === 'encode') {
+        setOutput(encodeURIComponent(nextInput));
+      } else {
+        setOutput(decodeURIComponent(nextInput));
+      }
+    } catch {
+      setOutput('错误：无效的输入格式');
+    }
   };
 
   const copyResult = () => {
@@ -50,9 +59,9 @@ export default function UrlEncodeDecode() {
           <div className="w-10 h-10 rounded-xl bg-[#a78bfa]/15 flex items-center justify-center">
             <Link2 size={20} className="text-[#a78bfa]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">URL 编解码</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">URL 编解码</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">URL编码（encodeURIComponent）和解码（decodeURIComponent）</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">URL编码（encodeURIComponent）和解码（decodeURIComponent）</p>
       </motion.div>
 
       {/* Mode Toggle */}
@@ -60,7 +69,7 @@ export default function UrlEncodeDecode() {
         <button
           onClick={() => setMode('encode')}
           className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
-            mode === 'encode' ? 'bg-[#a78bfa]/15 text-[#a78bfa]' : 'bg-white/5 text-[#666]'
+            mode === 'encode' ? 'bg-[#a78bfa]/15 text-[#a78bfa]' : 'bg-[var(--bg-hover)] text-[var(--text-faint)]'
           }`}
         >
           <Code size={14} className="inline mr-1.5" /> URL 编码
@@ -68,7 +77,7 @@ export default function UrlEncodeDecode() {
         <button
           onClick={() => setMode('decode')}
           className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
-            mode === 'decode' ? 'bg-[#a78bfa]/15 text-[#a78bfa]' : 'bg-white/5 text-[#666]'
+            mode === 'decode' ? 'bg-[#a78bfa]/15 text-[#a78bfa]' : 'bg-[var(--bg-hover)] text-[var(--text-faint)]'
           }`}
         >
           <Code size={14} className="inline mr-1.5" /> URL 解码
@@ -79,25 +88,25 @@ export default function UrlEncodeDecode() {
         {/* Input */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
           <div className="flex items-center justify-between mb-2 ml-1">
-            <label className="text-sm font-medium text-[#a8b2c1]">{mode === 'encode' ? '原始文本' : '编码字符串'}</label>
-            <span className="text-xs text-[#555]">{input.length} 字符</span>
+            <label className="text-sm font-medium text-[var(--text-secondary)]">{mode === 'encode' ? '原始文本' : '编码字符串'}</label>
+            <span className="text-xs text-[var(--text-faint)]">{input.length} 字符</span>
           </div>
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder={mode === 'encode' ? '输入要编码的文本或URL...' : '粘贴已编码的URL字符串...'}
             aria-label={mode === 'encode' ? '原始文本' : '编码字符串'}
-            className="tool-area w-full h-[320px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#a78bfa]/30 transition-colors placeholder:text-[#333] font-mono"
+            className="tool-area w-full h-[320px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#a78bfa]/30 transition-colors placeholder:text-[var(--text-faint)] font-mono"
           />
         </motion.div>
 
         {/* Output */}
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
           <div className="flex items-center justify-between mb-2 ml-1">
-            <label className="text-sm font-medium text-[#a8b2c1]">{mode === 'encode' ? '编码结果' : '解码结果'}</label>
+            <label className="text-sm font-medium text-[var(--text-secondary)]">{mode === 'encode' ? '编码结果' : '解码结果'}</label>
             {output && (
               <div className="flex items-center gap-2">
-                <span className={`text-xs ${output.startsWith('错误') ? 'text-red-400' : 'text-[#555]'}`}>
+                <span className={`text-xs ${output.startsWith('错误') ? 'text-[var(--danger)]' : 'text-[var(--text-faint)]'}`}>
                   {output.length} 字符
                 </span>
                 <button onClick={copyResult} className="btn-secondary !py-1.5 !px-3 text-xs">
@@ -111,8 +120,8 @@ export default function UrlEncodeDecode() {
             value={output}
             placeholder="输出结果将显示在这里..."
             aria-label={mode === 'encode' ? '编码结果' : '解码结果'}
-            className={`tool-area w-full h-[320px] p-5 text-sm leading-relaxed resize-none outline-none font-mono placeholder:text-[#333] ${
-              output.startsWith('错误') ? 'text-red-400' : 'text-[#a8b2c1]'
+            className={`tool-area w-full h-[320px] p-5 text-sm leading-relaxed resize-none outline-none font-mono placeholder:text-[var(--text-faint)] ${
+              output.startsWith('错误') ? 'text-[var(--danger)]' : 'text-[var(--text-secondary)]'
             }`}
           />
         </motion.div>

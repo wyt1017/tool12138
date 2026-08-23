@@ -32,9 +32,9 @@ function CheckboxOption({ checked, onChange, label, children }: CheckboxOptionPr
           checked ? 'bg-[#6bcb77] border-[#6bcb77]' : 'border-[#444] group-hover:border-[#666]'
         }`}
       >
-        {checked && <MinusCircle size={10} className="text-white" strokeWidth={3} />}
+        {checked && <MinusCircle size={10} className="text-[var(--text-primary)]" strokeWidth={3} />}
       </div>
-      <span className="text-sm text-[#a8b2c1] group-hover:text-white transition-colors">
+      <span className="text-sm text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">
         {children}
         {label}
       </span>
@@ -118,9 +118,9 @@ export default function TextDedup() {
           <div className="w-10 h-10 rounded-xl bg-[#6bcb77]/15 flex items-center justify-center">
             <Filter size={20} className="text-[#6bcb77]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">文本去重</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">文本去重</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">多行文本去重、去空行、排序等处理工具</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">多行文本去重、去空行、排序等处理工具</p>
       </motion.div>
 
       {/* Options Bar */}
@@ -139,7 +139,7 @@ export default function TextDedup() {
             <AlignLeft size={12} className="inline mr-1" />
           </CheckboxOption>
 
-          <div className="h-5 w-px bg-white/10" />
+          <div className="h-5 w-px bg-[var(--bg-secondary)]" />
 
           <div className="flex items-center gap-1">
             {SORT_OPTIONS.map(({ value, label, Icon }) => (
@@ -150,9 +150,9 @@ export default function TextDedup() {
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1 ${
                   sortOrder === value
                     ? value === 'none'
-                      ? 'bg-white/10 text-white'
+                      ? 'bg-[var(--bg-secondary)] text-[var(--text-primary)]'
                       : 'bg-[#6bcb77]/15 text-[#6bcb77]'
-                    : 'text-[#666] hover:text-[#a8b2c1]'
+                    : 'text-[var(--text-faint)] hover:text-[var(--text-secondary)]'
                 }`}
               >
                 {Icon && <Icon size={12} />} {label}
@@ -170,19 +170,19 @@ export default function TextDedup() {
           className="flex flex-wrap items-center gap-6 mb-4 px-1"
         >
           <div className="flex items-center gap-2">
-            <span className="text-xs text-[#666]">原始</span>
-            <span className="font-mono text-sm text-[#a8b2c1]">{result.originalCount}</span>
-            <span className="text-xs text-[#555]">行</span>
+            <span className="text-xs text-[var(--text-faint)]">原始</span>
+            <span className="font-mono text-sm text-[var(--text-secondary)]">{result.originalCount}</span>
+            <span className="text-xs text-[var(--text-faint)]">行</span>
           </div>
-          <ArrowUpDown size={14} className="text-[#333]" />
+          <ArrowUpDown size={14} className="text-[var(--text-faint)]" />
           <div className="flex items-center gap-2">
-            <span className="text-xs text-[#666]">处理后</span>
+            <span className="text-xs text-[var(--text-faint)]">处理后</span>
             <span className="font-mono text-sm text-[#6bcb77]">{result.resultCount}</span>
-            <span className="text-xs text-[#555]">行</span>
+            <span className="text-xs text-[var(--text-faint)]">行</span>
           </div>
           {result.removedCount > 0 && (
             <div className="flex items-center gap-2">
-              <span className="text-xs px-2 py-0.5 rounded-full bg-red-500/10 text-red-400">
+              <span className="text-xs px-2 py-0.5 rounded-full bg-red-500/10 text-[var(--danger)]">
                 -{result.removedCount} 行
               </span>
             </div>
@@ -194,9 +194,9 @@ export default function TextDedup() {
         {/* Input */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
           <div className="flex items-center justify-between mb-2 ml-1">
-            <label className="text-sm font-medium text-[#a8b2c1]">原始文本（每行一条）</label>
+            <label className="text-sm font-medium text-[var(--text-secondary)]">原始文本（每行一条）</label>
             {input && (
-              <button type="button" onClick={clearAll} className="btn-secondary !py-1.5 !px-3 text-xs !text-red-400">
+              <button type="button" onClick={clearAll} className="btn-secondary !py-1.5 !px-3 text-xs !text-[var(--danger)]">
                 <Trash2 size={13} className="inline mr-1" /> 清空
               </button>
             )}
@@ -206,14 +206,14 @@ export default function TextDedup() {
             onChange={(e) => setInput(e.target.value)}
             placeholder="输入多行文本，每行一个条目...&#10;&#10;例如：&#10;apple&#10;banana&#10;apple&#10;cherry"
             aria-label="原始文本"
-            className="tool-area w-full h-[360px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#6bcb77]/30 transition-colors placeholder:text-[#333]"
+            className="tool-area w-full h-[360px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#6bcb77]/30 transition-colors placeholder:text-[var(--text-faint)]"
           />
         </motion.div>
 
         {/* Output */}
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
           <div className="flex items-center justify-between mb-2 ml-1">
-            <label className="text-sm font-medium text-[#a8b2c1]">处理结果</label>
+            <label className="text-sm font-medium text-[var(--text-secondary)]">处理结果</label>
             {result.text && (
               <button type="button" onClick={copyResult} className="btn-secondary !py-1.5 !px-3 text-xs">
                 <Copy size={13} className="inline mr-1" /> 复制全部
@@ -225,7 +225,7 @@ export default function TextDedup() {
             value={result.text}
             placeholder="处理结果将显示在这里..."
             aria-label="处理结果"
-            className="tool-area w-full h-[360px] p-5 text-sm leading-relaxed resize-none outline-none text-[#a8b2c1] placeholder:text-[#333]"
+            className="tool-area w-full h-[360px] p-5 text-sm leading-relaxed resize-none outline-none text-[var(--text-secondary)] placeholder:text-[var(--text-faint)]"
           />
         </motion.div>
       </div>

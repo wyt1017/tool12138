@@ -152,9 +152,9 @@ export default function WeatherWidget() {
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${color}24` }}>
             <Cloud size={20} style={{ color }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">天气小部件</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">天气小部件</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">实时天气与三日预报，数据来自 Open-Meteo，免密钥、浏览器直连</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">实时天气与三日预报，数据来自 Open-Meteo，免密钥、浏览器直连</p>
       </motion.div>
 
       {/* Search */}
@@ -165,7 +165,7 @@ export default function WeatherWidget() {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && searchCity()}
             placeholder="输入城市名，如 上海 / Tokyo / London"
-            className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white outline-none focus:border-[#00d9ff]/30"
+            className="flex-1 bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-[var(--text-primary)] outline-none focus:border-[#00d9ff]/30"
           />
           <button onClick={searchCity} disabled={loading} className="btn-primary flex items-center gap-2 !px-5 disabled:opacity-40">
             {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />} 查询
@@ -187,29 +187,29 @@ export default function WeatherWidget() {
       {/* Current */}
       {current && (
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-8 mb-6">
-          <div className="flex items-center gap-2 text-sm text-[#a8b2c1] mb-4">
+          <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)] mb-4">
             <MapPin size={15} style={{ color }} /> {label}
           </div>
           <div className="flex items-center justify-between flex-wrap gap-6">
             <div className="flex items-center gap-5">
               <span className="text-7xl">{info(current.code).emoji}</span>
               <div>
-                <div className="font-['Syne'] font-bold text-5xl text-white">{current.temp}°</div>
-                <div className="text-[#a8b2c1]">{info(current.code).label}</div>
+                <div className="font-['Syne'] font-bold text-5xl text-[var(--text-primary)]">{current.temp}°</div>
+                <div className="text-[var(--text-secondary)]">{info(current.code).label}</div>
               </div>
             </div>
             <div className="flex gap-6">
               <div className="text-center">
-                <div className="text-[#666] text-xs mb-1 flex items-center gap-1"><Wind size={12} /> 风速</div>
-                <div className="text-white font-semibold">{current.wind} km/h</div>
+                <div className="text-[var(--text-faint)] text-xs mb-1 flex items-center gap-1"><Wind size={12} /> 风速</div>
+                <div className="text-[var(--text-primary)] font-semibold">{current.wind} km/h</div>
               </div>
               <div className="text-center">
-                <div className="text-[#666] text-xs mb-1 flex items-center gap-1"><Droplets size={12} /> 湿度</div>
-                <div className="text-white font-semibold">{current.humidity}%</div>
+                <div className="text-[var(--text-faint)] text-xs mb-1 flex items-center gap-1"><Droplets size={12} /> 湿度</div>
+                <div className="text-[var(--text-primary)] font-semibold">{current.humidity}%</div>
               </div>
               <div className="text-center">
-                <div className="text-[#666] text-xs mb-1">体感</div>
-                <div className="text-white font-semibold">{current.feels}°</div>
+                <div className="text-[var(--text-faint)] text-xs mb-1">体感</div>
+                <div className="text-[var(--text-primary)] font-semibold">{current.feels}°</div>
               </div>
             </div>
           </div>
@@ -224,10 +224,10 @@ export default function WeatherWidget() {
             const weekday = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][dt.getDay()];
             return (
               <div key={d.date} className="glass-card p-5 text-center">
-                <div className="text-sm text-[#a8b2c1] mb-2">{i === 0 ? '今天' : weekday}</div>
+                <div className="text-sm text-[var(--text-secondary)] mb-2">{i === 0 ? '今天' : weekday}</div>
                 <div className="text-4xl mb-2">{info(d.code).emoji}</div>
-                <div className="text-[#666] text-xs mb-2">{info(d.code).label}</div>
-                <div className="font-['Syne'] font-bold text-white">{d.max}° <span className="text-[#666] font-normal">/ {d.min}°</span></div>
+                <div className="text-[var(--text-faint)] text-xs mb-2">{info(d.code).label}</div>
+                <div className="font-['Syne'] font-bold text-[var(--text-primary)]">{d.max}° <span className="text-[var(--text-faint)] font-normal">/ {d.min}°</span></div>
               </div>
             );
           })}

@@ -84,9 +84,9 @@ export default function PercentageCalculator() {
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${color}24` }}>
             <Percent size={20} style={{ color }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">百分比计算器</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">百分比计算器</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">三种常见百分比场景一键换算</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">三种常见百分比场景一键换算</p>
       </motion.div>
 
       {/* Mode Tabs */}
@@ -97,8 +97,8 @@ export default function PercentageCalculator() {
             onClick={() => { setModeIdx(i); setValA(''); setValB(''); setResult(null); }}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
               modeIdx === i
-                ? 'text-white shadow-lg'
-                : 'bg-white/5 text-[#666] hover:text-white hover:bg-white/10'
+                ? 'text-[var(--text-primary)] shadow-lg'
+                : 'bg-[var(--bg-hover)] text-[var(--text-faint)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]'
             }`}
             style={modeIdx === i ? { background: `${color}30`, border: `1px solid ${color}50` } : {}}
           >
@@ -109,28 +109,28 @@ export default function PercentageCalculator() {
 
       {/* Input Card */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-card p-7 mb-4">
-        <div className="text-sm text-[#a8b2c1] mb-5">{mode.desc}</div>
+        <div className="text-sm text-[var(--text-secondary)] mb-5">{mode.desc}</div>
         <div className="grid grid-cols-2 gap-4 mb-5">
           <div>
-            <label className="text-xs text-[#666] mb-1.5 block">{placeholders[0]}</label>
+            <label className="text-xs text-[var(--text-faint)] mb-1.5 block">{placeholders[0]}</label>
             <input
               type="number"
               value={valA}
               onChange={(e) => { setValA(e.target.value); setResult(null); }}
               onKeyDown={(e) => e.key === 'Enter' && handleCalc()}
               placeholder="输入数值"
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white text-lg outline-none focus:border-[#a78bfa]/40 placeholder:text-[#444]"
+              className="w-full bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-[var(--text-primary)] text-lg outline-none focus:border-[#a78bfa]/40 placeholder:text-[var(--text-faint)]"
             />
           </div>
           <div>
-            <label className="text-xs text-[#666] mb-1.5 block">{placeholders[1]}</label>
+            <label className="text-xs text-[var(--text-faint)] mb-1.5 block">{placeholders[1]}</label>
             <input
               type="number"
               value={valB}
               onChange={(e) => { setValB(e.target.value); setResult(null); }}
               onKeyDown={(e) => e.key === 'Enter' && handleCalc()}
               placeholder="输入数值"
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white text-lg outline-none focus:border-[#a78bfa]/40 placeholder:text-[#444]"
+              className="w-full bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-[var(--text-primary)] text-lg outline-none focus:border-[#a78bfa]/40 placeholder:text-[var(--text-faint)]"
             />
           </div>
         </div>
@@ -148,8 +148,8 @@ export default function PercentageCalculator() {
       {result && (
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.15 }} className="glass-card p-6 flex items-center justify-between">
           <div>
-            <div className="text-xs text-[#666] mb-1">结果</div>
-            <div className="font-['Syne'] font-bold text-3xl text-white">{result}</div>
+            <div className="text-xs text-[var(--text-faint)] mb-1">结果</div>
+            <div className="font-['Syne'] font-bold text-3xl text-[var(--text-primary)]">{result}</div>
           </div>
           <button onClick={copyResult} className="btn-secondary flex items-center gap-2 !px-4 !py-2 text-sm">
             <Copy size={14} /> {copied ? '已复制' : '复制'}
@@ -159,12 +159,12 @@ export default function PercentageCalculator() {
 
       {/* Quick Reference */}
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="mt-6 glass-card p-5">
-        <h3 className="text-xs text-[#666] mb-3 uppercase tracking-widest">常用参考</h3>
+        <h3 className="text-xs text-[var(--text-faint)] mb-3 uppercase tracking-widest">常用参考</h3>
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
           {[10, 20, 25, 50, 75, 100].map((p) => (
-            <div key={p} className="bg-white/5 rounded-lg px-3 py-2 text-center">
-              <div className="text-white font-semibold text-sm">{p}%</div>
-              <div className="text-[#666] text-xs">{p / 100}</div>
+            <div key={p} className="bg-[var(--bg-hover)] rounded-lg px-3 py-2 text-center">
+              <div className="text-[var(--text-primary)] font-semibold text-sm">{p}%</div>
+              <div className="text-[var(--text-faint)] text-xs">{p / 100}</div>
             </div>
           ))}
         </div>

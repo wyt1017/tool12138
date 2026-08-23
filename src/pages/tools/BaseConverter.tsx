@@ -82,15 +82,15 @@ export default function BaseConverter() {
           <div className="w-10 h-10 rounded-xl bg-[#fb923c]/15 flex items-center justify-center">
             <Hash size={20} className="text-[#fb923c]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">进制转换器</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">进制转换器</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">支持二进制、八进制、十进制、十六进制互转，支持大数运算</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">支持二进制、八进制、十进制、十六进制互转，支持大数运算</p>
       </motion.div>
 
       {/* Active Input */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-card p-6 mb-6">
         <div className="flex items-center gap-3 mb-4">
-          <label className="text-sm font-medium text-[#a8b2c1]">输入进制</label>
+          <label className="text-sm font-medium text-[var(--text-secondary)]">输入进制</label>
           <div className="flex gap-2">
             {bases.map((base) => (
               <button
@@ -101,7 +101,7 @@ export default function BaseConverter() {
                     setInputValue(values[base]);
                   }
                 }}
-                className="px-4 py-2 rounded-full text-sm font-medium transition-all bg-white/5 text-[#666] hover:text-white"
+                className="px-4 py-2 rounded-full text-sm font-medium transition-all bg-[var(--bg-hover)] text-[var(--text-faint)] hover:text-[var(--text-primary)]"
                 style={
                   activeBase === base
                     ? { backgroundColor: `${colors[base]}20`, color: colors[base] }
@@ -115,7 +115,7 @@ export default function BaseConverter() {
         </div>
 
         <div className="relative">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#666] font-mono text-sm">
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-faint)] font-mono text-sm">
             {BASE_CONFIGS[activeBase].prefix}
           </span>
           <input
@@ -124,12 +124,12 @@ export default function BaseConverter() {
             onChange={(e) => setInputValue(e.target.value)}
             placeholder={`输入${BASE_CONFIGS[activeBase].label}数值...`}
             aria-label="输入数值"
-            className="tool-area w-full pl-12 pr-4 py-4 text-lg font-mono outline-none focus:border-[#fb923c]/30 transition-colors placeholder:text-[#333]"
+            className="tool-area w-full pl-12 pr-4 py-4 text-lg font-mono outline-none focus:border-[#fb923c]/30 transition-colors placeholder:text-[var(--text-faint)]"
           />
         </div>
 
         {error && (
-          <p className="text-red-400 text-sm mt-2">{error}</p>
+          <p className="text-[var(--danger)] text-sm mt-2">{error}</p>
         )}
       </motion.div>
 
@@ -143,8 +143,8 @@ export default function BaseConverter() {
                   className="w-3 h-3 rounded-full"
                   style={{ backgroundColor: colors[base] }}
                 />
-                <span className="text-sm font-semibold text-white">{BASE_CONFIGS[base].name}</span>
-                <span className="text-xs text-[#666]">({BASE_CONFIGS[base].label})</span>
+                <span className="text-sm font-semibold text-[var(--text-primary)]">{BASE_CONFIGS[base].name}</span>
+                <span className="text-xs text-[var(--text-faint)]">({BASE_CONFIGS[base].label})</span>
               </div>
               {values[base] && (
                 <button onClick={() => handleCopy(base)} className="btn-secondary !py-1 !px-2.5 text-xs">
@@ -164,7 +164,7 @@ export default function BaseConverter() {
             </div>
 
             {values[base] && (
-              <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-xs text-[#666]">
+              <div className="mt-3 pt-3 border-t border-[var(--border-color)] flex items-center justify-between text-xs text-[var(--text-faint)]">
                 <span>{values[base].length} 位</span>
                 <span className="font-mono">{BASE_CONFIGS[base].prefix}{values[base]}</span>
               </div>
@@ -182,24 +182,24 @@ export default function BaseConverter() {
         >
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center text-sm">
             <div>
-              <div className="text-[#666] mb-1">字节数</div>
-              <div className="font-mono text-white font-bold">
+              <div className="text-[var(--text-faint)] mb-1">字节数</div>
+              <div className="font-mono text-[var(--text-primary)] font-bold">
                 {Math.ceil((values[2]?.length ?? 0) / 8)} Bytes
               </div>
             </div>
             <div>
-              <div className="text-[#666] mb-1">比特数</div>
-              <div className="font-mono text-white font-bold">{values[2]?.length ?? 0} bits</div>
+              <div className="text-[var(--text-faint)] mb-1">比特数</div>
+              <div className="font-mono text-[var(--text-primary)] font-bold">{values[2]?.length ?? 0} bits</div>
             </div>
             <div>
-              <div className="text-[#666] mb-1">八位组</div>
-              <div className="font-mono text-white font-bold">
+              <div className="text-[var(--text-faint)] mb-1">八位组</div>
+              <div className="font-mono text-[var(--text-primary)] font-bold">
                 {Math.ceil((values[2]?.length ?? 0) / 8)} octets
               </div>
             </div>
             <div>
-              <div className="text-[#666] mb-1">十六进制字节</div>
-              <div className="font-mono text-white font-bold">
+              <div className="text-[var(--text-faint)] mb-1">十六进制字节</div>
+              <div className="font-mono text-[var(--text-primary)] font-bold">
                 {Math.ceil((values[16]?.length ?? 0) / 2)} bytes
               </div>
             </div>

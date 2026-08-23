@@ -139,7 +139,7 @@ export default function UnitConverter() {
           <div style={{ width: 40, height: 40, borderRadius: 12, background: `${color}24`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Scale size={20} style={{ color }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">单位换算器</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">单位换算器</h1>
         </div>
         <p style={{ color: '#a8b2c1', marginLeft: 52 }}>支持长度、质量、温度、面积、体积、速度等常见单位之间的快速换算</p>
       </motion.div>
@@ -171,20 +171,20 @@ export default function UnitConverter() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
           {/* Input */}
           <div>
-            <label className="text-xs text-[#666] block mb-2">输入值</label>
+            <label className="text-xs text-[var(--text-faint)] block mb-2">输入值</label>
             <input
               type="number"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               placeholder="输入数值"
               aria-label="输入值"
-              className="bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-lg text-white outline-none focus:border-[#00d9ff]/30 w-full"
+              className="bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-lg text-[var(--text-primary)] outline-none focus:border-[#00d9ff]/30 w-full"
             />
             <select
               value={inputUnit}
               onChange={(e) => setInputUnit(e.target.value)}
               aria-label="输入单位"
-              className="mt-2 bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm text-white outline-none focus:border-[#00d9ff]/30 w-full"
+              className="mt-2 bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[#00d9ff]/30 w-full"
               style={{ backgroundColor: '#1a1a2e' }}
             >
               {Object.entries(units).map(([key, unit]) => (
@@ -200,8 +200,8 @@ export default function UnitConverter() {
 
           {/* Output */}
           <div>
-            <label className="text-xs text-[#666] block mb-2">输出值</label>
-            <div className="bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-lg text-[#a8b2c1] min-h-[48px] flex items-center">
+            <label className="text-xs text-[var(--text-faint)] block mb-2">输出值</label>
+            <div className="bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-lg text-[var(--text-secondary)] min-h-[48px] flex items-center">
               {result !== null ? result.toFixed(6) : '-'}
             </div>
             <div className="flex items-center gap-2 mt-2">
@@ -209,7 +209,7 @@ export default function UnitConverter() {
                 value={outputUnit}
                 onChange={(e) => setOutputUnit(e.target.value)}
                 aria-label="输出单位"
-                className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm text-white outline-none focus:border-[#00d9ff]/30 flex-1"
+                className="bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[#00d9ff]/30 flex-1"
                 style={{ backgroundColor: '#1a1a2e' }}
               >
                 {Object.entries(units).map(([key, unit]) => (
@@ -228,48 +228,48 @@ export default function UnitConverter() {
 
       {/* Quick Reference */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="glass-card p-4 mt-6">
-        <h3 className="text-sm font-medium text-[#a8b2c1] mb-3">常用换算参考</h3>
+        <h3 className="text-sm font-medium text-[var(--text-secondary)] mb-3">常用换算参考</h3>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
           {category === 'length' && (
             <>
-              <div className="bg-white/5 rounded px-2 py-1.5">1 英寸 = 2.54 厘米</div>
-              <div className="bg-white/5 rounded px-2 py-1.5">1 英尺 = 30.48 厘米</div>
-              <div className="bg-white/5 rounded px-2 py-1.5">1 英里 = 1.609 千米</div>
+              <div className="bg-[var(--bg-hover)] rounded px-2 py-1.5">1 英寸 = 2.54 厘米</div>
+              <div className="bg-[var(--bg-hover)] rounded px-2 py-1.5">1 英尺 = 30.48 厘米</div>
+              <div className="bg-[var(--bg-hover)] rounded px-2 py-1.5">1 英里 = 1.609 千米</div>
             </>
           )}
           {category === 'mass' && (
             <>
-              <div className="bg-white/5 rounded px-2 py-1.5">1 磅 = 0.4536 千克</div>
-              <div className="bg-white/5 rounded px-2 py-1.5">1 盎司 = 28.35 克</div>
-              <div className="bg-white/5 rounded px-2 py-1.5">1 吨 = 1000 千克</div>
+              <div className="bg-[var(--bg-hover)] rounded px-2 py-1.5">1 磅 = 0.4536 千克</div>
+              <div className="bg-[var(--bg-hover)] rounded px-2 py-1.5">1 盎司 = 28.35 克</div>
+              <div className="bg-[var(--bg-hover)] rounded px-2 py-1.5">1 吨 = 1000 千克</div>
             </>
           )}
           {category === 'temperature' && (
             <>
-              <div className="bg-white/5 rounded px-2 py-1.5">0°C = 32°F = 273.15K</div>
-              <div className="bg-white/5 rounded px-2 py-1.5">100°C = 212°F = 373.15K</div>
-              <div className="bg-white/5 rounded px-2 py-1.5">-40°C = -40°F</div>
+              <div className="bg-[var(--bg-hover)] rounded px-2 py-1.5">0°C = 32°F = 273.15K</div>
+              <div className="bg-[var(--bg-hover)] rounded px-2 py-1.5">100°C = 212°F = 373.15K</div>
+              <div className="bg-[var(--bg-hover)] rounded px-2 py-1.5">-40°C = -40°F</div>
             </>
           )}
           {category === 'area' && (
             <>
-              <div className="bg-white/5 rounded px-2 py-1.5">1 公顷 = 10000 平方米</div>
-              <div className="bg-white/5 rounded px-2 py-1.5">1 英亩 = 4046.86 平方米</div>
-              <div className="bg-white/5 rounded px-2 py-1.5">1 平方千米 = 100 公顷</div>
+              <div className="bg-[var(--bg-hover)] rounded px-2 py-1.5">1 公顷 = 10000 平方米</div>
+              <div className="bg-[var(--bg-hover)] rounded px-2 py-1.5">1 英亩 = 4046.86 平方米</div>
+              <div className="bg-[var(--bg-hover)] rounded px-2 py-1.5">1 平方千米 = 100 公顷</div>
             </>
           )}
           {category === 'volume' && (
             <>
-              <div className="bg-white/5 rounded px-2 py-1.5">1 加仑 = 3.785 升</div>
-              <div className="bg-white/5 rounded px-2 py-1.5">1 升 = 1000 毫升</div>
-              <div className="bg-white/5 rounded px-2 py-1.5">1 立方米 = 1000 升</div>
+              <div className="bg-[var(--bg-hover)] rounded px-2 py-1.5">1 加仑 = 3.785 升</div>
+              <div className="bg-[var(--bg-hover)] rounded px-2 py-1.5">1 升 = 1000 毫升</div>
+              <div className="bg-[var(--bg-hover)] rounded px-2 py-1.5">1 立方米 = 1000 升</div>
             </>
           )}
           {category === 'speed' && (
             <>
-              <div className="bg-white/5 rounded px-2 py-1.5">1 千米/时 = 0.2778 米/秒</div>
-              <div className="bg-white/5 rounded px-2 py-1.5">1 英里/时 = 1.609 千米/时</div>
-              <div className="bg-white/5 rounded px-2 py-1.5">1 节 = 1.852 千米/时</div>
+              <div className="bg-[var(--bg-hover)] rounded px-2 py-1.5">1 千米/时 = 0.2778 米/秒</div>
+              <div className="bg-[var(--bg-hover)] rounded px-2 py-1.5">1 英里/时 = 1.609 千米/时</div>
+              <div className="bg-[var(--bg-hover)] rounded px-2 py-1.5">1 节 = 1.852 千米/时</div>
             </>
           )}
         </div>

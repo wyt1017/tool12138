@@ -39,19 +39,19 @@ export default function JsonFormatter() {
     if (data === null) {
       return (
         <div key={key ?? depth} style={{ paddingLeft: `${depth * 20}px` }} className="py-0.5">
-          <ChevronRight size={14} className="inline mr-1 text-[#555]" />
+          <ChevronRight size={14} className="inline mr-1 text-[var(--text-faint)]" />
           <span className="text-[#e94560]">{key}</span>
-          <span className="text-[#888]">: </span>
-          <span className="text-[#888] italic">null</span>
+          <span className="text-[var(--text-faint)]">: </span>
+          <span className="text-[var(--text-faint)] italic">null</span>
         </div>
       );
     }
     if (typeof data === 'boolean') {
       return (
         <div key={key ?? depth} style={{ paddingLeft: `${depth * 20}px` }} className="py-0.5">
-          <ChevronRight size={14} className="inline mr-1 text-[#555]" />
+          <ChevronRight size={14} className="inline mr-1 text-[var(--text-faint)]" />
           <span className="text-[#e94560]">{key}</span>
-          <span className="text-[#888]">: </span>
+          <span className="text-[var(--text-faint)]">: </span>
           <span className="text-[#6bcb77]">{String(data)}</span>
         </div>
       );
@@ -59,9 +59,9 @@ export default function JsonFormatter() {
     if (typeof data === 'number') {
       return (
         <div key={key ?? depth} style={{ paddingLeft: `${depth * 20}px` }} className="py-0.5">
-          <ChevronRight size={14} className="inline mr-1 text-[#555]" />
+          <ChevronRight size={14} className="inline mr-1 text-[var(--text-faint)]" />
           <span className="text-[#e94560]">{key}</span>
-          <span className="text-[#888]">: </span>
+          <span className="text-[var(--text-faint)]">: </span>
           <span className="text-[#ffd369]">{data}</span>
         </div>
       );
@@ -69,9 +69,9 @@ export default function JsonFormatter() {
     if (typeof data === 'string') {
       return (
         <div key={key ?? depth} style={{ paddingLeft: `${depth * 20}px` }} className="py-0.5">
-          <ChevronRight size={14} className="inline mr-1 text-[#555]" />
+          <ChevronRight size={14} className="inline mr-1 text-[var(--text-faint)]" />
           <span className="text-[#e94560]">{key}</span>
-          <span className="text-[#888]">: </span>
+          <span className="text-[var(--text-faint)]">: </span>
           <span className="text-[#00d9ff]">"{data}"</span>
         </div>
       );
@@ -81,7 +81,7 @@ export default function JsonFormatter() {
         <div key={key ?? depth} style={{ paddingLeft: `${depth * 20}px` }} className="py-0.5">
           <ChevronDown size={14} className="inline mr-1 text-[#a78bfa]" />
           <span className="text-[#e94560]">{key}</span>
-          <span className="text-[#888]">: </span>
+          <span className="text-[var(--text-faint)]">: </span>
           <span className="text-[#a78bfa]">[{data.length}]</span>
           {data.map((item, i) => (
             <div key={i}>{renderTreeNode(item, String(i), depth + 1)}</div>
@@ -96,7 +96,7 @@ export default function JsonFormatter() {
         <div key={key ?? depth} style={{ paddingLeft: `${depth * 20}px` }} className="py-0.5">
           <ChevronDown size={14} className="inline mr-1 text-[#ffd369]" />
           <span className="text-[#ffd369]">{key || '{root}'}</span>
-          <span className="text-[#888]">: </span>
+          <span className="text-[var(--text-faint)]">: </span>
           <span className="text-[#ffd369]">{'{'}{keys.length}{'}'}</span>
           {keys.map((k) => (
             <div key={k}>{renderTreeNode(obj[k], k, depth + 1)}</div>
@@ -136,21 +136,21 @@ export default function JsonFormatter() {
           <div className="w-10 h-10 rounded-xl bg-[#e94560]/15 flex items-center justify-center">
             <Braces size={20} className="text-[#e94560]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">JSON格式化</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">JSON格式化</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">JSON美化、压缩、校验，支持树形可视化展示</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">JSON美化、压缩、校验，支持树形可视化展示</p>
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
-          <label className="block text-sm font-medium text-[#a8b2c1] mb-2 ml-1">输入JSON</label>
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2 ml-1">输入JSON</label>
           <textarea
             value={input}
             onChange={(e) => { setInput(e.target.value); setError(''); }}
             placeholder='{"name": "示例", "value": 123}'
             aria-label="输入JSON"
-            className="tool-area w-full h-[340px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#e94560]/30 transition-colors placeholder:text-[#333] font-mono"
+            className="tool-area w-full h-[340px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#e94560]/30 transition-colors placeholder:text-[var(--text-faint)] font-mono"
             spellCheck={false}
           />
           {error && (
@@ -163,7 +163,7 @@ export default function JsonFormatter() {
         {/* Output */}
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
           <div className="flex items-center justify-between mb-2 ml-1">
-            <label className="text-sm font-medium text-[#a8b2c1]">输出结果</label>
+            <label className="text-sm font-medium text-[var(--text-secondary)]">输出结果</label>
             {output && (
               <button onClick={() => navigator.clipboard.writeText(output)} className="btn-secondary !py-1.5 !px-3 text-xs">
                 <Copy size={13} className="inline mr-1" /> 复制
@@ -176,11 +176,11 @@ export default function JsonFormatter() {
               value={output}
               placeholder="点击下方按钮进行格式化..."
               aria-label="输出结果"
-              className="tool-area w-full h-[340px] p-5 text-sm leading-relaxed resize-none outline-none text-[#a8b2c1] font-mono placeholder:text-[#333]"
+              className="tool-area w-full h-[340px] p-5 text-sm leading-relaxed resize-none outline-none text-[var(--text-secondary)] font-mono placeholder:text-[var(--text-faint)]"
             />
           ) : (
             <div className="tool-area w-full h-[340px] overflow-auto p-5 text-sm font-mono">
-              {treeData !== null ? renderTreeNode(treeData) : <span className="text-[#555]">无数据</span>}
+              {treeData !== null ? renderTreeNode(treeData) : <span className="text-[var(--text-faint)]">无数据</span>}
             </div>
           )}
         </motion.div>
@@ -206,12 +206,12 @@ export default function JsonFormatter() {
           <Trash2 size={15} className="inline mr-1.5" /> 清空
         </button>
         <div className="flex items-center gap-2 ml-auto">
-          <span className="text-xs text-[#555]">缩进:</span>
+          <span className="text-xs text-[var(--text-faint)]">缩进:</span>
           {[2, 4].map((n) => (
             <button
               key={n}
               onClick={() => setIndent(n)}
-              className={`w-8 h-8 rounded-lg text-xs font-mono transition-all bg-white/5 text-[#666] hover:bg-white/10`}
+              className={`w-8 h-8 rounded-lg text-xs font-mono transition-all bg-[var(--bg-hover)] text-[var(--text-faint)] hover:bg-[var(--bg-secondary)]`}
               style={indent === n ? { backgroundColor: '#00d9ff33', color: '#00d9ff' } : undefined}
             >
               {n}

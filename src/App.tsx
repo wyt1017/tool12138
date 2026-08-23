@@ -10,7 +10,7 @@ import About from '@/pages/About';
 function LoadingSpinner() {
   return (
     <div className="flex items-center justify-center py-32">
-      <div className="text-[#a8b2c1] text-sm animate-pulse">加载中...</div>
+      <div className="text-[var(--text-secondary)] text-sm animate-pulse">加载中...</div>
     </div>
   );
 }

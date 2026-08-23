@@ -123,9 +123,9 @@ export default function BmiCalculator() {
           <div className="w-10 h-10 rounded-xl bg-[#6bcb77]/15 flex items-center justify-center">
             <Scale size={20} className="text-[#6bcb77]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">BMI 体质指数计算</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">BMI 体质指数计算</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">计算身体质量指数（BMI），了解您的体重健康状况</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">计算身体质量指数（BMI），了解您的体重健康状况</p>
       </motion.div>
 
       {/* Unit Toggle */}
@@ -133,7 +133,7 @@ export default function BmiCalculator() {
         <button
           onClick={() => switchUnits('metric')}
           className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-            unitSystem === 'metric' ? 'bg-[#6bcb77]/15 text-[#6bcb77]' : 'bg-white/5 text-[#666]'
+            unitSystem === 'metric' ? 'bg-[#6bcb77]/15 text-[#6bcb77]' : 'bg-[var(--bg-hover)] text-[var(--text-faint)]'
           }`}
         >
           公制 (cm / kg)
@@ -141,7 +141,7 @@ export default function BmiCalculator() {
         <button
           onClick={() => switchUnits('imperial')}
           className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-            unitSystem === 'imperial' ? 'bg-[#6bcb77]/15 text-[#6bcb77]' : 'bg-white/5 text-[#666]'
+            unitSystem === 'imperial' ? 'bg-[#6bcb77]/15 text-[#6bcb77]' : 'bg-[var(--bg-hover)] text-[var(--text-faint)]'
           }`}
         >
           英制 (ft / lbs)
@@ -154,7 +154,7 @@ export default function BmiCalculator() {
         <div className="glass-card p-6">
           <div className="flex items-center gap-2 mb-3">
             <Ruler size={18} className="text-[#6bcb77]" />
-            <label className="text-sm font-medium text-[#a8b2c1]">身高</label>
+            <label className="text-sm font-medium text-[var(--text-secondary)]">身高</label>
           </div>
           <div className="relative">
             <input
@@ -165,9 +165,9 @@ export default function BmiCalculator() {
               }
               placeholder={unitSystem === 'metric' ? '170' : "5'9\""}
               aria-label="身高"
-              className="tool-area w-full px-4 py-3 text-lg font-mono outline-none focus:border-[#6bcb77]/30 transition-colors placeholder:text-[#333]"
+              className="tool-area w-full px-4 py-3 text-lg font-mono outline-none focus:border-[#6bcb77]/30 transition-colors placeholder:text-[var(--text-faint)]"
             />
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-[#666]">
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-[var(--text-faint)]">
               {unitSystem === 'metric' ? 'cm' : 'ft'}
             </span>
           </div>
@@ -177,7 +177,7 @@ export default function BmiCalculator() {
         <div className="glass-card p-6">
           <div className="flex items-center gap-2 mb-3">
             <Weight size={18} className="text-[#6bcb77]" />
-            <label className="text-sm font-medium text-[#a8b2c1]">体重</label>
+            <label className="text-sm font-medium text-[var(--text-secondary)]">体重</label>
           </div>
           <div className="relative">
             <input
@@ -188,9 +188,9 @@ export default function BmiCalculator() {
               }
               placeholder={unitSystem === 'metric' ? '65' : '143'}
               aria-label="体重"
-              className="tool-area w-full px-4 py-3 text-lg font-mono outline-none focus:border-[#6bcb77]/30 transition-colors placeholder:text-[#333]"
+              className="tool-area w-full px-4 py-3 text-lg font-mono outline-none focus:border-[#6bcb77]/30 transition-colors placeholder:text-[var(--text-faint)]"
             />
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-[#666]">
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-[var(--text-faint)]">
               {unitSystem === 'metric' ? 'kg' : 'lbs'}
             </span>
           </div>
@@ -207,7 +207,7 @@ export default function BmiCalculator() {
         >
           {/* Big BMI Number */}
           <div className="text-center mb-6">
-            <p className="text-sm text-[#666] mb-2">你的 BMI 值</p>
+            <p className="text-sm text-[var(--text-faint)] mb-2">你的 BMI 值</p>
             <p className="text-6xl sm:text-7xl font-bold font-mono" style={{ color: category.color }}>
               {bmiValue.toFixed(1)}
             </p>
@@ -218,7 +218,7 @@ export default function BmiCalculator() {
 
           {/* BMI Scale Bar */}
           <div className="relative mt-8">
-            <div className="h-4 rounded-full overflow-hidden bg-white/5 relative">
+            <div className="h-4 rounded-full overflow-hidden bg-[var(--bg-hover)] relative">
               {/* Background gradient showing categories */}
               <div className="absolute inset-0 flex">
                 {BMI_CATEGORIES.map((cat, idx) => (
@@ -247,7 +247,7 @@ export default function BmiCalculator() {
             </div>
 
             {/* Scale Labels */}
-            <div className="flex justify-between mt-2 text-xs text-[#555] font-mono">
+            <div className="flex justify-between mt-2 text-xs text-[var(--text-faint)] font-mono">
               <span>10</span>
               <span>16</span>
               <span>18.5</span>
@@ -285,7 +285,7 @@ export default function BmiCalculator() {
                   className="w-3 h-3 rounded-full"
                   style={{ backgroundColor: cat.color }}
                 />
-                <span className="text-sm font-medium text-[#f0f0f5]">{cat.label}</span>
+                <span className="text-sm font-medium text-[var(--text-primary)]">{cat.label}</span>
               </div>
               <span className="text-sm font-mono" style={{ color: cat.color }}>{cat.range}</span>
             </div>
@@ -305,7 +305,7 @@ export default function BmiCalculator() {
             <Info size={18} className="text-[#6bcb77] mt-0.5 shrink-0" />
             <div>
               <h3 className="text-sm font-semibold text-[#6bcb77] mb-1">健康体重建议</h3>
-              <p className="text-sm text-[#a8b2c1]">
+              <p className="text-sm text-[var(--text-secondary)]">
                 根据您输入的身高，正常体重范围应为{' '}
                 <span className="text-[#6bcb77] font-semibold font-mono">
                   {healthyRange.min} - {healthyRange.max} {healthyRange.unit}
@@ -324,8 +324,8 @@ export default function BmiCalculator() {
           transition={{ delay: 0.2 }}
           className="glass-card p-12 text-center"
         >
-          <Scale size={48} className="mx-auto text-[#333] mb-4" />
-          <p className="text-[#555]">请输入身高和体重来计算 BMI</p>
+          <Scale size={48} className="mx-auto text-[var(--text-faint)] mb-4" />
+          <p className="text-[var(--text-faint)]">请输入身高和体重来计算 BMI</p>
         </motion.div>
       )}
     </div>

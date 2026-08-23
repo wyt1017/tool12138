@@ -128,9 +128,9 @@ export default function MorseCode() {
           <div className="w-10 h-10 rounded-xl bg-[#e94560]/15 flex items-center justify-center">
             <Radio size={20} className="text-[#e94560]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">摩斯电码编解码</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">摩斯电码编解码</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">文本与摩斯电码互转，支持音频播放和速度调节</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">文本与摩斯电码互转，支持音频播放和速度调节</p>
       </motion.div>
 
       {/* Mode Toggle */}
@@ -138,7 +138,7 @@ export default function MorseCode() {
         <button
           onClick={() => { setMode('encode'); setOutput(''); }}
           className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-            mode === 'encode' ? 'bg-[#e94560]/15 text-[#e94560]' : 'bg-white/5 text-[#666]'
+            mode === 'encode' ? 'bg-[#e94560]/15 text-[#e94560]' : 'bg-[var(--bg-hover)] text-[var(--text-faint)]'
           }`}
         >
           编码 → 摩斯
@@ -146,7 +146,7 @@ export default function MorseCode() {
         <button
           onClick={() => { setMode('decode'); setOutput(''); }}
           className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-            mode === 'decode' ? 'bg-[#e94560]/15 text-[#e94560]' : 'bg-white/5 text-[#666]'
+            mode === 'decode' ? 'bg-[#e94560]/15 text-[#e94560]' : 'bg-[var(--bg-hover)] text-[var(--text-faint)]'
           }`}
         >
           解码 ← 摩斯
@@ -157,7 +157,7 @@ export default function MorseCode() {
       {mode === 'encode' && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }} className="glass-card p-4 mb-6 flex items-center gap-4">
           <Volume2 size={18} className="text-[#e94560]" />
-          <span className="text-sm text-[#a8b2c1] whitespace-nowrap">播放速度：</span>
+          <span className="text-sm text-[var(--text-secondary)] whitespace-nowrap">播放速度：</span>
           <input
             type="range"
             min={5}
@@ -174,7 +174,7 @@ export default function MorseCode() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 }}>
-          <label className="text-sm font-medium text-[#a8b2c1] mb-2 block ml-1">
+          <label className="text-sm font-medium text-[var(--text-secondary)] mb-2 block ml-1">
             {mode === 'encode' ? '输入文本' : '输入摩斯电码'}
           </label>
           <textarea
@@ -186,14 +186,14 @@ export default function MorseCode() {
                 : '输入摩斯电码，用空格分隔字符，/ 分隔单词\n例如：.... . .-.. .-.. --- / .-- --- .-. .-.. -..'
             }
             aria-label="输入文本"
-            className="tool-area w-full h-[280px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#e94560]/30 transition-colors placeholder:text-[#333] font-mono"
+            className="tool-area w-full h-[280px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#e94560]/30 transition-colors placeholder:text-[var(--text-faint)] font-mono"
           />
         </motion.div>
 
         {/* Output */}
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
           <div className="flex items-center justify-between mb-2 ml-1">
-            <label className="text-sm font-medium text-[#a8b2c1]">
+            <label className="text-sm font-medium text-[var(--text-secondary)]">
               {mode === 'encode' ? '摩斯电码结果' : '解码文本结果'}
             </label>
             {output && (
@@ -211,9 +211,9 @@ export default function MorseCode() {
               </div>
             )}
           </div>
-          <div className="tool-area w-full min-h-[280px] p-5 text-base leading-relaxed font-mono break-all whitespace-pre-wrap tracking-widest text-[#f0f0f5] placeholder:text-[#333]">
+          <div className="tool-area w-full min-h-[280px] p-5 text-base leading-relaxed font-mono break-all whitespace-pre-wrap tracking-widest text-[var(--text-primary)] placeholder:text-[var(--text-faint)]">
             {output || (
-              <span className="text-[#444]">输出结果将显示在这里...</span>
+              <span className="text-[var(--text-faint)]">输出结果将显示在这里...</span>
             )}
           </div>
         </motion.div>
@@ -244,9 +244,9 @@ export default function MorseCode() {
         <h3 className="text-sm font-semibold text-[#e94560] mb-4">摩斯电码对照表</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 text-xs font-mono">
           {Object.entries(MORSE_CODE).map(([letter, code]) => (
-            <div key={letter} className="flex items-center gap-1.5 px-2 py-1.5 rounded bg-white/5">
+            <div key={letter} className="flex items-center gap-1.5 px-2 py-1.5 rounded bg-[var(--bg-hover)]">
               <span className="text-[#e94560] font-bold w-4">{letter}</span>
-              <span className="text-[#a8b2c1] tracking-wider">{code}</span>
+              <span className="text-[var(--text-secondary)] tracking-wider">{code}</span>
             </div>
           ))}
         </div>

@@ -148,9 +148,9 @@ export default function PomodoroTodo() {
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${color}24` }}>
             <Timer size={20} style={{ color }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">番茄钟 · 倒计时 · 待办</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">番茄钟 · 倒计时 · 待办</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">专注计时、自定义倒计时与本地待办清单，数据保存在本机浏览器</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">专注计时、自定义倒计时与本地待办清单，数据保存在本机浏览器</p>
       </motion.div>
 
       {/* Tabs */}
@@ -202,7 +202,7 @@ export default function PomodoroTodo() {
           <div className="relative flex items-center justify-center mb-6">
             <ProgressRing value={secondsLeft} total={(mode === 'focus' ? focusMin : breakMin) * 60} />
             <div className="absolute text-center">
-              <div className="font-['Syne'] font-bold text-5xl text-white">{fmt(secondsLeft)}</div>
+              <div className="font-['Syne'] font-bold text-5xl text-[var(--text-primary)]">{fmt(secondsLeft)}</div>
               <div className="text-xs mt-1" style={{ color }}>{mode === 'focus' ? '专注中' : '休息中'}</div>
             </div>
           </div>
@@ -216,18 +216,18 @@ export default function PomodoroTodo() {
             </button>
           </div>
 
-          <div className="flex items-center gap-6 text-sm text-[#666]">
+          <div className="flex items-center gap-6 text-sm text-[var(--text-faint)]">
             <label className="flex items-center gap-2">
               专注(分)
               <input type="number" min={1} max={120} value={focusMin}
                 onChange={(e) => { const v = Math.max(1, Number(e.target.value) || 1); setFocusMin(v); if (mode === 'focus' && !running) setSecondsLeft(v * 60); }}
-                className="w-16 bg-white/5 border border-white/10 rounded px-2 py-1 text-white outline-none focus:border-[#00d9ff]/30" />
+                className="w-16 bg-[var(--bg-hover)] border border-[var(--border-color)] rounded px-2 py-1 text-[var(--text-primary)] outline-none focus:border-[#00d9ff]/30" />
             </label>
             <label className="flex items-center gap-2">
               休息(分)
               <input type="number" min={1} max={60} value={breakMin}
                 onChange={(e) => { const v = Math.max(1, Number(e.target.value) || 1); setBreakMin(v); if (mode === 'break' && !running) setSecondsLeft(v * 60); }}
-                className="w-16 bg-white/5 border border-white/10 rounded px-2 py-1 text-white outline-none focus:border-[#00d9ff]/30" />
+                className="w-16 bg-[var(--bg-hover)] border border-[var(--border-color)] rounded px-2 py-1 text-[var(--text-primary)] outline-none focus:border-[#00d9ff]/30" />
             </label>
             <span>已完成番茄：<b style={{ color }}>{completed}</b></span>
           </div>
@@ -240,8 +240,8 @@ export default function PomodoroTodo() {
           <div className="relative flex items-center justify-center mb-6">
             <ProgressRing value={cdLeft} total={cdTotalRef.current || 1} />
             <div className="absolute text-center">
-              <div className="font-['Syne'] font-bold text-5xl text-white">{fmt(cdLeft)}</div>
-              <div className="text-xs mt-1 text-[#a8b2c1]">剩余时间</div>
+              <div className="font-['Syne'] font-bold text-5xl text-[var(--text-primary)]">{fmt(cdLeft)}</div>
+              <div className="text-xs mt-1 text-[var(--text-secondary)]">剩余时间</div>
             </div>
           </div>
 
@@ -255,11 +255,11 @@ export default function PomodoroTodo() {
             </button>
           </div>
 
-          <label className="flex items-center gap-2 text-sm text-[#666]">
+          <label className="flex items-center gap-2 text-sm text-[var(--text-faint)]">
             设定分钟
             <input type="number" min={1} max={600} value={cdMin}
               onChange={(e) => { const v = Math.max(1, Number(e.target.value) || 1); setCdMin(v); if (!cdRunning) setCdLeft(v * 60); }}
-              className="w-20 bg-white/5 border border-white/10 rounded px-2 py-1 text-white outline-none focus:border-[#00d9ff]/30" />
+              className="w-20 bg-[var(--bg-hover)] border border-[var(--border-color)] rounded px-2 py-1 text-[var(--text-primary)] outline-none focus:border-[#00d9ff]/30" />
           </label>
         </motion.div>
       )}
@@ -273,7 +273,7 @@ export default function PomodoroTodo() {
               onChange={(e) => setTodoInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && addTodo()}
               placeholder="添加一项待办，回车确认..."
-              className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white outline-none focus:border-[#00d9ff]/30"
+              className="flex-1 bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-[var(--text-primary)] outline-none focus:border-[#00d9ff]/30"
             />
             <button onClick={addTodo} className="btn-primary flex items-center gap-2 !px-5">
               <Plus size={16} /> 添加
@@ -281,18 +281,18 @@ export default function PomodoroTodo() {
           </div>
 
           {todos.length === 0 ? (
-            <div className="text-center text-[#555] py-10">还没有待办，添加第一条吧</div>
+            <div className="text-center text-[var(--text-faint)] py-10">还没有待办，添加第一条吧</div>
           ) : (
             <ul className="space-y-2">
               {todos.map((t) => (
-                <li key={t.id} className="flex items-center gap-3 bg-white/5 rounded-lg px-4 py-3 group">
+                <li key={t.id} className="flex items-center gap-3 bg-[var(--bg-hover)] rounded-lg px-4 py-3 group">
                   <button onClick={() => toggleTodo(t.id)}
                     className="w-5 h-5 rounded-full border flex items-center justify-center flex-shrink-0 transition-colors"
                     style={{ borderColor: t.done ? color : 'rgba(255,255,255,0.2)', background: t.done ? color : 'transparent' }}>
-                    {t.done && <Check size={13} className="text-white" />}
+                    {t.done && <Check size={13} className="text-[var(--text-primary)]" />}
                   </button>
-                  <span className={`flex-1 ${t.done ? 'line-through text-[#555]' : 'text-white'}`}>{t.text}</span>
-                  <button onClick={() => delTodo(t.id)} className="text-[#555] hover:text-[#e94560] opacity-0 group-hover:opacity-100 transition-opacity">
+                  <span className={`flex-1 ${t.done ? 'line-through text-[var(--text-faint)]' : 'text-[var(--text-primary)]'}`}>{t.text}</span>
+                  <button onClick={() => delTodo(t.id)} className="text-[var(--text-faint)] hover:text-[#e94560] opacity-0 group-hover:opacity-100 transition-opacity">
                     <Trash2 size={16} />
                   </button>
                 </li>
@@ -300,7 +300,7 @@ export default function PomodoroTodo() {
             </ul>
           )}
           {todos.length > 0 && (
-            <div className="text-xs text-[#666] mt-4">
+            <div className="text-xs text-[var(--text-faint)] mt-4">
               已完成 {todos.filter((t) => t.done).length} / {todos.length} · 数据仅保存在本机
             </div>
           )}

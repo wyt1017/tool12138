@@ -54,33 +54,33 @@ export default function QrCodeGenerator() {
           <div className="w-10 h-10 rounded-xl bg-[#6bcb77]/15 flex items-center justify-center">
             <QrCode size={20} className="text-[#6bcb77]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">二维码生成器</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">二维码生成器</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">输入文本或链接生成高清二维码，支持下载</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">输入文本或链接生成高清二维码，支持下载</p>
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left: Input */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
-          <label className="block text-sm font-medium text-[#a8b2c1] mb-2 ml-1">输入内容</label>
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2 ml-1">输入内容</label>
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="输入网址、文本或任意内容..."
             aria-label="输入二维码内容"
-            className="tool-area w-full h-[200px] p-5 text-white text-sm leading-relaxed resize-none outline-none focus:border-[#6bcb77]/30 transition-colors placeholder:text-[#333]"
+            className="tool-area w-full h-[200px] p-5 text-[var(--text-primary)] text-sm leading-relaxed resize-none outline-none focus:border-[#6bcb77]/30 transition-colors placeholder:text-[var(--text-faint)]"
           />
 
           {/* Size Options */}
           <div className="mt-5">
-            <label className="block text-sm font-medium text-[#a8b2c1] mb-3 ml-1">尺寸大小</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-3 ml-1">尺寸大小</label>
             <div className="flex gap-3">
               {[128, 256, 384, 512].map((s) => (
                 <button
                   key={s}
                   onClick={() => setSize(s)}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                    size === s ? 'bg-[#6bcb77]/15 text-[#6bcb77] border border-[#6bcb77]/30' : 'bg-white/5 text-[#666] border border-transparent hover:bg-white/10'
+                    size === s ? 'bg-[#6bcb77]/15 text-[#6bcb77] border border-[#6bcb77]/30' : 'bg-[var(--bg-hover)] text-[var(--text-faint)] border border-transparent hover:bg-[var(--bg-secondary)]'
                   }`}
                 >
                   {s}×{s}
@@ -101,8 +101,8 @@ export default function QrCodeGenerator() {
 
           {/* Quick Tips */}
           <div className="mt-6 glass-card p-5">
-            <h4 className="font-['Syne'] font-semibold text-sm text-white mb-3">使用提示</h4>
-            <ul className="space-y-2 text-xs text-[#666]">
+            <h4 className="font-['Syne'] font-semibold text-sm text-[var(--text-primary)] mb-3">使用提示</h4>
+            <ul className="space-y-2 text-xs text-[var(--text-faint)]">
               <li className="flex items-start gap-2">
                 <span className="w-1 h-1 rounded-full bg-[#6bcb77] mt-1.5 flex-shrink-0" />
                 支持网址、纯文本、邮箱等多种内容类型
@@ -121,7 +121,7 @@ export default function QrCodeGenerator() {
 
         {/* Right: QR Display */}
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
-          <label className="block text-sm font-medium text-[#a8b2c1] mb-2 ml-1">预览</label>
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2 ml-1">预览</label>
           <div className="tool-area p-8 min-h-[400px] flex flex-col items-center justify-center">
             {qrDataUrl ? (
               <motion.div
@@ -133,7 +133,7 @@ export default function QrCodeGenerator() {
                 <div className="inline-block p-4 rounded-2xl bg-white">
                   <img src={qrDataUrl} alt="QR Code" className="block" style={{ width: Math.min(size, 300), height: Math.min(size, 300) }} />
                 </div>
-                <p className="mt-4 text-xs text-[#555]">{size}×{size} px</p>
+                <p className="mt-4 text-xs text-[var(--text-faint)]">{size}×{size} px</p>
 
                 <div className="flex gap-3 mt-6 justify-center">
                   <button onClick={downloadQR} className="btn-primary">
@@ -146,10 +146,10 @@ export default function QrCodeGenerator() {
               </motion.div>
             ) : (
               <div className="text-center">
-                <div className="w-24 h-24 mx-auto mb-4 rounded-2xl bg-white/5 flex items-center justify-center">
-                  <QrCode size={40} className="text-[#333]" />
+                <div className="w-24 h-24 mx-auto mb-4 rounded-2xl bg-[var(--bg-hover)] flex items-center justify-center">
+                  <QrCode size={40} className="text-[var(--text-faint)]" />
                 </div>
-                <p className="text-sm text-[#555]">输入内容后点击生成二维码</p>
+                <p className="text-sm text-[var(--text-faint)]">输入内容后点击生成二维码</p>
               </div>
             )}
           </div>

@@ -38,7 +38,7 @@ export default function IpSubnetCalculator() {
     }
 
     const cidrValue = parseInt(cidrNum);
-    if (cidrValue < 0 || cidrValue > 32) {
+    if (isNaN(cidrValue) || cidrValue < 0 || cidrValue > 32) {
       setError('CIDR 必须在 0-32 之间');
       return;
     }
@@ -136,7 +136,7 @@ export default function IpSubnetCalculator() {
           <div style={{ width: 40, height: 40, borderRadius: 12, background: `${color}24`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Network size={20} style={{ color }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">IP子网计算器</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">IP子网计算器</h1>
         </div>
         <p style={{ color: '#a8b2c1', marginLeft: 52 }}>输入CIDR（如192.168.1.0/24）或IP+掩码，计算网络地址、广播地址、可用主机范围等</p>
       </motion.div>
@@ -145,18 +145,18 @@ export default function IpSubnetCalculator() {
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="glass-card p-6 mb-6">
         <div className="flex items-center gap-4">
           <div className="flex-1">
-            <label className="text-xs text-[#666] block mb-2">IP地址 / CIDR格式</label>
+            <label className="text-xs text-[var(--text-faint)] block mb-2">IP地址 / CIDR格式</label>
             <input
               type="text"
               value={ip}
               onChange={(e) => setIp(e.target.value)}
               placeholder="192.168.1.0 或 192.168.1.0/24"
               aria-label="IP地址"
-              className="bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-lg text-white outline-none focus:border-[#e94560]/30 w-full"
+              className="bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-lg text-[var(--text-primary)] outline-none focus:border-[#e94560]/30 w-full"
             />
           </div>
           <div className="w-[100px]">
-            <label className="text-xs text-[#666] block mb-2">CIDR</label>
+            <label className="text-xs text-[var(--text-faint)] block mb-2">CIDR</label>
             <input
               type="number"
               value={cidr}
@@ -165,75 +165,75 @@ export default function IpSubnetCalculator() {
               min={0}
               max={32}
               aria-label="CIDR"
-              className="bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-lg text-white outline-none focus:border-[#e94560]/30 w-full"
+              className="bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-lg text-[var(--text-primary)] outline-none focus:border-[#e94560]/30 w-full"
             />
           </div>
           <button onClick={calculate} className="btn-primary">
             计算
           </button>
         </div>
-        <p className="text-xs text-[#666] mt-2">支持直接输入 CIDR 格式（如 192.168.1.0/24），或分开输入 IP 和 CIDR</p>
+        <p className="text-xs text-[var(--text-faint)] mt-2">支持直接输入 CIDR 格式（如 192.168.1.0/24），或分开输入 IP 和 CIDR</p>
       </motion.div>
 
       {/* Error */}
       {error && (
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-4 mb-6 border border-red-500/30">
-          <span className="text-red-400 text-sm">{error}</span>
+          <span className="text-[var(--danger)] text-sm">{error}</span>
         </motion.div>
       )}
 
       {/* Result */}
       {result && (
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-card p-6">
-          <h2 className="text-sm font-medium text-[#a8b2c1] mb-4">计算结果</h2>
+          <h2 className="text-sm font-medium text-[var(--text-secondary)] mb-4">计算结果</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            <div className="bg-white/5 rounded-lg p-4">
-              <div className="text-xs text-[#666] mb-2">网络地址</div>
+            <div className="bg-[var(--bg-hover)] rounded-lg p-4">
+              <div className="text-xs text-[var(--text-faint)] mb-2">网络地址</div>
               <div style={{ fontSize: 20, fontWeight: 700, fontFamily: 'monospace', color }}>{result.networkAddress}</div>
               <button onClick={() => copyValue(result.networkAddress)} className="btn-secondary !py-1 !px-2 text-xs mt-2">
                 <Copy size={12} className="inline mr-1" /> 复制
               </button>
             </div>
-            <div className="bg-white/5 rounded-lg p-4">
-              <div className="text-xs text-[#666] mb-2">广播地址</div>
+            <div className="bg-[var(--bg-hover)] rounded-lg p-4">
+              <div className="text-xs text-[var(--text-faint)] mb-2">广播地址</div>
               <div className="text-lg font-bold font-mono text-[#00d9ff]">{result.broadcastAddress}</div>
               <button onClick={() => copyValue(result.broadcastAddress)} className="btn-secondary !py-1 !px-2 text-xs mt-2">
                 <Copy size={12} className="inline mr-1" /> 复制
               </button>
             </div>
-            <div className="bg-white/5 rounded-lg p-4">
-              <div className="text-xs text-[#666] mb-2">子网掩码</div>
+            <div className="bg-[var(--bg-hover)] rounded-lg p-4">
+              <div className="text-xs text-[var(--text-faint)] mb-2">子网掩码</div>
               <div className="text-lg font-bold font-mono text-[#6bcb77]">{result.subnetMask}</div>
               <button onClick={() => copyValue(result.subnetMask)} className="btn-secondary !py-1 !px-2 text-xs mt-2">
                 <Copy size={12} className="inline mr-1" /> 复制
               </button>
             </div>
-            <div className="bg-white/5 rounded-lg p-4">
-              <div className="text-xs text-[#666] mb-2">第一个可用主机</div>
+            <div className="bg-[var(--bg-hover)] rounded-lg p-4">
+              <div className="text-xs text-[var(--text-faint)] mb-2">第一个可用主机</div>
               <div className="text-lg font-bold font-mono text-[#a78bfa]">{result.firstHost}</div>
               <button onClick={() => copyValue(result.firstHost)} className="btn-secondary !py-1 !px-2 text-xs mt-2">
                 <Copy size={12} className="inline mr-1" /> 复制
               </button>
             </div>
-            <div className="bg-white/5 rounded-lg p-4">
-              <div className="text-xs text-[#666] mb-2">最后一个可用主机</div>
+            <div className="bg-[var(--bg-hover)] rounded-lg p-4">
+              <div className="text-xs text-[var(--text-faint)] mb-2">最后一个可用主机</div>
               <div className="text-lg font-bold font-mono text-[#f472b6]">{result.lastHost}</div>
               <button onClick={() => copyValue(result.lastHost)} className="btn-secondary !py-1 !px-2 text-xs mt-2">
                 <Copy size={12} className="inline mr-1" /> 复制
               </button>
             </div>
-            <div className="bg-white/5 rounded-lg p-4">
-              <div className="text-xs text-[#666] mb-2">可用主机数</div>
+            <div className="bg-[var(--bg-hover)] rounded-lg p-4">
+              <div className="text-xs text-[var(--text-faint)] mb-2">可用主机数</div>
               <div className="text-lg font-bold font-mono text-[#ffd369]">{result.usableHostsCount}</div>
             </div>
           </div>
 
           {/* Summary */}
-          <div className="mt-4 p-4 bg-white/5 rounded-lg">
-            <p className="text-xs text-[#a8b2c1]">
-              该子网共有 <strong className="text-white">{result.totalHosts}</strong> 个地址，
-              其中 <strong className="text-white">{result.usableHostsCount}</strong> 个可用（排除网络地址和广播地址）。
-              主机范围：<strong className="text-white">{result.usableHosts}</strong>
+          <div className="mt-4 p-4 bg-[var(--bg-hover)] rounded-lg">
+            <p className="text-xs text-[var(--text-secondary)]">
+              该子网共有 <strong className="text-[var(--text-primary)]">{result.totalHosts}</strong> 个地址，
+              其中 <strong className="text-[var(--text-primary)]">{result.usableHostsCount}</strong> 个可用（排除网络地址和广播地址）。
+              主机范围：<strong className="text-[var(--text-primary)]">{result.usableHosts}</strong>
             </p>
           </div>
         </motion.div>

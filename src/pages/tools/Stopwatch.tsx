@@ -29,6 +29,7 @@ export default function Stopwatch() {
   const [running, setRunning] = useState(false);
   const [laps, setLaps] = useState<Lap[]>([]);
   const [lapIdCounter, setLapIdCounter] = useState(0);
+  const [, setTick] = useState(0);   // 驱动 RAF 循环触发重渲染
 
   // Refs for precise timing (avoid stale state in callbacks)
   const elapsedRef = useRef(0);      // total elapsed ms at last render
@@ -63,6 +64,7 @@ export default function Stopwatch() {
     startTimeRef.current = performance.now();
     const tick = () => {
       elapsedRef.current = performance.now() - startTimeRef.current + storedRef.current;
+      setTick((n) => n + 1);   // 触发重渲染，使正在显示的数字随计时刷新
       rafRef.current = requestAnimationFrame(tick);
     };
     rafRef.current = requestAnimationFrame(tick);
@@ -85,6 +87,7 @@ export default function Stopwatch() {
     cancelAnimationFrame(rafRef.current);
     elapsedRef.current = 0;
     storedRef.current = 0;
+    setTick((n) => n + 1);   // 立即刷新显示归零
   };
 
   const handleLap = () => {
@@ -118,14 +121,14 @@ export default function Stopwatch() {
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${color}24` }}>
             <Timer size={20} style={{ color }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">秒表</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">秒表</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">毫秒精度计时，支持分段记录和最快/最慢圈识别</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">毫秒精度计时，支持分段记录和最快/最慢圈识别</p>
       </motion.div>
 
       {/* Timer Display */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="glass-card p-10 flex flex-col items-center mb-6">
-        <div className="font-['Syne'] font-bold text-7xl sm:text-8xl text-white tabular-nums tracking-tight mb-8">
+        <div className="font-['Syne'] font-bold text-7xl sm:text-8xl text-[var(--text-primary)] tabular-nums tracking-tight mb-8">
           {fmt(displayElapsed)}
         </div>
         <div className="flex items-center gap-4">
@@ -171,8 +174,8 @@ export default function Stopwatch() {
       {laps.length > 0 && (
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-card p-5">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-medium text-[#a8b2c1]">计圈记录</h3>
-            <button onClick={handleClear} className="text-xs text-[#666] hover:text-[#e94560] transition-colors flex items-center gap-1">
+            <h3 className="text-sm font-medium text-[var(--text-secondary)]">计圈记录</h3>
+            <button onClick={handleClear} className="text-xs text-[var(--text-faint)] hover:text-[#e94560] transition-colors flex items-center gap-1">
               <Plus size={12} className="rotate-45" /> 清空
             </button>
           </div>
@@ -187,20 +190,20 @@ export default function Stopwatch() {
                   className={`flex items-center justify-between px-4 py-2.5 rounded-lg text-sm ${
                     isBest ? 'bg-green-500/10 border border-green-500/20' :
                     isWorst ? 'bg-red-500/10 border border-red-500/20' :
-                    'bg-white/5'
+                    'bg-[var(--bg-hover)]'
                   }`}
                 >
-                  <span className="text-[#666] w-12">#{idx}</span>
-                  <span className="text-white font-mono">{fmtShort(lap.diff)}</span>
-                  <span className="text-[#a8b2c1] font-mono text-xs">{fmt(lap.total)}</span>
+                  <span className="text-[var(--text-faint)] w-12">#{idx}</span>
+                  <span className="text-[var(--text-primary)] font-mono">{fmtShort(lap.diff)}</span>
+                  <span className="text-[var(--text-secondary)] font-mono text-xs">{fmt(lap.total)}</span>
                   {isBest && <span className="text-xs text-green-400 ml-2">最快</span>}
-                  {isWorst && <span className="text-xs text-red-400 ml-2">最慢</span>}
+                  {isWorst && <span className="text-xs text-[var(--danger)] ml-2">最慢</span>}
                 </div>
               );
             })}
           </div>
           {laps.length > 1 && (
-            <div className="flex gap-4 mt-4 pt-4 border-t border-white/5 text-xs text-[#666]">
+            <div className="flex gap-4 mt-4 pt-4 border-t border-[var(--border-color)] text-xs text-[var(--text-faint)]">
               <span>平均：{fmtShort(avgDiff)}</span>
             </div>
           )}

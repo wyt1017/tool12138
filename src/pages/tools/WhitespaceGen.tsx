@@ -90,9 +90,9 @@ export default function WhitespaceGen() {
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${COLOR}26` }}>
             <Space size={20} style={{ color: COLOR }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">空白字符生成器</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">空白字符生成器</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">探索和组合各种不可见Unicode空白字符</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">探索和组合各种不可见Unicode空白字符</p>
       </motion.div>
 
       {/* Character Table */}
@@ -103,13 +103,13 @@ export default function WhitespaceGen() {
         className="glass-card p-6 mb-6"
       >
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)] flex items-center gap-2">
             <Layers size={18} style={{ color: COLOR }} /> 空白字符表
           </h2>
           <div className="flex items-center gap-3">
             <button onClick={selectAll} className="btn-secondary !py-1 !px-3 text-xs">全选</button>
             <button onClick={clearSelection} className="btn-secondary !py-1 !px-3 text-xs">清空</button>
-            <label className="flex items-center gap-1.5 cursor-pointer text-xs text-[#a8b2c1]">
+            <label className="flex items-center gap-1.5 cursor-pointer text-xs text-[var(--text-secondary)]">
               {showInvisible ? <Eye size={12} /> : <EyeOff size={12} />}
               <input type="checkbox" checked={showInvisible} onChange={(e) => setShowInvisible(e.target.checked)} aria-label="显示不可见字符" className="hidden" />
               显示不可见字符
@@ -120,14 +120,14 @@ export default function WhitespaceGen() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/10">
-                <th className="text-left py-3 px-4 text-xs text-[#666] font-medium w-10"></th>
-                <th className="text-left py-3 px-4 text-xs text-[#666] font-medium">字符名称</th>
-                <th className="text-left py-3 px-4 text-xs text-[#666] font-medium">Unicode编码</th>
-                <th className="text-left py-3 px-4 text-xs text-[#666] font-medium">可视化</th>
-                <th className="text-left py-3 px-4 text-xs text-[#666] font-medium min-w-[120px]">实际字符{showInvisible && '(可见)'}</th>
-                <th className="text-left py-3 px-4 text-xs text-[#666] font-medium">说明</th>
-                <th className="text-right py-3 px-4 text-xs text-[#666] font-medium w-20">操作</th>
+              <tr className="border-b border-[var(--border-color)]">
+                <th className="text-left py-3 px-4 text-xs text-[var(--text-faint)] font-medium w-10"></th>
+                <th className="text-left py-3 px-4 text-xs text-[var(--text-faint)] font-medium">字符名称</th>
+                <th className="text-left py-3 px-4 text-xs text-[var(--text-faint)] font-medium">Unicode编码</th>
+                <th className="text-left py-3 px-4 text-xs text-[var(--text-faint)] font-medium">可视化</th>
+                <th className="text-left py-3 px-4 text-xs text-[var(--text-faint)] font-medium min-w-[120px]">实际字符{showInvisible && '(可见)'}</th>
+                <th className="text-left py-3 px-4 text-xs text-[var(--text-faint)] font-medium">说明</th>
+                <th className="text-right py-3 px-4 text-xs text-[var(--text-faint)] font-medium w-20">操作</th>
               </tr>
             </thead>
             <tbody>
@@ -153,23 +153,23 @@ export default function WhitespaceGen() {
                         backgroundColor: selectedChars.has(index) ? COLOR : undefined,
                       }}
                     >
-                      {selectedChars.has(index) && <Check size={10} className="text-white" strokeWidth={3} />}
+                      {selectedChars.has(index) && <Check size={10} className="text-[var(--text-primary)]" strokeWidth={3} />}
                     </div>
                   </td>
-                  <td className="py-3 px-4 text-[#f0f0f5] font-medium">{item.name}</td>
+                  <td className="py-3 px-4 text-[var(--text-primary)] font-medium">{item.name}</td>
                   <td className="py-3 px-4">
-                    <code className="font-mono text-xs bg-white/5 px-2 py-1 rounded text-[#a8b2c1]">{item.code}</code>
+                    <code className="font-mono text-xs bg-[var(--bg-hover)] px-2 py-1 rounded text-[var(--text-secondary)]">{item.code}</code>
                   </td>
                   <td className="py-3 px-4 text-lg">{item.visible}</td>
                   <td className="py-3 px-4">
                     <span
-                      className={`font-mono px-2 py-1 rounded inline-block min-w-[60px] ${showInvisible ? '' : 'text-[#555]'}`}
+                      className={`font-mono px-2 py-1 rounded inline-block min-w-[60px] ${showInvisible ? '' : 'text-[var(--text-faint)]'}`}
                       style={showInvisible ? { backgroundColor: `${COLOR}1A`, color: COLOR } : { letterSpacing: '2px' }}
                     >
                       {showInvisible ? item.char : '—'}
                     </span>
                   </td>
-                  <td className="py-3 px-4 text-xs text-[#666]">{item.desc}</td>
+                  <td className="py-3 px-4 text-xs text-[var(--text-faint)]">{item.desc}</td>
                   <td className="py-3 px-4 text-right">
                     <button
                       onClick={(e) => {
@@ -203,7 +203,7 @@ export default function WhitespaceGen() {
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 }}>
           <div className="glass-card p-6 h-full">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+              <h2 className="text-lg font-semibold text-[var(--text-primary)] flex items-center gap-2">
                 <Layers size={18} style={{ color: COLOR }} /> 组合结果
               </h2>
               {combinedResult && (
@@ -224,8 +224,8 @@ export default function WhitespaceGen() {
             {combinedResult && (
               <div className="space-y-3">
                 <div>
-                  <label className="text-xs text-[#666] block mb-1.5">原始字符（显示长度）</label>
-                  <div className="tool-area p-4 font-mono text-sm break-all min-h-[60px] text-[#a8b2c1]">
+                  <label className="text-xs text-[var(--text-faint)] block mb-1.5">原始字符（显示长度）</label>
+                  <div className="tool-area p-4 font-mono text-sm break-all min-h-[60px] text-[var(--text-secondary)]">
                     {combinedResult.split('').map((ch, i) => (
                       <span key={i} className="inline-block mx-0.5">
                         <span
@@ -238,16 +238,16 @@ export default function WhitespaceGen() {
                   </div>
                 </div>
                 <div className="flex items-center gap-4 text-xs">
-                  <span className="text-[#666]">包含字符数：</span>
+                  <span className="text-[var(--text-faint)]">包含字符数：</span>
                   <span className="font-mono" style={{ color: COLOR }}>{combinedResult.length}</span>
-                  <span className="text-[#666]">可见长度：</span>
-                  <span className="font-mono text-[#a8b2c1]">{combinedResult.replace(zeroWidthRegex, '').length}</span>
+                  <span className="text-[var(--text-faint)]">可见长度：</span>
+                  <span className="font-mono text-[var(--text-secondary)]">{combinedResult.replace(zeroWidthRegex, '').length}</span>
                 </div>
               </div>
             )}
 
             {!combinedResult && (
-              <p className="text-[#333] text-sm text-center py-8">勾选上方表格中的字符后点击组合按钮</p>
+              <p className="text-[var(--text-faint)] text-sm text-center py-8">勾选上方表格中的字符后点击组合按钮</p>
             )}
           </div>
         </motion.div>
@@ -255,7 +255,7 @@ export default function WhitespaceGen() {
         {/* Test Area */}
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
           <div className="glass-card p-6 h-full">
-            <h2 className="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+            <h2 className="text-lg font-semibold text-[var(--text-primary)] flex items-center gap-2 mb-4">
               <AlertCircle size={18} style={{ color: COLOR }} /> 测试验证区
             </h2>
 
@@ -264,18 +264,18 @@ export default function WhitespaceGen() {
               onChange={(e) => setTestInput(e.target.value)}
               placeholder="粘贴或输入包含空白字符的文本进行检测..."
               aria-label="测试文本"
-              className="tool-area w-full h-[140px] p-4 text-sm resize-none outline-none focus:border-[#6bcb77]/30 transition-colors placeholder:text-[#333] mb-4"
+              className="tool-area w-full h-[140px] p-4 text-sm resize-none outline-none focus:border-[#6bcb77]/30 transition-colors placeholder:text-[var(--text-faint)] mb-4"
             />
 
             {testInput && (
               <div className="space-y-3">
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="bg-white/5 rounded-lg p-3">
-                    <div className="text-xs text-[#666] mb-1">可见长度</div>
+                  <div className="bg-[var(--bg-hover)] rounded-lg p-3">
+                    <div className="text-xs text-[var(--text-faint)] mb-1">可见长度</div>
                     <div className="text-xl font-bold font-mono" style={{ color: COLOR }}>{testVisibleLength}</div>
                   </div>
-                  <div className="bg-white/5 rounded-lg p-3">
-                    <div className="text-xs text-[#666] mb-1">实际长度</div>
+                  <div className="bg-[var(--bg-hover)] rounded-lg p-3">
+                    <div className="text-xs text-[var(--text-faint)] mb-1">实际长度</div>
                     <div className="text-xl font-bold font-mono text-[#f472b6]">{testActualLength}</div>
                   </div>
                 </div>
@@ -297,7 +297,7 @@ export default function WhitespaceGen() {
         transition={{ delay: 0.25 }}
         className="glass-card p-6 mt-6"
       >
-        <h2 className="text-lg font-semibold text-white mb-4">应用场景</h2>
+        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">应用场景</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
             { title: '特殊网名', desc: '在昵称中插入零宽字符，创造独特的视觉效果或绕过重复名检测' },
@@ -305,9 +305,9 @@ export default function WhitespaceGen() {
             { title: '隐藏信息', desc: '利用零宽字符编码隐藏秘密信息，表面看起来是普通文本' },
             { title: '格式控制', desc: '用于文本排版、防止自动换行、控制连字行为等特殊排版需求' },
           ].map((item, i) => (
-            <div key={i} className="bg-white/5 rounded-lg p-4 hover:bg-white/8 transition-colors">
+            <div key={i} className="bg-[var(--bg-hover)] rounded-lg p-4 hover:bg-[var(--bg-hover)] transition-colors">
               <div className="text-sm font-semibold mb-1.5" style={{ color: COLOR }}>{item.title}</div>
-              <div className="text-xs text-[#666] leading-relaxed">{item.desc}</div>
+              <div className="text-xs text-[var(--text-faint)] leading-relaxed">{item.desc}</div>
             </div>
           ))}
         </div>

@@ -118,9 +118,9 @@ export default function CodeRunner() {
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${COLOR}26` }}>
             <Code size={20} style={{ color: COLOR }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">在线代码运行器</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">在线代码运行器</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">实时编写HTML/CSS/JS代码并预览运行效果，适合前端原型测试</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">实时编写HTML/CSS/JS代码并预览运行效果，适合前端原型测试</p>
       </motion.div>
 
       {/* Code Editors */}
@@ -196,7 +196,7 @@ export default function CodeRunner() {
       {/* Preview */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="glass-card p-4">
         <div className="flex items-center justify-between mb-3">
-          <label className="text-sm font-medium text-[#a8b2c1]">预览效果</label>
+          <label className="text-sm font-medium text-[var(--text-secondary)]">预览效果</label>
         </div>
         <div className="bg-white rounded-lg overflow-hidden">
           <iframe
@@ -210,8 +210,8 @@ export default function CodeRunner() {
 
       {/* Tips */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="glass-card p-4 mt-4">
-        <p className="text-xs text-[#666]">
-          <strong className="text-[#a8b2c1]">提示：</strong>
+        <p className="text-xs text-[var(--text-faint)]">
+          <strong className="text-[var(--text-secondary)]">提示：</strong>
           代码在沙箱环境中运行，支持基本的HTML/CSS/JS。点击"运行"按钮查看效果。
         </p>
       </motion.div>

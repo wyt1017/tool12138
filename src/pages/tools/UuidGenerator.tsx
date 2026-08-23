@@ -63,9 +63,9 @@ export default function UuidGenerator() {
           <div className="w-10 h-10 rounded-xl bg-[#38bdf8]/15 flex items-center justify-center">
             <Fingerprint size={20} className="text-[#38bdf8]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">UUID/GUID 生成器</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">UUID/GUID 生成器</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">批量生成标准 UUID v4 标识符，支持多种格式</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">批量生成标准 UUID v4 标识符，支持多种格式</p>
       </motion.div>
 
       {/* Options */}
@@ -73,8 +73,8 @@ export default function UuidGenerator() {
         {/* Count Slider */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-3">
-            <label className="text-sm font-medium text-[#a8b2c1]">生成数量</label>
-            <span className="text-lg font-bold text-white font-mono bg-white/5 px-3 py-1 rounded-lg">{count}</span>
+            <label className="text-sm font-medium text-[var(--text-secondary)]">生成数量</label>
+            <span className="text-lg font-bold text-[var(--text-primary)] font-mono bg-[var(--bg-hover)] px-3 py-1 rounded-lg">{count}</span>
           </div>
           <input
             type="range"
@@ -83,9 +83,9 @@ export default function UuidGenerator() {
             value={count}
             onChange={(e) => setCount(Number(e.target.value))}
             aria-label="生成数量"
-            className="w-full h-2 bg-white/10 rounded-full appearance-none cursor-pointer accent-[#38bdf8]"
+            className="w-full h-2 bg-[var(--bg-secondary)] rounded-full appearance-none cursor-pointer accent-[#38bdf8]"
           />
-          <div className="flex justify-between text-xs text-[#666] mt-1">
+          <div className="flex justify-between text-xs text-[var(--text-faint)] mt-1">
             <span>1</span>
             <span>100</span>
           </div>
@@ -93,17 +93,17 @@ export default function UuidGenerator() {
 
         {/* Format Options */}
         <div className="mb-6">
-          <label className="text-sm font-medium text-[#a8b2c1] mb-3 block">格式选项</label>
+          <label className="text-sm font-medium text-[var(--text-secondary)] mb-3 block">格式选项</label>
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={() => setWithDashes(!withDashes)}
               className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${
-                withDashes ? 'border-[#38bdf8]/30 bg-[#38bdf8]/10 text-white' : 'border-white/10 bg-white/5 text-[#666]'
+                withDashes ? 'border-[#38bdf8]/30 bg-[#38bdf8]/10 text-[var(--text-primary)]' : 'border-[var(--border-color)] bg-[var(--bg-hover)] text-[var(--text-faint)]'
               }`}
             >
               <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${withDashes ? 'border-[#38bdf8] bg-[#38bdf8]' : 'border-[#444]'}`}>
                 {withDashes && (
-                  <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                  <svg className="w-3 h-3 text-[var(--text-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 )}
@@ -117,12 +117,12 @@ export default function UuidGenerator() {
             <button
               onClick={() => setUppercase(!uppercase)}
               className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${
-                uppercase ? 'border-[#38bdf8]/30 bg-[#38bdf8]/10 text-white' : 'border-white/10 bg-white/5 text-[#666]'
+                uppercase ? 'border-[#38bdf8]/30 bg-[#38bdf8]/10 text-[var(--text-primary)]' : 'border-[var(--border-color)] bg-[var(--bg-hover)] text-[var(--text-faint)]'
               }`}
             >
               <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${uppercase ? 'border-[#38bdf8] bg-[#38bdf8]' : 'border-[#444]'}`}>
                 {uppercase && (
-                  <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                  <svg className="w-3 h-3 text-[var(--text-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 )}
@@ -135,8 +135,8 @@ export default function UuidGenerator() {
           </div>
 
           {/* Preview */}
-          <div className="mt-4 p-3 rounded-xl bg-black/30 border border-white/5">
-            <div className="text-xs text-[#666] mb-1">格式预览</div>
+          <div className="mt-4 p-3 rounded-xl bg-black/30 border border-[var(--border-color)]">
+            <div className="text-xs text-[var(--text-faint)] mb-1">格式预览</div>
             <div className="font-mono text-sm" style={{ color: '#38bdf8' }}>
               {formatUUID('550e8400-e29b-41d4-a716-446655440000', withDashes, uppercase)}
             </div>
@@ -153,7 +153,7 @@ export default function UuidGenerator() {
       {uuids.length > 0 && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-white">生成结果 ({uuids.length} 个)</h2>
+            <h2 className="text-lg font-semibold text-[var(--text-primary)]">生成结果 ({uuids.length} 个)</h2>
             <div className="flex gap-2">
               <button onClick={handleCopyAll} className="btn-secondary !py-1.5 !px-3 text-xs">
                 {allCopied ? (
@@ -171,7 +171,7 @@ export default function UuidGenerator() {
             {uuids.map((uuid, index) => (
               <div key={index} className="glass-card p-4 group flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3 min-w-0">
-                  <span className="text-xs text-[#666] shrink-0 w-6 text-right">{index + 1}</span>
+                  <span className="text-xs text-[var(--text-faint)] shrink-0 w-6 text-right">{index + 1}</span>
                   <code className="font-mono text-sm break-all" style={{ color: '#38bdf8' }}>{uuid}</code>
                 </div>
                 <button
@@ -196,23 +196,23 @@ export default function UuidGenerator() {
       {history.length > 0 && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="mt-8">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-[#666] flex items-center gap-2">
+            <h2 className="text-sm font-semibold text-[var(--text-faint)] flex items-center gap-2">
               <ClipboardList size={14} /> 生成历史 (最近{Math.min(history.length, 10)}个)
             </h2>
-            <button onClick={() => setHistory([])} className="text-xs text-[#666] hover:text-red-400 transition-colors flex items-center gap-1">
+            <button onClick={() => setHistory([])} className="text-xs text-[var(--text-faint)] hover:text-[var(--danger)] transition-colors flex items-center gap-1">
               <Trash2 size={12} /> 清空历史
             </button>
           </div>
           <div className="space-y-1.5">
             {history.map((uuid, index) => (
-              <div key={index} className="flex items-center gap-3 p-2.5 rounded-lg bg-white/[0.02] hover:bg-white/5 transition-colors group/history">
-                <span className="text-xs text-[#444] w-5 text-right">{index + 1}</span>
-                <code className="font-mono text-xs text-[#666] truncate flex-1">{uuid}</code>
+              <div key={index} className="flex items-center gap-3 p-2.5 rounded-lg bg-[var(--bg-hover)] hover:bg-[var(--bg-hover)] transition-colors group/history">
+                <span className="text-xs text-[var(--text-faint)] w-5 text-right">{index + 1}</span>
+                <code className="font-mono text-xs text-[var(--text-faint)] truncate flex-1">{uuid}</code>
                 <button
                   onClick={() => {
                     navigator.clipboard.writeText(uuid);
                   }}
-                  className="opacity-0 group-hover/history:opacity-100 text-[#444] hover:text-[#38bdf8] transition-all"
+                  className="opacity-0 group-hover/history:opacity-100 text-[var(--text-faint)] hover:text-[#38bdf8] transition-all"
                 >
                   <Copy size={12} />
                 </button>

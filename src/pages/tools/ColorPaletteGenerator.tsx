@@ -141,7 +141,7 @@ export default function ColorPaletteGenerator() {
           <div style={{ width: 40, height: 40, borderRadius: 12, background: `${color}24`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Palette size={20} style={{ color }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">颜色调色板生成器</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">颜色调色板生成器</h1>
         </div>
         <p style={{ color: '#a8b2c1', marginLeft: 52 }}>基于主色生成互补色、类似色、三色搭配等配色方案，一键复制色值</p>
       </motion.div>
@@ -150,7 +150,7 @@ export default function ColorPaletteGenerator() {
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="glass-card p-6 mb-6">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <label className="text-sm text-[#666]">主色：</label>
+            <label className="text-sm text-[var(--text-faint)]">主色：</label>
             <input
               type="color"
               value={baseColor}
@@ -163,7 +163,7 @@ export default function ColorPaletteGenerator() {
               value={baseColor}
               onChange={(e) => setBaseColor(e.target.value)}
               aria-label="主色色值"
-              className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white font-mono w-[100px]"
+              className="bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-3 py-2 text-sm text-[var(--text-primary)] font-mono w-[100px]"
             />
           </div>
           <button onClick={generate} className="btn-primary">
@@ -178,7 +178,7 @@ export default function ColorPaletteGenerator() {
       {/* Palette */}
       {palette.length > 0 && (
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-card p-6">
-          <h2 className="text-sm font-medium text-[#a8b2c1] mb-4">配色方案</h2>
+          <h2 className="text-sm font-medium text-[var(--text-secondary)] mb-4">配色方案</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
             {palette.map((c, i) => (
               <motion.div
@@ -186,7 +186,7 @@ export default function ColorPaletteGenerator() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: i * 0.05 }}
-                className="bg-white/5 rounded-lg p-3"
+                className="bg-[var(--bg-hover)] rounded-lg p-3"
               >
                 <div
                   className="w-full h-[80px] rounded-lg mb-3 cursor-pointer hover:scale-105 transition-transform"
@@ -194,9 +194,9 @@ export default function ColorPaletteGenerator() {
                   onClick={() => copyColor(c.hex)}
                   title="点击复制"
                 />
-                <div className="text-xs text-[#666] mb-1">{c.name}</div>
+                <div className="text-xs text-[var(--text-faint)] mb-1">{c.name}</div>
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-sm text-white">{c.hex}</span>
+                  <span className="font-mono text-sm text-[var(--text-primary)]">{c.hex}</span>
                   <button onClick={() => copyColor(c.hex)} className="btn-secondary !py-1 !px-2 text-xs">
                     <Copy size={12} />
                   </button>
@@ -206,9 +206,9 @@ export default function ColorPaletteGenerator() {
           </div>
 
           {/* Color Theory */}
-          <div className="mt-6 p-4 bg-white/5 rounded-lg">
-            <h3 className="text-xs text-[#666] mb-2">配色理论说明</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs text-[#a8b2c1]">
+          <div className="mt-6 p-4 bg-[var(--bg-hover)] rounded-lg">
+            <h3 className="text-xs text-[var(--text-faint)] mb-2">配色理论说明</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs text-[var(--text-secondary)]">
               <div><strong className="text-[#f472b6]">互补色：</strong>色相相差180°，对比强烈</div>
               <div><strong className="text-[#00d9ff]">类似色：</strong>色相相差30°，和谐统一</div>
               <div><strong className="text-[#6bcb77]">三色搭配：</strong>色相相差120°，平衡配色</div>

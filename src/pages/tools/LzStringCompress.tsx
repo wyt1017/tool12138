@@ -89,9 +89,9 @@ export default function LzStringCompress() {
           <div className="w-10 h-10 rounded-xl bg-[#a78bfa]/15 flex items-center justify-center">
             <Minimize2 size={20} className="text-[#a78bfa]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">文本压缩/解压</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">文本压缩/解压</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">基于LZ算法的纯前端文本压缩，适合长文本存储或传输</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">基于LZ算法的纯前端文本压缩，适合长文本存储或传输</p>
       </motion.div>
 
       {/* Mode Toggle & Format */}
@@ -99,7 +99,7 @@ export default function LzStringCompress() {
         <button
           onClick={() => setMode('compress')}
           className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-            mode === 'compress' ? 'bg-[#a78bfa]/15 text-[#a78bfa]' : 'bg-white/5 text-[#666]'
+            mode === 'compress' ? 'bg-[#a78bfa]/15 text-[#a78bfa]' : 'bg-[var(--bg-hover)] text-[var(--text-faint)]'
           }`}
         >
           压缩
@@ -107,15 +107,15 @@ export default function LzStringCompress() {
         <button
           onClick={() => setMode('decompress')}
           className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-            mode === 'decompress' ? 'bg-[#00d9ff]/15 text-[#00d9ff]' : 'bg-white/5 text-[#666]'
+            mode === 'decompress' ? 'bg-[#00d9ff]/15 text-[#00d9ff]' : 'bg-[var(--bg-hover)] text-[var(--text-faint)]'
           }`}
         >
           解压
         </button>
 
-        <div className="h-5 w-px bg-white/10 mx-2" />
+        <div className="h-5 w-px bg-[var(--bg-secondary)] mx-2" />
 
-        <span className="text-xs text-[#666]">输出格式：</span>
+        <span className="text-xs text-[var(--text-faint)]">输出格式：</span>
         {([
           { value: 'base64' as CompressFormat, label: 'Base64' },
           { value: 'utf16' as CompressFormat, label: 'UTF-16' },
@@ -125,7 +125,7 @@ export default function LzStringCompress() {
             key={f.value}
             onClick={() => setFormat(f.value)}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-              format === f.value ? 'bg-white/10 text-white' : 'bg-white/5 text-[#666] hover:text-[#a8b2c1]'
+              format === f.value ? 'bg-[var(--bg-secondary)] text-[var(--text-primary)]' : 'bg-[var(--bg-hover)] text-[var(--text-faint)] hover:text-[var(--text-secondary)]'
             }`}
           >
             {f.label}
@@ -138,15 +138,15 @@ export default function LzStringCompress() {
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-4 mb-6">
           <div className="grid grid-cols-3 gap-4 text-center">
             <div>
-              <div className="text-xs text-[#666] mb-1">原始大小</div>
+              <div className="text-xs text-[var(--text-faint)] mb-1">原始大小</div>
               <div className="text-lg font-bold font-mono text-[#a78bfa]">{stats.original} 字节</div>
             </div>
             <div>
-              <div className="text-xs text-[#666] mb-1">压缩后</div>
+              <div className="text-xs text-[var(--text-faint)] mb-1">压缩后</div>
               <div className="text-lg font-bold font-mono text-[#6bcb77]">{stats.result} 字节</div>
             </div>
             <div>
-              <div className="text-xs text-[#666] mb-1">压缩率</div>
+              <div className="text-xs text-[var(--text-faint)] mb-1">压缩率</div>
               <div className="text-lg font-bold font-mono text-[#f472b6]">{stats.ratio}</div>
             </div>
           </div>
@@ -157,7 +157,7 @@ export default function LzStringCompress() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
-          <label className="text-sm font-medium text-[#a8b2c1] mb-2 ml-1 block">
+          <label className="text-sm font-medium text-[var(--text-secondary)] mb-2 ml-1 block">
             {mode === 'compress' ? '原始文本' : '压缩数据'}
           </label>
           <textarea
@@ -165,14 +165,14 @@ export default function LzStringCompress() {
             onChange={(e) => setInput(e.target.value)}
             placeholder={mode === 'compress' ? '输入要压缩的长文本...' : '粘贴压缩后的数据...'}
             aria-label="输入文本"
-            className="tool-area w-full h-[280px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#a78bfa]/30 transition-colors placeholder:text-[#333] font-mono"
+            className="tool-area w-full h-[280px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#a78bfa]/30 transition-colors placeholder:text-[var(--text-faint)] font-mono"
           />
         </motion.div>
 
         {/* Output */}
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
           <div className="flex items-center justify-between mb-2 ml-1">
-            <label className="text-sm font-medium text-[#a8b2c1]">
+            <label className="text-sm font-medium text-[var(--text-secondary)]">
               {mode === 'compress' ? '压缩结果' : '解压结果'}
             </label>
             {output && (
@@ -186,7 +186,7 @@ export default function LzStringCompress() {
             value={output}
             placeholder="结果将显示在这里..."
             aria-label="输出结果"
-            className="tool-area w-full h-[280px] p-5 text-sm leading-relaxed resize-none outline-none text-[#a8b2c1] placeholder:text-[#333] font-mono"
+            className="tool-area w-full h-[280px] p-5 text-sm leading-relaxed resize-none outline-none text-[var(--text-secondary)] placeholder:text-[var(--text-faint)] font-mono"
           />
         </motion.div>
       </div>
@@ -211,8 +211,8 @@ export default function LzStringCompress() {
 
       {/* Info */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="glass-card p-4 mt-6">
-        <p className="text-xs text-[#666]">
-          <strong className="text-[#a8b2c1]">说明：</strong>
+        <p className="text-xs text-[var(--text-faint)]">
+          <strong className="text-[var(--text-secondary)]">说明：</strong>
           本工具使用 lz-string 库（真正的 LZ 压缩算法）进行文本压缩，支持中文等 Unicode 字符。
           三种输出格式：Base64（通用）、UTF-16（更短）、URI安全（可直接放 URL 参数中）。
           压缩和解压必须使用相同的格式。

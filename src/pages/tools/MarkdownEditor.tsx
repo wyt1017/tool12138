@@ -52,13 +52,13 @@ function markdownToHtml(md: string): string {
     return `CODEBLOCKPH${idx}PH`;
   });
   // Inline code
-  html = html.replace(/`([^`]+)`/g, '<code class="bg-white/10 px-1.5 py-0.5 rounded text-[#ffd369] text-sm">$1</code>');
+  html = html.replace(/`([^`]+)`/g, '<code class="bg-[var(--bg-secondary)] px-1.5 py-0.5 rounded text-[#ffd369] text-sm">$1</code>');
   // Headers
-  html = html.replace(/^### (.+)$/gm, '<h3 class="text-xl font-semibold text-white mt-6 mb-2">$1</h3>');
-  html = html.replace(/^## (.+)$/gm, '<h2 class="text-2xl font-bold text-white mt-8 mb-3">$1</h2>');
+  html = html.replace(/^### (.+)$/gm, '<h3 class="text-xl font-semibold text-[var(--text-primary)] mt-6 mb-2">$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2 class="text-2xl font-bold text-[var(--text-primary)] mt-8 mb-3">$1</h2>');
   html = html.replace(/^# (.+)$/gm, '<h1 class="text-3xl font-extrabold gradient-text mt-8 mb-4">$1</h1>');
   // Bold & Italic
-  html = html.replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-white">$1</strong>');
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-[var(--text-primary)]">$1</strong>');
   html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
   // Links - 使用安全的 URL 过滤
   html = html.replace(/\[(.+?)\]\((.+?)\)/g, (_m, text, url) => {
@@ -67,13 +67,13 @@ function markdownToHtml(md: string): string {
     return `<a href="${escapeAttr(safeUrl)}" class="text-[#00d9ff] underline hover:text-[#6bcb77]" target="_blank" rel="noopener noreferrer">${escapeHtml(text)}</a>`;
   });
   // Unordered list
-  html = html.replace(/^[-*] (.+)$/gm, '<li class="ml-4 list-disc text-[#a8b2c1] my-1">$1</li>');
+  html = html.replace(/^[-*] (.+)$/gm, '<li class="ml-4 list-disc text-[var(--text-secondary)] my-1">$1</li>');
   // Ordered list
-  html = html.replace(/^\d+\. (.+)$/gm, '<li class="ml-4 list-decimal text-[#a8b2c1] my-1">$1</li>');
+  html = html.replace(/^\d+\. (.+)$/gm, '<li class="ml-4 list-decimal text-[var(--text-secondary)] my-1">$1</li>');
   // Blockquote
-  html = html.replace(/^&gt; (.+)$/gm, '<blockquote class="border-l-3 border-[#00d9ff] pl-4 text-[#a8b2c1] italic my-3">$1</blockquote>');
+  html = html.replace(/^&gt; (.+)$/gm, '<blockquote class="border-l-3 border-[#00d9ff] pl-4 text-[var(--text-secondary)] italic my-3">$1</blockquote>');
   // Horizontal rule
-  html = html.replace(/^---$/gm, '<hr class="border-white/10 my-6"/>');
+  html = html.replace(/^---$/gm, '<hr class="border-[var(--border-color)] my-6"/>');
   // Images - 使用安全的 URL 过滤，alt 属性需要转义
   html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_m, alt, url) => {
     const safeUrl = sanitizeUrl(url);
@@ -81,7 +81,7 @@ function markdownToHtml(md: string): string {
     return `<img src="${escapeAttr(safeUrl)}" alt="${escapeHtml(alt)}" class="rounded-lg max-w-full my-4"/>`;
   });
   // Line breaks
-  html = html.replace(/\n\n/g, '</p><p class="my-2 text-[#a8b2c1] leading-relaxed">');
+  html = html.replace(/\n\n/g, '</p><p class="my-2 text-[var(--text-secondary)] leading-relaxed">');
   html = html.replace(/\n/g, '<br/>');
 
   // 还原代码块（此时已避开换行替换，<pre> 内部换行保持原样）
@@ -131,9 +131,9 @@ export default function MarkdownEditor() {
           <div className="w-10 h-10 rounded-xl bg-[#00d9ff]/15 flex items-center justify-center">
             <FileCode size={20} className="text-[#00d9ff]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">Markdown编辑器</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">Markdown编辑器</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">实时预览，支持导出HTML和一键复制</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">实时预览，支持导出HTML和一键复制</p>
       </motion.div>
 
       {/* Toolbar */}
@@ -147,7 +147,7 @@ export default function MarkdownEditor() {
             key={key}
             onClick={() => setMode(key)}
             className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium transition-all ${
-              mode === key ? 'bg-[#00d9ff]/15 text-[#00d9ff]' : 'bg-white/5 text-[#666] hover:text-white hover:bg-white/10'
+              mode === key ? 'bg-[#00d9ff]/15 text-[#00d9ff]' : 'bg-[var(--bg-hover)] text-[var(--text-faint)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]'
             }`}
           >
             <Icon size={15} /> {label}
@@ -175,7 +175,7 @@ export default function MarkdownEditor() {
               value={md}
               onChange={(e) => setMd(e.target.value)}
               aria-label="Markdown输入"
-              className="tool-area w-full h-[520px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#00d9ff]/30 transition-colors placeholder:text-[#333] font-mono"
+              className="tool-area w-full h-[520px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#00d9ff]/30 transition-colors placeholder:text-[var(--text-faint)] font-mono"
               spellCheck={false}
             />
           </motion.div>

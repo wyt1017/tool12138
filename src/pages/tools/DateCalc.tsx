@@ -126,7 +126,7 @@ export default function DateCalc() {
 
   const NumberInput = ({ value, onChange, label }: { value: string; onChange: (v: string) => void; label: string }) => (
     <div className="flex-1 min-w-[70px]">
-      <label className="text-[10px] text-[#666] mb-1 block">{label}</label>
+      <label className="text-[10px] text-[var(--text-faint)] mb-1 block">{label}</label>
       <input
         type="number"
         value={value}
@@ -145,9 +145,9 @@ export default function DateCalc() {
           <div className="w-10 h-10 rounded-xl bg-[#fb923c]/15 flex items-center justify-center">
             <CalendarClock size={20} className="text-[#fb923c]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">日期时间计算器</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">日期时间计算器</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">日期加减、日期差值计算及日期详细信息查询</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">日期加减、日期差值计算及日期详细信息查询</p>
       </motion.div>
 
       {/* Mode Tabs */}
@@ -161,7 +161,7 @@ export default function DateCalc() {
             key={tab.key}
             onClick={() => setMode(tab.key as Mode)}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-              mode === tab.key ? 'bg-[#fb923c]/15 text-[#fb923c]' : 'bg-white/5 text-[#666]'
+              mode === tab.key ? 'bg-[#fb923c]/15 text-[#fb923c]' : 'bg-[var(--bg-hover)] text-[var(--text-faint)]'
             }`}
           >
             <span className="mr-1.5">{tab.icon}</span> {tab.label}
@@ -173,10 +173,10 @@ export default function DateCalc() {
       {mode === 'add' && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} key="mode-add" className="space-y-6">
           <div className="glass-card p-6 space-y-4">
-            <h3 className="text-sm font-medium text-[#a8b2c1]">基准日期时间</h3>
+            <h3 className="text-sm font-medium text-[var(--text-secondary)]">基准日期时间</h3>
             <div className="flex gap-4">
               <div className="flex-1">
-                <label className="text-xs text-[#666] mb-1 block">日期</label>
+                <label className="text-xs text-[var(--text-faint)] mb-1 block">日期</label>
                 <input
                   type="date"
                   value={baseDate}
@@ -186,7 +186,7 @@ export default function DateCalc() {
                 />
               </div>
               <div className="flex-1">
-                <label className="text-xs text-[#666] mb-1 block">时间</label>
+                <label className="text-xs text-[var(--text-faint)] mb-1 block">时间</label>
                 <input
                   type="time"
                   value={baseTime}
@@ -198,7 +198,7 @@ export default function DateCalc() {
               </div>
             </div>
 
-            <h3 className="text-sm font-medium text-[#a8b2c1] pt-2">加减量（支持负数）</h3>
+            <h3 className="text-sm font-medium text-[var(--text-secondary)] pt-2">加减量（支持负数）</h3>
             <div className="flex flex-wrap gap-3">
               <NumberInput value={addYears} onChange={setAddYears} label="年" />
               <NumberInput value={addMonths} onChange={setAddMonths} label="月" />
@@ -211,9 +211,9 @@ export default function DateCalc() {
 
           {addResult && (
             <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="glass-card p-6 border-l-4 border-l-[#fb923c]">
-              <p className="text-xs text-[#666] mb-2">计算结果</p>
-              <p className="text-xl font-bold text-white font-mono">{formatDateTime(addResult.result)}</p>
-              <p className="text-xs text-[#888] mt-2">基准: {formatDateTime(addResult.base)}</p>
+              <p className="text-xs text-[var(--text-faint)] mb-2">计算结果</p>
+              <p className="text-xl font-bold text-[var(--text-primary)] font-mono">{formatDateTime(addResult.result)}</p>
+              <p className="text-xs text-[var(--text-faint)] mt-2">基准: {formatDateTime(addResult.base)}</p>
             </motion.div>
           )}
         </motion.div>
@@ -225,7 +225,7 @@ export default function DateCalc() {
           <div className="glass-card p-6 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium text-[#a8b2c1] block mb-2">开始日期</label>
+                <label className="text-sm font-medium text-[var(--text-secondary)] block mb-2">开始日期</label>
                 <input
                   type="date"
                   value={diffDate1}
@@ -235,7 +235,7 @@ export default function DateCalc() {
                 />
               </div>
               <div>
-                <label className="text-sm font-medium text-[#a8b2c1] block mb-2">结束日期</label>
+                <label className="text-sm font-medium text-[var(--text-secondary)] block mb-2">结束日期</label>
                 <input
                   type="date"
                   value={diffDate2}
@@ -264,7 +264,7 @@ export default function DateCalc() {
                     className="glass-card p-4 text-center border-t-2 border-t-[var(--color)]"
                     style={{ '--color': item.color } as React.CSSProperties}
                   >
-                    <p className="text-xs text-[#666] mb-1">相差{item.label}</p>
+                    <p className="text-xs text-[var(--text-faint)] mb-1">相差{item.label}</p>
                     <p className="text-2xl font-bold font-['Syne']" style={{ color: item.color }}>
                       {item.value.toLocaleString()}
                     </p>
@@ -273,13 +273,13 @@ export default function DateCalc() {
               </div>
 
               <div className="glass-card p-5">
-                <p className="text-sm text-[#a8b2c1]">
-                  详细差值：<span className="text-white font-mono">{diffResult.days}</span> 天{' '}
-                  <span className="text-white font-mono">{diffResult.hours}</span> 小时{' '}
-                  <span className="text-white font-mono">{diffResult.minutes}</span> 分钟{' '}
-                  <span className="text-white font-mono">{diffResult.seconds}</span> 秒
+                <p className="text-sm text-[var(--text-secondary)]">
+                  详细差值：<span className="text-[var(--text-primary)] font-mono">{diffResult.days}</span> 天{' '}
+                  <span className="text-[var(--text-primary)] font-mono">{diffResult.hours}</span> 小时{' '}
+                  <span className="text-[var(--text-primary)] font-mono">{diffResult.minutes}</span> 分钟{' '}
+                  <span className="text-[var(--text-primary)] font-mono">{diffResult.seconds}</span> 秒
                 </p>
-                <p className="text-xs text-[#666] mt-2">
+                <p className="text-xs text-[var(--text-faint)] mt-2">
                   结束日期比开始日期{diffResult.isFuture ? '晚' : '早'}
                 </p>
               </div>
@@ -292,7 +292,7 @@ export default function DateCalc() {
       {mode === 'info' && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} key="mode-info" className="space-y-6">
           <div className="glass-card p-6">
-            <label className="text-sm font-medium text-[#a8b2c1] block mb-2">选择日期</label>
+            <label className="text-sm font-medium text-[var(--text-secondary)] block mb-2">选择日期</label>
             <input
               type="date"
               value={infoDate}
@@ -323,8 +323,8 @@ export default function DateCalc() {
                 >
                   <span className="text-lg">{item.icon}</span>
                   <div>
-                    <p className="text-xs text-[#666]">{item.label}</p>
-                    <p className="text-sm font-medium text-white">{item.value}</p>
+                    <p className="text-xs text-[var(--text-faint)]">{item.label}</p>
+                    <p className="text-sm font-medium text-[var(--text-primary)]">{item.value}</p>
                   </div>
                 </motion.div>
               ))}

@@ -52,9 +52,9 @@ export default function TimeUnitConverter() {
           <div className="w-10 h-10 rounded-xl bg-[#6bcb77]/15 flex items-center justify-center">
             <Clock size={20} className="text-[#6bcb77]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">时间单位换算</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">时间单位换算</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">毫秒、秒、分钟、小时、天、周之间的互相转换，便于时间计算</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">毫秒、秒、分钟、小时、天、周之间的互相转换，便于时间计算</p>
       </motion.div>
 
       {/* Input */}
@@ -66,13 +66,13 @@ export default function TimeUnitConverter() {
             onChange={(e) => setInputValue(e.target.value)}
             placeholder="输入数值"
             aria-label="输入数值"
-            className="bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-lg text-white outline-none focus:border-[#6bcb77]/30 flex-1"
+            className="bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-lg text-[var(--text-primary)] outline-none focus:border-[#6bcb77]/30 flex-1"
           />
           {/* Custom dropdown */}
           <div className="relative">
             <button
               onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-lg text-white outline-none focus:border-[#6bcb77]/30 flex items-center gap-2 min-w-[100px] justify-between"
+              className="bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-lg text-[var(--text-primary)] outline-none focus:border-[#6bcb77]/30 flex items-center gap-2 min-w-[100px] justify-between"
             >
               <span>{TIME_UNITS[inputUnit].name}</span>
               <svg className={`w-4 h-4 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -82,13 +82,13 @@ export default function TimeUnitConverter() {
             {dropdownOpen && (
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setDropdownOpen(false)} />
-                <div className="absolute top-full left-0 mt-1 w-full bg-[#1a1a2e] border border-white/10 rounded-lg shadow-xl z-20 overflow-hidden">
+                <div className="absolute top-full left-0 mt-1 w-full bg-[var(--bg-elevated)] border border-[var(--border-color)] rounded-lg shadow-xl z-20 overflow-hidden">
                   {Object.entries(TIME_UNITS).map(([key, unit]) => (
                     <button
                       key={key}
                       onClick={() => selectUnit(key)}
                       className={`w-full px-4 py-2.5 text-left text-sm transition-colors ${
-                        inputUnit === key ? 'bg-[#6bcb77]/15 text-[#6bcb77]' : 'text-[#a8b2c1] hover:bg-white/5'
+                        inputUnit === key ? 'bg-[#6bcb77]/15 text-[#6bcb77]' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]'
                       }`}
                     >
                       {unit.name}
@@ -107,11 +107,11 @@ export default function TimeUnitConverter() {
       {/* Results */}
       {results && (
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-card p-6">
-          <h2 className="text-sm font-medium text-[#a8b2c1] mb-4">转换结果</h2>
+          <h2 className="text-sm font-medium text-[var(--text-secondary)] mb-4">转换结果</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {Object.entries(TIME_UNITS).map(([key, unit]) => (
-              <div key={key} className="bg-white/5 rounded-lg p-4">
-                <div className="text-xs text-[#666] mb-2">{unit.name}</div>
+              <div key={key} className="bg-[var(--bg-hover)] rounded-lg p-4">
+                <div className="text-xs text-[var(--text-faint)] mb-2">{unit.name}</div>
                 <div className="text-xl font-bold font-mono text-[#6bcb77] mb-2">{results[key]}</div>
                 <button onClick={() => copyResult(key)} className="btn-secondary !py-1 !px-2 text-xs w-full">
                   <Copy size={12} className="inline mr-1" /> 复制
@@ -121,9 +121,9 @@ export default function TimeUnitConverter() {
           </div>
 
           {/* Conversion Formula */}
-          <div className="mt-6 p-4 bg-white/5 rounded-lg">
-            <h3 className="text-xs text-[#666] mb-2">换算关系</h3>
-            <div className="text-xs text-[#a8b2c1] space-y-1">
+          <div className="mt-6 p-4 bg-[var(--bg-hover)] rounded-lg">
+            <h3 className="text-xs text-[var(--text-faint)] mb-2">换算关系</h3>
+            <div className="text-xs text-[var(--text-secondary)] space-y-1">
               <p>• 1 秒 = 1000 毫秒</p>
               <p>• 1 分钟 = 60 秒 = 60000 毫秒</p>
               <p>• 1 小时 = 60 分钟 = 3600 秒</p>

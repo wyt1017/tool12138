@@ -1,20 +1,128 @@
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap');
+/* =========================================================================
+   字体自托管（woff2 存放于 /public/fonts，避免依赖 Google Fonts CDN）
+   ========================================================================= */
+@font-face {
+  font-family: 'Syne';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('/fonts/syne.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/dm-sans.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono.woff2') format('woff2');
+}
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
+/* =========================================================================
+   主题令牌（霓虹赛博工具箱）
+   深色为默认，浅色通过 .light 类切换。所有色彩走 CSS 变量，保证双主题一致。
+   工具工作区（.tool-workspace）同样随主题切换。
+   ========================================================================= */
+:root,
+.light {
+  /* 品牌主色（霓虹青） */
+  --brand: #00d9ff;
+  --brand-soft: #22d3ee;
+  --brand-text: #0596c0;
+  --brand-glow: rgba(0, 217, 255, 0.5);
+  --brand-glow-soft: rgba(0, 217, 255, 0.22);
+
+  /* 辅助紫色 */
+  --violet: #a78bfa;
+  --violet-glow: rgba(167, 139, 250, 0.45);
+
+  /* 中性表面 */
+  --bg-primary: #f6f8fc;
+  --bg-secondary: #eef1f8;
+  --bg-card: rgba(255, 255, 255, 0.78);
+  --bg-card-solid: #ffffff;
+  --bg-elevated: #ffffff;
+  --bg-hover: rgba(10, 18, 32, 0.05);
+
+  /* 边框 - 浅色下更清晰的辉光 */
+  --border-color: rgba(11, 26, 48, 0.09);
+  --border-strong: rgba(11, 26, 48, 0.16);
+
+  /* 文字 */
+  --text-primary: #0c1526;
+  --text-secondary: #4a5870;
+  --text-muted: #7b879e;
+  --text-faint: #a5afc2;
+
+  /* 语义色 */
+  --danger: #e8455e;
+  --success: #26b563;
+  --warn: #f3a712;
+
+  /* 阴影 */
+  --shadow-sm: 0 1px 2px rgba(11, 26, 48, 0.06);
+  --shadow-md: 0 8px 24px rgba(11, 26, 48, 0.08);
+  --shadow-lg: 0 24px 60px rgba(11, 26, 48, 0.12);
+
+  /* 渐变 */
+  --gradient-brand: linear-gradient(135deg, #00d9ff 0%, #6366f1 100%);
+  --gradient-rich: linear-gradient(135deg, #00d9ff 0%, #7c7dff 45%, #ff5f8f 100%);
+
+  /* 玻璃背层 */
+  --glass-bg: rgba(255, 255, 255, 0.6);
+
+  /* 应用级缓动（主题无关，:root 始终生效） */
+  --ease-app: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark {
+  --brand: #00d9ff;
+  --brand-soft: #22d3ee;
+  --brand-text: #49e2ff;
+  --brand-glow: rgba(0, 217, 255, 0.5);
+  --brand-glow-soft: rgba(0, 217, 255, 0.18);
+
+  --violet: #a78bfa;
+  --violet-glow: rgba(167, 139, 250, 0.4);
+
   --bg-primary: #0a0a1a;
-  --bg-secondary: #111128;
+  --bg-secondary: #101026;
   --bg-card: rgba(22, 33, 62, 0.6);
-  --border-color: rgba(255, 255, 255, 0.06);
+  --bg-card-solid: #151531;
+  --bg-elevated: #16163a;
+  --bg-hover: rgba(255, 255, 255, 0.05);
+
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+
   --text-primary: #f0f0f5;
   --text-secondary: #a8b2c1;
-  --accent-cyan: #00d9ff;
-  --accent-red: #e94560;
-  --accent-green: #6bcb77;
-  --accent-yellow: #ffd369;
+  --text-muted: #7c8698;
+  --text-faint: #555e70;
+
+  --danger: #e94560;
+  --success: #6bcb77;
+  --warn: #ffd369;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.5);
+
+  --gradient-brand: linear-gradient(135deg, #00d9ff 0%, #6366f1 100%);
+  --gradient-rich: linear-gradient(135deg, #00d9ff 0%, #8b5cf6 50%, #e94560 100%);
+
+  --glass-bg: rgba(15, 16, 40, 0.6);
 }
 
 * {
@@ -37,6 +145,8 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* 主题切换平滑过渡 */
+  transition: background-color 0.35s ease, color 0.35s ease;
 }
 
 /* 移动端动态视口高度：先 100vh 回退，再 100dvh 覆盖（保证回退顺序） */
@@ -49,22 +159,28 @@ h1, h2, h3, h4, h5, h6 {
   font-family: 'Syne', sans-serif;
 }
 
-/* 玻璃拟态卡片 */
+/* =========================================================================
+   玻璃拟态卡片（主题自适应）
+   ========================================================================= */
 .glass-card {
   background: var(--bg-card);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-color);
-  border-radius: 16px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    background-color 0.3s ease;
 }
 
 /* --cat-color 由卡片组件按分类注入；未设置时回退到品牌青色 */
 .glass-card:hover {
-  border-color: color-mix(in srgb, var(--cat-color, #00d9ff) 30%, transparent);
+  border-color: color-mix(in srgb, var(--cat-color, #00d9ff) 45%, transparent);
   transform: translateY(-4px);
-  box-shadow: 0 20px 60px color-mix(in srgb, var(--cat-color, #00d9ff) 14%, transparent),
-    0 8px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 60px color-mix(in srgb, var(--cat-color, #00d9ff) 16%, transparent),
+    0 8px 24px rgba(11, 26, 48, 0.14);
 }
 
 /* 工具卡片：分类色驱动 hover 效果，--cat-color 由 ToolCard 注入 */
@@ -75,7 +191,7 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--cat-color, #00d9ff);
 }
 .tool-icon {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
 }
 .glass-card:hover .tool-icon {
   transform: scale(1.1);
@@ -84,11 +200,12 @@ h1, h2, h3, h4, h5, h6 {
 
 /* 热门工具紧凑卡片：同样由 --cat-color 驱动 hover */
 .hot-card {
-  transition: background 0.3s ease, border-color 0.3s ease;
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
 }
 .hot-card:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: color-mix(in srgb, var(--cat-color, #00d9ff) 25%, transparent);
+  background: var(--bg-hover);
+  border-color: color-mix(in srgb, var(--cat-color, #00d9ff) 35%, transparent);
+  transform: translateY(-3px);
 }
 .hot-title {
   transition: color 0.3s ease;
@@ -98,16 +215,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 .hot-cta {
   opacity: 0;
-  transition: color 0.3s ease, opacity 0.3s ease;
+  transition: color 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+  transform: translateX(-4px);
 }
 .hot-card:hover .hot-cta {
   color: var(--cat-color, #00d9ff);
   opacity: 1;
+  transform: translateX(0);
 }
 
 /* 渐变文字 */
 .gradient-text {
-  background: linear-gradient(135deg, var(--accent-cyan) 0%, #a78bfa 50%, var(--accent-red) 100%);
+  background: var(--gradient-rich);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -123,7 +242,7 @@ h1, h2, h3, h4, h5, h6 {
   position: absolute;
   inset: -2px;
   border-radius: inherit;
-  background: linear-gradient(135deg, var(--accent-cyan), #a78bfa, var(--accent-red));
+  background: var(--gradient-rich);
   z-index: -1;
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -134,12 +253,13 @@ h1, h2, h3, h4, h5, h6 {
   opacity: 1;
 }
 
-/* 背景网格 */
+/* 背景网格（主题自适应） */
 .bg-grid {
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    linear-gradient(color-mix(in srgb, var(--text-primary) 4%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--text-primary) 4%, transparent) 1px, transparent 1px);
   background-size: 60px 60px;
+  background-position: center top;
 }
 
 /* 滚动条样式 */
@@ -149,63 +269,109 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: color-mix(in srgb, var(--text-muted) 40%, transparent);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: color-mix(in srgb, var(--text-muted) 60%, transparent);
 }
 
-/* 工具页面输入输出区域 */
+/* =========================================================================
+   工具工作区（随主题切换，采用主题令牌）
+   所有工具页共用 `.tool-workspace` 作为面板容器。
+   ========================================================================= */
+.tool-workspace {
+  background: var(--bg-secondary);
+  background-image: radial-gradient(circle at 20% 0%, var(--brand-glow-soft), transparent 40%),
+    radial-gradient(circle at 90% 100%, var(--violet-glow), transparent 40%);
+}
+
+/* 工具页面输入输出区域（主题自适应面板） */
 .tool-area {
-  background: rgba(10, 10, 26, 0.8);
+  background: var(--bg-card-solid);
   border: 1px solid var(--border-color);
-  border-radius: 12px;
-  font-family: 'DM Sans', monospace;
+  border-radius: 14px;
+  font-family: 'JetBrains Mono', 'DM Sans', monospace;
+  color: var(--text-primary);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.tool-area:focus-within {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 1px var(--brand-glow-soft), 0 0 30px var(--brand-glow-soft);
+}
+.tool-area::placeholder {
+  color: var(--text-faint);
 }
 
-/* 按钮基础样式 */
+/* 工具图标霓虹光效（由 --cat-color 驱动，未设置时回退品牌青） */
+.icon-neon {
+  filter: drop-shadow(0 0 6px var(--cat-color, var(--brand)));
+}
+
+/* IconBadge 底座：渐变底 + 内描边 + hover 外圈发光（配合 --cat-color） */
+.neon-badge {
+  --cat-color: var(--brand);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--cat-color) 28%, transparent);
+  transition: box-shadow 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.neon-badge:hover {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--cat-color) 55%, transparent),
+    0 0 20px color-mix(in srgb, var(--cat-color) 35%, transparent);
+}
+
+/* =========================================================================
+   按钮
+   ========================================================================= */
 .btn-primary {
-  background: linear-gradient(135deg, var(--accent-cyan), #6366f1);
-  color: white;
+  background: var(--gradient-brand);
+  color: #ffffff;
   padding: 10px 24px;
   border-radius: 9999px;
   font-weight: 600;
   border: none;
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 14px;
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.25s ease,
+    filter 0.25s ease;
+  font-size: 15px;
+  box-shadow: 0 8px 24px var(--brand-glow-soft);
 }
 
 .btn-primary:hover {
-  box-shadow: 0 0 30px rgba(0, 217, 255, 0.3);
+  box-shadow: 0 0 30px var(--brand-glow), 0 8px 24px var(--brand-glow-soft);
   transform: translateY(-1px);
 }
 
+.btn-primary:active {
+  transform: translateY(0) scale(0.98);
+}
+
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.05);
+  background: color-mix(in srgb, var(--text-primary) 5%, transparent);
   color: var(--text-secondary);
   padding: 10px 24px;
   border-radius: 9999px;
   font-weight: 500;
   border: 1px solid var(--border-color);
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 14px;
+  transition: all 0.25s ease;
+  font-size: 15px;
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: color-mix(in srgb, var(--text-primary) 10%, transparent);
   color: var(--text-primary);
-  border-color: rgba(255, 255, 255, 0.15);
+  border-color: var(--border-strong);
 }
 
-/* 动画 */
+/* =========================================================================
+   动画
+   ========================================================================= */
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-12px); }
@@ -216,12 +382,49 @@ h1, h2, h3, h4, h5, h6 {
   50% { opacity: 0.8; }
 }
 
+@keyframes aurora-shift {
+  0% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(8%, -6%) scale(1.1); }
+  50% { transform: translate(-5%, 8%) scale(0.95); }
+  75% { transform: translate(-8%, -4%) scale(1.08); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+@keyframes grain-drift {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-5%, 3%); }
+  40% { transform: translate(4%, -6%); }
+  60% { transform: translate(-7%, -2%); }
+  80% { transform: translate(6%, 5%); }
+}
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .animate-float {
   animation: float 5s ease-in-out infinite;
 }
 
 .animate-pulse-glow {
   animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.animate-aurora {
+  animation: aurora-shift 18s ease-in-out infinite;
+}
+
+/* 滚动进入的上浮淡入（配合 whileInView 或 class） */
+.reveal-up {
+  animation: rise-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* 文章正文：更大的字号与行距 */
+.prose-app {
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--text-secondary);
 }
 
 /* 音乐播放器：封面缓转 */
@@ -268,4 +471,18 @@ h1, h2, h3, h4, h5, h6 {
 .mask-fade-y {
   mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%);
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%);
+}
+
+/* 单选原生控件在深色画布中的表现 */
+.dark .tool-workspace select,
+.dark .tool-workspace input[type="number"] {
+  color-scheme: dark;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

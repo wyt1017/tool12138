@@ -277,20 +277,20 @@ export default function XmlFormatter() {
           <div className="w-10 h-10 rounded-xl bg-[#6bcb77]/15 flex items-center justify-center">
             <FileCode size={20} className="text-[#6bcb77]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">XML格式化与校验</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">XML格式化与校验</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">美化XML缩进，同时检查标签是否闭合、语法错误</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">美化XML缩进，同时检查标签是否闭合、语法错误</p>
       </motion.div>
 
       {/* Options */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="glass-card p-6 mb-6">
         <div className="flex items-center gap-4">
-          <label className="text-sm text-[#a8b2c1]">缩进大小：</label>
+          <label className="text-sm text-[var(--text-secondary)]">缩进大小：</label>
           <select
             value={indentSize}
             onChange={(e) => setIndentSize(Number(e.target.value))}
             aria-label="缩进大小"
-            className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white outline-none focus:border-[#6bcb77]/30"
+            className="bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-3 py-1.5 text-sm text-[var(--text-primary)] outline-none focus:border-[#6bcb77]/30"
           >
             <option value={2}>2 空格</option>
             <option value={4}>4 空格</option>
@@ -302,20 +302,20 @@ export default function XmlFormatter() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
-          <label className="text-sm font-medium text-[#a8b2c1] mb-2 ml-1 block">输入XML</label>
+          <label className="text-sm font-medium text-[var(--text-secondary)] mb-2 ml-1 block">输入XML</label>
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="粘贴XML内容..."
             aria-label="输入XML"
-            className="tool-area w-full h-[350px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#6bcb77]/30 transition-colors placeholder:text-[#333] font-mono"
+            className="tool-area w-full h-[350px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#6bcb77]/30 transition-colors placeholder:text-[var(--text-faint)] font-mono"
           />
         </motion.div>
 
         {/* Output */}
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
           <div className="flex items-center justify-between mb-2 ml-1">
-            <label className="text-sm font-medium text-[#a8b2c1]">输出结果</label>
+            <label className="text-sm font-medium text-[var(--text-secondary)]">输出结果</label>
             {output && (
               <button onClick={() => navigator.clipboard.writeText(output)} className="btn-secondary !py-1.5 !px-3 text-xs">
                 <Copy size={13} className="inline mr-1" /> 复制
@@ -327,7 +327,7 @@ export default function XmlFormatter() {
             value={output}
             placeholder="结果将显示在这里..."
             aria-label="输出结果"
-            className="tool-area w-full h-[350px] p-5 text-sm leading-relaxed resize-none outline-none text-[#a8b2c1] placeholder:text-[#333] font-mono"
+            className="tool-area w-full h-[350px] p-5 text-sm leading-relaxed resize-none outline-none text-[var(--text-secondary)] placeholder:text-[var(--text-faint)] font-mono"
           />
         </motion.div>
       </div>
@@ -335,7 +335,7 @@ export default function XmlFormatter() {
       {/* Error */}
       {error && (
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-4 mt-6 border border-red-500/30">
-          <div className="flex items-center gap-2 text-red-400">
+          <div className="flex items-center gap-2 text-[var(--danger)]">
             <AlertCircle size={18} />
             <span className="text-sm">{error}</span>
           </div>

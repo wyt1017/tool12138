@@ -143,14 +143,14 @@ export default function MusicPlayerPage() {
           <div className="relative">
             <Search
               size={18}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-[#555]"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-faint)]"
             />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="输入关键词实时搜索歌曲..."
-              className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-10 py-3 text-white placeholder:text-[#444] outline-none focus:border-[#a78bfa]/40"
+              className="w-full bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-xl pl-10 pr-10 py-3 text-[var(--text-primary)] placeholder:text-[var(--text-faint)] outline-none focus:border-[#a78bfa]/40"
             />
             {searching && (
               <Loader2
@@ -163,13 +163,13 @@ export default function MusicPlayerPage() {
           {/* 搜索结果列表 */}
           <div className="glass-card p-3 max-h-[560px] overflow-y-auto">
             {!searchQuery.trim() ? (
-              <p className="text-[#555] text-center py-6">
+              <p className="text-[var(--text-faint)] text-center py-6">
                 输入关键词搜索，点击「+」加入播放列表
               </p>
             ) : searching ? (
-              <p className="text-[#555] text-center py-6">搜索中...</p>
+              <p className="text-[var(--text-faint)] text-center py-6">搜索中...</p>
             ) : results.length === 0 ? (
-              <p className="text-[#555] text-center py-6">未找到相关歌曲</p>
+              <p className="text-[var(--text-faint)] text-center py-6">未找到相关歌曲</p>
             ) : (
               results.map((song) => {
                 const added = addedIds.has(song.id);
@@ -178,13 +178,13 @@ export default function MusicPlayerPage() {
                     key={song.id}
                     onClick={() => handlePlayResult(song)}
                     title="点击播放该歌曲"
-                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
+                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-[var(--bg-hover)] transition-colors cursor-pointer"
                   >
                     {/* 封面缩略图（圆形） */}
                     <div className="relative w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
                       <div className="absolute inset-0 bg-gradient-to-br from-[#a78bfa]/30 to-[#00d9ff]/30 z-10 pointer-events-none" />
                       <div className="w-full h-full bg-[#1a1a2e] flex items-center justify-center">
-                        <Music2 size={14} className="text-white/20" />
+                        <Music2 size={14} className="text-[var(--text-faint)]" />
                       </div>
                       {song.cover && (
                         <img
@@ -196,8 +196,8 @@ export default function MusicPlayerPage() {
                     </div>
                     {/* 歌曲信息 */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-white text-sm truncate">{song.name}</p>
-                      <p className="text-[#a8b2c1] text-xs truncate">
+                      <p className="text-[var(--text-primary)] text-sm truncate">{song.name}</p>
+                      <p className="text-[var(--text-secondary)] text-xs truncate">
                         {song.artists}
                         {song.duration ? ` · ${formatTime(song.duration)}` : ""}
                       </p>
@@ -217,7 +217,7 @@ export default function MusicPlayerPage() {
                       className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
                         added
                           ? "text-[#00d9ff] bg-[#00d9ff]/10 cursor-default"
-                          : "text-[#a78bfa] bg-white/5 hover:bg-[#a78bfa]/20 border border-[#a78bfa]/30"
+                          : "text-[#a78bfa] bg-[var(--bg-hover)] hover:bg-[#a78bfa]/20 border border-[#a78bfa]/30"
                       }`}
                     >
                       {added ? <Check size={16} /> : <Plus size={16} />}
@@ -240,7 +240,7 @@ export default function MusicPlayerPage() {
                 {loadingUrlId ? (
                   <Loader2 size={36} className="text-[#a78bfa] animate-spin" />
                 ) : (
-                  <Music2 size={44} className="text-white/20" />
+                  <Music2 size={44} className="text-[var(--text-faint)]" />
                 )}
               </div>
               {currentSong?.cover && (
@@ -257,13 +257,13 @@ export default function MusicPlayerPage() {
             <div className="flex-1 min-w-0 text-center sm:text-left">
               {currentSong ? (
                 <>
-                  <h2 className="text-2xl font-bold text-white truncate">
+                  <h2 className="text-2xl font-bold text-[var(--text-primary)] truncate">
                     {currentSong.name}
                   </h2>
-                  <p className="text-[#a8b2c1] mt-1">{currentSong.artists}</p>
+                  <p className="text-[var(--text-secondary)] mt-1">{currentSong.artists}</p>
                 </>
               ) : (
-                <p className="text-[#555]">尚未播放歌曲，去左侧添加吧</p>
+                <p className="text-[var(--text-faint)]">尚未播放歌曲，去左侧添加吧</p>
               )}
               {error && (
                 <p className="text-[#f472b6] text-sm mt-2">{error}</p>
@@ -274,12 +274,12 @@ export default function MusicPlayerPage() {
           {/* 歌词（可开关、点击跳转、滚动高亮当前行） */}
           <div className="mb-5">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs text-[#a8b2c1] flex items-center gap-1.5">
+              <span className="text-xs text-[var(--text-secondary)] flex items-center gap-1.5">
                 <Music2 size={12} /> 歌词
               </span>
               <button
                 onClick={() => setShowLyrics((v) => !v)}
-                className="flex items-center gap-1 text-xs text-[#a8b2c1] hover:text-[#00d9ff] transition-colors"
+                className="flex items-center gap-1 text-xs text-[var(--text-secondary)] hover:text-[#00d9ff] transition-colors"
                 aria-label={showLyrics ? "隐藏歌词" : "显示歌词"}
               >
                 {showLyrics ? <EyeOff size={13} /> : <Eye size={13} />}
@@ -289,10 +289,10 @@ export default function MusicPlayerPage() {
             {showLyrics && (
               <div
                 ref={lyricBoxRef}
-                className="mask-fade-y max-h-[220px] overflow-y-auto space-y-2 rounded-xl p-3 bg-white/[0.03]"
+                className="mask-fade-y max-h-[220px] overflow-y-auto space-y-2 rounded-xl p-3 bg-[var(--bg-hover)]"
               >
                 {lyrics.length === 0 ? (
-                  <p className="text-[#555] text-sm text-center py-8">暂无歌词</p>
+                  <p className="text-[var(--text-faint)] text-sm text-center py-8">暂无歌词</p>
                 ) : (
                   lyrics.map((line, i) => (
                     <p
@@ -301,7 +301,7 @@ export default function MusicPlayerPage() {
                       className={`text-sm transition-all cursor-pointer rounded px-1 -mx-1 ${
                         i === activeLrc
                           ? "text-[#00d9ff] font-semibold scale-105 origin-left"
-                          : "text-[#555] hover:text-white/70"
+                          : "text-[var(--text-faint)] hover:text-[var(--text-muted)]"
                       }`}
                     >
                       {line.text}
@@ -324,7 +324,7 @@ export default function MusicPlayerPage() {
               className="w-full h-1 accent-[#a78bfa] cursor-pointer"
               disabled={!currentSong}
             />
-            <div className="flex justify-between text-xs text-[#555] mt-1">
+            <div className="flex justify-between text-xs text-[var(--text-faint)] mt-1">
               <span>{formatTime(currentTime)}</span>
               <span>{formatTime(duration)}</span>
             </div>
@@ -336,7 +336,7 @@ export default function MusicPlayerPage() {
               <button
                 onClick={prev}
                 disabled={!currentSong}
-                className="p-3 text-white/60 hover:text-white transition-colors rounded-full hover:bg-white/5 disabled:opacity-30"
+                className="p-3 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors rounded-full hover:bg-[var(--bg-hover)] disabled:opacity-30"
                 aria-label="上一曲"
               >
                 <SkipBack size={24} />
@@ -358,7 +358,7 @@ export default function MusicPlayerPage() {
               <button
                 onClick={next}
                 disabled={!currentSong}
-                className="p-3 text-white/60 hover:text-white transition-colors rounded-full hover:bg-white/5 disabled:opacity-30"
+                className="p-3 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors rounded-full hover:bg-[var(--bg-hover)] disabled:opacity-30"
                 aria-label="下一曲"
               >
                 <SkipForward size={24} />
@@ -370,14 +370,14 @@ export default function MusicPlayerPage() {
               <button
                 onClick={cycleMode}
                 title={`播放模式：${modeLabel}`}
-                className="flex items-center gap-2 px-3 py-2 rounded-xl border border-white/10 text-[#a78bfa] hover:border-[#a78bfa]/40 hover:bg-white/5 transition-colors flex-shrink-0"
+                className="flex items-center gap-2 px-3 py-2 rounded-xl border border-[var(--border-color)] text-[#a78bfa] hover:border-[#a78bfa]/40 hover:bg-[var(--bg-hover)] transition-colors flex-shrink-0"
               >
                 {modeIcon}
                 <span className="text-xs">{modeLabel}</span>
               </button>
               {/* 音量滑块（弹性宽度，避免溢出边框） */}
               <div className="flex items-center gap-2 flex-1 min-w-[100px] max-w-[180px]">
-                <Volume2 size={16} className="text-[#555] flex-shrink-0" />
+                <Volume2 size={16} className="text-[var(--text-faint)] flex-shrink-0" />
                 <input
                   type="range"
                   min={0}
@@ -387,7 +387,7 @@ export default function MusicPlayerPage() {
                   onChange={(e) => setVolume(Number(e.target.value))}
                   className="min-w-0 w-full flex-1 h-1 accent-[#a78bfa] cursor-pointer"
                 />
-                <span className="text-xs text-[#555] w-8 text-right flex-shrink-0">
+                <span className="text-xs text-[var(--text-faint)] w-8 text-right flex-shrink-0">
                   {Math.round(volume * 100)}%
                 </span>
               </div>
@@ -397,13 +397,13 @@ export default function MusicPlayerPage() {
           {/* 播放列表（可删除歌曲） */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs text-[#a8b2c1] flex items-center gap-1.5">
+              <span className="text-xs text-[var(--text-secondary)] flex items-center gap-1.5">
                 <ListMusic size={12} /> 播放列表（{playlist.length}）
               </span>
               {playlist.length > 0 && (
                 <button
                   onClick={clearPlaylist}
-                  className="flex items-center gap-1 text-xs text-[#a8b2c1] hover:text-[#f472b6] transition-colors"
+                  className="flex items-center gap-1 text-xs text-[var(--text-secondary)] hover:text-[#f472b6] transition-colors"
                   aria-label="清空播放列表"
                 >
                   <Trash2 size={12} /> 清空
@@ -412,7 +412,7 @@ export default function MusicPlayerPage() {
             </div>
             <div className="max-h-[220px] overflow-y-auto space-y-1 pr-1">
               {playlist.length === 0 ? (
-                <p className="text-[#555] text-sm text-center py-6">
+                <p className="text-[var(--text-faint)] text-sm text-center py-6">
                   搜索歌曲并点击「+」加入播放列表
                 </p>
               ) : (
@@ -420,24 +420,24 @@ export default function MusicPlayerPage() {
                   <div
                     key={song.id}
                     onClick={() => loadAndPlay(song, undefined, true)}
-                    className={`group flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-white/5 transition-colors ${
-                      currentSong?.id === song.id ? "bg-white/10" : ""
+                    className={`group flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-[var(--bg-hover)] transition-colors ${
+                      currentSong?.id === song.id ? "bg-[var(--bg-secondary)]" : ""
                     }`}
                   >
                     {currentSong?.id === song.id && playing ? (
                       <EqBars className="h-3" />
                     ) : (
-                      <Music2 size={15} className="text-[#555] flex-shrink-0" />
+                      <Music2 size={15} className="text-[var(--text-faint)] flex-shrink-0" />
                     )}
                     <div className="flex-1 min-w-0">
                       <p
                         className={`text-sm truncate ${
-                          currentSong?.id === song.id ? "text-white" : "text-white/80"
+                          currentSong?.id === song.id ? "text-[var(--text-primary)]" : "text-[var(--text-muted)]"
                         }`}
                       >
                         {song.name}
                       </p>
-                      <p className="text-[#a8b2c1] text-xs truncate">
+                      <p className="text-[var(--text-secondary)] text-xs truncate">
                         {song.artists}
                         {song.duration ? ` · ${formatTime(song.duration)}` : ""}
                       </p>
@@ -447,7 +447,7 @@ export default function MusicPlayerPage() {
                         e.stopPropagation();
                         removeFromPlaylist(song.id);
                       }}
-                      className="text-white/30 hover:text-[#f472b6] transition-colors p-1.5 rounded-lg hover:bg-white/5 opacity-0 group-hover:opacity-100"
+                      className="text-[var(--text-faint)] hover:text-[#f472b6] transition-colors p-1.5 rounded-lg hover:bg-[var(--bg-hover)] opacity-0 group-hover:opacity-100"
                       aria-label="从播放列表移除"
                     >
                       <Trash2 size={14} />

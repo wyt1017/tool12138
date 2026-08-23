@@ -41,7 +41,7 @@ export default function ChinesePinyin() {
     try {
       // 使用 pinyin-pro 进行完整拼音转换
       const result = pinyin(input, {
-        toneType: mode === 'tone' ? 'symbol' : 'none',
+        toneType: mode === 'tone' ? 'symbol' : 'num',
         type: 'array',
         nonZh: 'consecutive', // 非中文字符保持原样连续输出
       });
@@ -109,7 +109,7 @@ export default function ChinesePinyin() {
           <div style={{ width: 40, height: 40, borderRadius: 12, background: `${COLOR}24`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Languages size={20} style={{ color: COLOR }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">中文转拼音工具</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">中文转拼音工具</h1>
         </div>
         <p style={{ color: '#a8b2c1', marginLeft: 52 }}>
           将中文文本转换为拼音（带声调或数字标调），支持全汉字 Unicode 范围
@@ -154,7 +154,7 @@ export default function ChinesePinyin() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
-          <label className="text-sm font-medium text-[#a8b2c1] mb-2 ml-1 block">
+          <label className="text-sm font-medium text-[var(--text-secondary)] mb-2 ml-1 block">
             中文文本
             <span style={{ fontSize: 12, color: '#666', fontWeight: 400, marginLeft: 8 }}>
               共 {charCount.total} 字符（含 {charCount.chinese} 汉字）
@@ -165,14 +165,14 @@ export default function ChinesePinyin() {
             onChange={(e) => setInput(e.target.value)}
             placeholder="输入中文文本..."
             aria-label="中文文本"
-            className="tool-area w-full h-[250px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#a78bfa]/30 transition-colors placeholder:text-[#333]"
+            className="tool-area w-full h-[250px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#a78bfa]/30 transition-colors placeholder:text-[var(--text-faint)]"
           />
         </motion.div>
 
         {/* Output */}
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
           <div className="flex items-center justify-between mb-2 ml-1">
-            <label className="text-sm font-medium text-[#a8b2c1]">拼音结果</label>
+            <label className="text-sm font-medium text-[var(--text-secondary)]">拼音结果</label>
             {output && (
               <button
                 onClick={handleCopy}
@@ -189,7 +189,7 @@ export default function ChinesePinyin() {
             value={output}
             placeholder="拼音将显示在这里..."
             aria-label="拼音结果"
-            className="tool-area w-full h-[250px] p-5 text-sm leading-relaxed resize-none outline-none text-[#a8b2c1] placeholder:text-[#333]"
+            className="tool-area w-full h-[250px] p-5 text-sm leading-relaxed resize-none outline-none text-[var(--text-secondary)] placeholder:text-[var(--text-faint)]"
           />
         </motion.div>
       </div>
@@ -203,7 +203,7 @@ export default function ChinesePinyin() {
 
       {/* Note */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="glass-card p-4 mt-6">
-        <p className="text-xs text-[#666]">
+        <p className="text-xs text-[var(--text-faint)]">
           <strong style={{ color: '#a8b2c1' }}>说明：</strong>
           本工具使用 pinyin-pro 库进行完整 Unicode 汉字转换，支持 CJK 统一汉字扩展 A-G 区（约 9 万+ 汉字）。
           多音字可能无法准确识别，建议对结果进行人工校验。

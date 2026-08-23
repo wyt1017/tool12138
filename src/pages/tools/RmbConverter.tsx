@@ -132,10 +132,10 @@ export default function RmbConverter() {
   const [copied, setCopied] = useState(false);
 
   const numericValue = useMemo(() => {
-    // 移除所有非数字和非小数点的字符
-    const cleaned = input.replace(/[^\d.]/g, '');
-    // 校验：只允许整数或含一个小数点的数字
-    if (!/^\d+(\.\d+)?$/.test(cleaned)) return null;
+    // 移除所有非数字、负号和小数点的字符（保留前导负号以支持负数）
+    const cleaned = input.replace(/[^\d.-]/g, '');
+    // 校验：只允许可选负号 + 整数或含一个小数点的数字
+    if (!/^-?\d+(\.\d+)?$/.test(cleaned)) return null;
     const num = parseFloat(cleaned);
     return isNaN(num) ? null : num;
   }, [input]);
@@ -169,22 +169,22 @@ export default function RmbConverter() {
           <div className="w-10 h-10 rounded-xl bg-[#f472b6]/15 flex items-center justify-center">
             <Banknote size={20} className="text-[#f472b6]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">人民币大写转换</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">人民币大写转换</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">将阿拉伯数字金额转换为符合财务规范的中文大写金额</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">将阿拉伯数字金额转换为符合财务规范的中文大写金额</p>
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* Input Area */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="lg:col-span-3">
-          <label className="text-sm font-medium text-[#a8b2c1] ml-1 mb-2 block">输入金额</label>
+          <label className="text-sm font-medium text-[var(--text-secondary)] ml-1 mb-2 block">输入金额</label>
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="例如：12345.67 或 -100000000"
             aria-label="输入金额"
-            className="tool-area w-full p-5 text-lg font-mono outline-none focus:border-[#f472b6]/30 transition-colors placeholder:text-[#333]"
+            className="tool-area w-full p-5 text-lg font-mono outline-none focus:border-[#f472b6]/30 transition-colors placeholder:text-[var(--text-faint)]"
           />
 
           {/* Result Display */}
@@ -192,8 +192,8 @@ export default function RmbConverter() {
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-4 glass-card p-6 border-l-4 border-l-[#f472b6]">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-xs text-[#666] mb-1">转换结果</p>
-                  <p className="text-2xl font-bold text-white font-['Syne'] tracking-wide">{chineseResult}</p>
+                  <p className="text-xs text-[var(--text-faint)] mb-1">转换结果</p>
+                  <p className="text-2xl font-bold text-[var(--text-primary)] font-['Syne'] tracking-wide">{chineseResult}</p>
                 </div>
                 <button onClick={handleCopy} className="btn-primary !py-2 !px-4 flex-shrink-0">
                   <Copy size={15} className="inline mr-1.5" /> {copied ? '已复制' : '复制'}
@@ -208,25 +208,25 @@ export default function RmbConverter() {
           <div className="glass-card p-5 h-full">
             <div className="flex items-center gap-2 mb-4">
               <Info size={16} className="text-[#f472b6]" />
-              <span className="text-sm font-medium text-[#a8b2c1]">数字拆解</span>
+              <span className="text-sm font-medium text-[var(--text-secondary)]">数字拆解</span>
             </div>
 
             {breakdown.length > 0 ? (
               <div className="space-y-2">
                 {breakdown.map((item, idx) => (
-                  <div key={idx} className="flex items-center justify-between py-2 px-3 rounded-lg bg-white/5">
-                    <span className="text-xs text-[#888]">{item.split(':')[0]}</span>
-                    <span className="text-sm font-mono font-medium text-white">{item.split(':')[1]}</span>
+                  <div key={idx} className="flex items-center justify-between py-2 px-3 rounded-lg bg-[var(--bg-hover)]">
+                    <span className="text-xs text-[var(--text-faint)]">{item.split(':')[0]}</span>
+                    <span className="text-sm font-mono font-medium text-[var(--text-primary)]">{item.split(':')[1]}</span>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-[#555] py-8 text-center">输入金额后显示拆解信息</p>
+              <p className="text-sm text-[var(--text-faint)] py-8 text-center">输入金额后显示拆解信息</p>
             )}
 
             {/* Quick Examples */}
-            <div className="mt-6 pt-4 border-t border-white/5">
-              <p className="text-xs text-[#666] mb-3">快捷示例</p>
+            <div className="mt-6 pt-4 border-t border-[var(--border-color)]">
+              <p className="text-xs text-[var(--text-faint)] mb-3">快捷示例</p>
               <div className="flex flex-wrap gap-2">
                 {[100, 1000.5, 10000, 1000000, 123456789.12].map((val) => (
                   <button

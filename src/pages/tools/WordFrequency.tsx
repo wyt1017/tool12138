@@ -50,6 +50,12 @@ export default function WordFrequency() {
 
   const uniqueWords = wordStats.length;
 
+  // 最高频词（独立于排序方式，从原始统计中取最大值）
+  const topWord = useMemo(() => {
+    if (wordStats.length === 0) return null;
+    return wordStats.reduce((a, b) => (b.count > a.count ? b : a));
+  }, [wordStats]);
+
   const copyResults = async () => {
     const text = wordStats.map(item => `${item.word}: ${item.count}`).join('\n');
     try {
@@ -67,15 +73,15 @@ export default function WordFrequency() {
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${COLOR}26` }}>
             <BarChart3 size={20} style={{ color: COLOR }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">词频统计</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">词频统计</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">统计文本中每个单词出现的次数，并排序展示</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">统计文本中每个单词出现的次数，并排序展示</p>
       </motion.div>
 
       {/* Options */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="glass-card p-6 mb-6">
         <div className="flex flex-wrap items-center gap-4">
-          <label className="flex items-center gap-2 cursor-pointer text-sm text-[#a8b2c1]">
+          <label className="flex items-center gap-2 cursor-pointer text-sm text-[var(--text-secondary)]">
             <input
               type="checkbox"
               checked={ignoreCase}
@@ -86,12 +92,12 @@ export default function WordFrequency() {
             忽略大小写
           </label>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-[#666]">排序方式：</span>
+            <span className="text-sm text-[var(--text-faint)]">排序方式：</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as 'count' | 'word')}
               aria-label="排序方式"
-              className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white outline-none focus:border-[#00d9ff]/30"
+              className="bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-3 py-1.5 text-sm text-[var(--text-primary)] outline-none focus:border-[#00d9ff]/30"
             >
               <option value="count">按词频</option>
               <option value="word">按字母</option>
@@ -108,13 +114,13 @@ export default function WordFrequency() {
 
       {/* Input */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mb-6">
-        <label className="text-sm font-medium text-[#a8b2c1] mb-2 ml-1 block">输入文本</label>
+        <label className="text-sm font-medium text-[var(--text-secondary)] mb-2 ml-1 block">输入文本</label>
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="输入或粘贴要统计的文本内容..."
           aria-label="输入文本"
-          className="tool-area w-full h-[200px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#00d9ff]/30 transition-colors placeholder:text-[#333]"
+          className="tool-area w-full h-[200px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#00d9ff]/30 transition-colors placeholder:text-[var(--text-faint)]"
         />
       </motion.div>
 
@@ -122,20 +128,20 @@ export default function WordFrequency() {
       {input.trim() && (
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
           <div className="glass-card p-4 text-center">
-            <div className="text-xs text-[#666] mb-1">总词数</div>
+            <div className="text-xs text-[var(--text-faint)] mb-1">总词数</div>
             <div className="text-2xl font-bold font-mono mb-1" style={{ color: COLOR }}>{totalWords}</div>
           </div>
           <div className="glass-card p-4 text-center">
-            <div className="text-xs text-[#666] mb-1">不同词数</div>
+            <div className="text-xs text-[var(--text-faint)] mb-1">不同词数</div>
             <div className="text-2xl font-bold font-mono text-[#6bcb77]">{uniqueWords}</div>
           </div>
           <div className="glass-card p-4 text-center">
-            <div className="text-xs text-[#666] mb-1">最高频词</div>
-            <div className="text-lg font-bold text-[#f472b6] truncate">{wordStats[0]?.word || '-'}</div>
+            <div className="text-xs text-[var(--text-faint)] mb-1">最高频词</div>
+            <div className="text-lg font-bold text-[#f472b6] truncate">{topWord?.word || '-'}</div>
           </div>
           <div className="glass-card p-4 text-center">
-            <div className="text-xs text-[#666] mb-1">最高频率</div>
-            <div className="text-2xl font-bold font-mono text-[#ffd369]">{wordStats[0]?.count || 0}</div>
+            <div className="text-xs text-[var(--text-faint)] mb-1">最高频率</div>
+            <div className="text-2xl font-bold font-mono text-[#ffd369]">{topWord?.count || 0}</div>
           </div>
         </motion.div>
       )}
@@ -144,7 +150,7 @@ export default function WordFrequency() {
       {wordStats.length > 0 && (
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-white">词频结果</h2>
+            <h2 className="text-lg font-semibold text-[var(--text-primary)]">词频结果</h2>
             <button onClick={copyResults} className="btn-secondary !py-1.5 !px-3 text-xs">
               <Copy size={13} className="inline mr-1" /> 复制结果
             </button>
@@ -152,29 +158,29 @@ export default function WordFrequency() {
           <div className="glass-card p-6 overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-white/10">
-                  <th className="text-left py-3 px-4 text-xs text-[#666] font-medium">序号</th>
-                  <th className="text-left py-3 px-4 text-xs text-[#666] font-medium">单词</th>
-                  <th className="text-left py-3 px-4 text-xs text-[#666] font-medium">出现次数</th>
-                  <th className="text-left py-3 px-4 text-xs text-[#666] font-medium">占比</th>
+                <tr className="border-b border-[var(--border-color)]">
+                  <th className="text-left py-3 px-4 text-xs text-[var(--text-faint)] font-medium">序号</th>
+                  <th className="text-left py-3 px-4 text-xs text-[var(--text-faint)] font-medium">单词</th>
+                  <th className="text-left py-3 px-4 text-xs text-[var(--text-faint)] font-medium">出现次数</th>
+                  <th className="text-left py-3 px-4 text-xs text-[var(--text-faint)] font-medium">占比</th>
                 </tr>
               </thead>
               <tbody>
                 {wordStats.slice(0, 100).map((item, index) => (
-                  <tr key={item.word} className="border-b border-white/5 hover:bg-white/3 transition-colors">
-                    <td className="py-3 px-4 text-[#666] font-mono">{index + 1}</td>
-                    <td className="py-3 px-4 text-white font-medium">{item.word}</td>
+                  <tr key={item.word} className="border-b border-[var(--border-color)] hover:bg-[var(--bg-hover)] transition-colors">
+                    <td className="py-3 px-4 text-[var(--text-faint)] font-mono">{index + 1}</td>
+                    <td className="py-3 px-4 text-[var(--text-primary)] font-medium">{item.word}</td>
                     <td className="py-3 px-4">
                       <span style={{ color: COLOR, fontFamily: 'monospace' }}>{item.count}</span>
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-2">
-                        <div className="w-[100px] h-2 bg-white/10 rounded-full overflow-hidden">
+                        <div className="w-[100px] h-2 bg-[var(--bg-secondary)] rounded-full overflow-hidden">
                           <div
                             style={{ width: `${(item.count / (wordStats[0]?.count || 1)) * 100}%`, height: '100%', backgroundColor: COLOR, borderRadius: '9999px' }}
                           />
                         </div>
-                        <span className="text-xs text-[#666] font-mono">
+                        <span className="text-xs text-[var(--text-faint)] font-mono">
                           {((item.count / totalWords) * 100).toFixed(1)}%
                         </span>
                       </div>
@@ -184,7 +190,7 @@ export default function WordFrequency() {
               </tbody>
             </table>
             {wordStats.length > 100 && (
-              <p className="text-xs text-[#666] mt-4 text-center">仅显示前100个词，共 {wordStats.length} 个不同词</p>
+              <p className="text-xs text-[var(--text-faint)] mt-4 text-center">仅显示前100个词，共 {wordStats.length} 个不同词</p>
             )}
           </div>
         </motion.div>

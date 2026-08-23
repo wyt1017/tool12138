@@ -202,9 +202,9 @@ export default function Fortune() {
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${color}24` }}>
             <Sparkles size={20} style={{ color }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">运势 / 抽签 / 心理测试</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">运势 / 抽签 / 心理测试</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">今日运势、灵签抽签与趣味心理测试三合一</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">今日运势、灵签抽签与趣味心理测试三合一</p>
       </motion.div>
 
       <div className="flex flex-wrap gap-2 mb-6">
@@ -217,7 +217,7 @@ export default function Fortune() {
             key={m.k}
             onClick={() => setTab(m.k)}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-              tab === m.k ? '' : 'bg-white/5 text-[#666] hover:text-white hover:bg-white/10'
+              tab === m.k ? '' : 'bg-[var(--bg-hover)] text-[var(--text-faint)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]'
             }`}
             style={tab === m.k ? { background: `${color}30`, border: `1px solid ${color}50` } : {}}
           >
@@ -229,7 +229,7 @@ export default function Fortune() {
       {/* 每日运势 */}
       {tab === 'daily' && !dailyRevealed && (
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-10 text-center">
-          <div className="text-xs text-[#666] mb-8">点按开启今天的专属运势（每天稳定，可重复换取）</div>
+          <div className="text-xs text-[var(--text-faint)] mb-8">点按开启今天的专属运势（每天稳定，可重复换取）</div>
           <button onClick={revealDaily} className="btn-primary flex items-center gap-2 !px-8">
             <Sparkles size={16} /> 查看今日运势
           </button>
@@ -238,15 +238,15 @@ export default function Fortune() {
       {tab === 'daily' && dailyRevealed && (
         <motion.div key={daily.overall + daily.levelKey} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="glass-card p-7">
           <div className="flex items-center justify-between mb-5">
-            <div className="text-sm text-[#a8b2c1]">{new Date().toLocaleDateString('zh-CN')} · 每日更新</div>
+            <div className="text-sm text-[var(--text-secondary)]">{new Date().toLocaleDateString('zh-CN')} · 每日更新</div>
             <button onClick={copyDaily} className="btn-secondary flex items-center gap-2 !px-3 !py-1.5 text-xs">
               <Copy size={12} /> {dailyCopied ? '已复制' : '复制'}
             </button>
           </div>
           <div className="flex items-center gap-3 mb-5">
             <div className="flex-1">
-              <div className="text-xs text-[#666] mb-1">综合运势</div>
-              <div className="font-['Syne'] font-bold text-3xl text-white">{daily.overall}</div>
+              <div className="text-xs text-[var(--text-faint)] mb-1">综合运势</div>
+              <div className="font-['Syne'] font-bold text-3xl text-[var(--text-primary)]">{daily.overall}</div>
             </div>
             <span
               className="px-4 py-2 rounded-full font-['Syne'] font-bold text-sm"
@@ -259,22 +259,22 @@ export default function Fortune() {
             {daily.dims.map((d, i) => (
               <div key={d}>
                 <div className="flex justify-between text-sm mb-1.5">
-                  <span className="text-[#a8b2c1]">{d}</span>
-                  <span className="text-white font-semibold">{daily.scores[i]} 分</span>
+                  <span className="text-[var(--text-secondary)]">{d}</span>
+                  <span className="text-[var(--text-primary)] font-semibold">{daily.scores[i]} 分</span>
                 </div>
-                <div className="h-2.5 rounded-full bg-white/5 overflow-hidden">
+                <div className="h-2.5 rounded-full bg-[var(--bg-hover)] overflow-hidden">
                   <div className="h-full rounded-full transition-all duration-700" style={{ width: `${daily.scores[i]}%`, background: color }} />
                 </div>
               </div>
             ))}
           </div>
-          <div className="bg-white/5 rounded-lg px-4 py-3 text-[#a8b2c1] text-sm mb-4" aria-live="polite">{daily.text}</div>
+          <div className="bg-[var(--bg-hover)] rounded-lg px-4 py-3 text-[var(--text-secondary)] text-sm mb-4" aria-live="polite">{daily.text}</div>
           <div className="flex items-center gap-4 text-sm mb-5">
             <div className="flex items-center gap-2">
-              <span className="text-[#666]">幸运色</span>
-              <span className="w-5 h-5 rounded-full border border-white/20" style={{ background: daily.luckyColor }} />
+              <span className="text-[var(--text-faint)]">幸运色</span>
+              <span className="w-5 h-5 rounded-full border border-[var(--border-strong)]" style={{ background: daily.luckyColor }} />
             </div>
-            <div className="text-[#666]">幸运数字 <span className="text-white font-semibold">{daily.luckyNum}</span></div>
+            <div className="text-[var(--text-faint)]">幸运数字 <span className="text-[var(--text-primary)] font-semibold">{daily.luckyNum}</span></div>
           </div>
           <button onClick={rerollDaily} className="btn-secondary flex items-center gap-2 !px-4 text-xs">
             <Wand2 size={12} /> 换一条
@@ -285,7 +285,7 @@ export default function Fortune() {
       {/* 灵签 */}
       {tab === 'lingqian' && !qian && (
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-10 text-center">
-          <div className="text-xs text-[#666] mb-8">为你摇一支灵签（同一支不会连抽两次）</div>
+          <div className="text-xs text-[var(--text-faint)] mb-8">为你摇一支灵签（同一支不会连抽两次）</div>
           <button onClick={drawQian} aria-label="摇一支灵签" className="btn-primary flex items-center gap-2 !px-8">
             <RefreshCw size={16} /> 摇一签
           </button>
@@ -299,10 +299,10 @@ export default function Fortune() {
           transition={{ type: 'spring', stiffness: 260, damping: 18 }}
           className="glass-card p-7 text-center"
         >
-          <div className="text-xs text-[#666] mb-1">第 {qian.no} 签</div>
+          <div className="text-xs text-[var(--text-faint)] mb-1">第 {qian.no} 签</div>
           <div className="font-['Syne'] font-bold text-2xl mb-4" style={{ color: qian.levelColor }}>{qian.level}</div>
-          <div className="text-lg text-white mb-4 leading-relaxed">「{qian.poem}」</div>
-          <div className="text-sm text-[#a8b2c1] mb-6" aria-live="polite">{qian.desc}</div>
+          <div className="text-lg text-[var(--text-primary)] mb-4 leading-relaxed">「{qian.poem}」</div>
+          <div className="text-sm text-[var(--text-secondary)] mb-6" aria-live="polite">{qian.desc}</div>
           <div className="flex justify-center gap-3">
             <button onClick={drawQian} className="btn-primary flex items-center gap-2 !px-6">
               <RefreshCw size={16} /> 再抽一支
@@ -320,28 +320,28 @@ export default function Fortune() {
           {!done ? (
             <>
               <div className="flex items-center justify-between mb-2">
-                <div className="text-xs text-[#666]">第 {step + 1} / {TEST.length} 题</div>
+                <div className="text-xs text-[var(--text-faint)]">第 {step + 1} / {TEST.length} 题</div>
                 <button
                   onClick={goBack}
                   disabled={step === 0}
                   aria-label="返回上一题"
-                  className="flex items-center gap-1 text-xs text-[#666] hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="flex items-center gap-1 text-xs text-[var(--text-faint)] hover:text-[var(--text-primary)] disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   <ArrowLeft size={13} /> 上一题
                 </button>
               </div>
-              <div className="h-1.5 rounded-full bg-white/5 overflow-hidden mb-5">
+              <div className="h-1.5 rounded-full bg-[var(--bg-hover)] overflow-hidden mb-5">
                 <div className="h-full rounded-full transition-all duration-500" style={{ width: `${((step + 1) / TEST.length) * 100}%`, background: color }} />
               </div>
-              <h3 className="text-lg text-white mb-5">{TEST[step].q}</h3>
+              <h3 className="text-lg text-[var(--text-primary)] mb-5">{TEST[step].q}</h3>
               <div className="space-y-3">
                 {TEST[step].options.map((o, i) => (
                   <button
                     key={i}
                     onClick={() => pick(i)}
-                    className="w-full text-left bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#a78bfa]/40 rounded-lg px-4 py-3 text-white transition-all"
+                    className="w-full text-left bg-[var(--bg-hover)] hover:bg-[var(--bg-secondary)] border border-[var(--border-color)] hover:border-[#a78bfa]/40 rounded-lg px-4 py-3 text-[var(--text-primary)] transition-all"
                   >
-                    <span className="mr-2 text-[#666] font-mono">{String.fromCharCode(65 + i)}</span>
+                    <span className="mr-2 text-[var(--text-faint)] font-mono">{String.fromCharCode(65 + i)}</span>
                     {o.text}
                   </button>
                 ))}
@@ -350,16 +350,16 @@ export default function Fortune() {
           ) : (
             testResult && (
               <motion.div initial={{ scale: 0.92, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center">
-                <div className="text-xs text-[#666] mb-2">你的类型是</div>
+                <div className="text-xs text-[var(--text-faint)] mb-2">你的类型是</div>
                 <div
-                  className="inline-flex items-center gap-2 px-5 py-2 rounded-full mb-3 font-['Syne'] font-bold text-3xl text-white"
+                  className="inline-flex items-center gap-2 px-5 py-2 rounded-full mb-3 font-['Syne'] font-bold text-3xl text-[var(--text-primary)]"
                   style={{ background: `${testResult.info.color}1a`, border: `1px solid ${testResult.info.color}55` }}
                 >
                   <span className="w-3 h-3 rounded-full" style={{ background: testResult.info.color }} />
                   {testResult.info.name}
                 </div>
-                <div className="text-[#a8b2c1] mb-2">{testResult.info.desc}</div>
-                <div className="text-sm text-[#666] mb-6">建议：{testResult.info.tip}</div>
+                <div className="text-[var(--text-secondary)] mb-2">{testResult.info.desc}</div>
+                <div className="text-sm text-[var(--text-faint)] mb-6">建议：{testResult.info.tip}</div>
                 <div className="flex justify-center gap-3">
                   <button onClick={revise} className="btn-secondary flex items-center gap-2 !px-5 text-sm">
                     <ArrowLeft size={14} /> 返回修改

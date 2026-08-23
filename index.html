@@ -11,11 +11,36 @@
     <meta property="og:site_name" content="瓜崎工具" />
     <meta property="og:locale" content="zh_CN" />
     <link rel="canonical" href="https://same-toolbox.pages.dev/" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <meta name="theme-color" content="#0A0B0D" />
+    <meta name="theme-color" content="#0a0a1a" id="meta-theme" />
     <title>瓜崎工具 - 免费在线工具箱</title>
+    <script type="module">
+      // 防闪烁主题初始化：在首帧渲染前根据 localStorage / 系统偏好设置 <html> 的 class
+      (function () {
+        try {
+          var stored = localStorage.getItem('guaqi-theme');
+          var theme = stored === 'light' || stored === 'dark'
+            ? stored
+            : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+          var root = document.documentElement;
+          root.classList.remove('light', 'dark');
+          root.classList.add(theme === 'light' ? 'light' : 'dark');
+          var meta = document.getElementById('meta-theme');
+          if (meta) meta.setAttribute('content', theme === 'light' ? '#f6f8fc' : '#0a0a1a');
+        } catch (e) {}
+      })();
+    </script>
+    <script type="module">
+      if (import.meta.hot?.on) {
+        import.meta.hot.on('vite:error', (error) => {
+          if (error.err) {
+            console.error(
+              [error.err.message, error.err.frame].filter(Boolean).join('\n'),
+            )
+          }
+        })
+      }
+    </script>
     <script type="module">
       if (import.meta.hot?.on) {
         import.meta.hot.on('vite:error', (error) => {

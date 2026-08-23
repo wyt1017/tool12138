@@ -135,9 +135,9 @@ export default function TimeDiffCalc() {
           <div className="w-10 h-10 rounded-xl bg-[#e94560]/15 flex items-center justify-center">
             <Timer size={20} className="text-[#e94560]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">时间差计算器</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">时间差计算器</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">计算两个日期时间的差值，支持倒计时模式和自然语言描述</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">计算两个日期时间的差值，支持倒计时模式和自然语言描述</p>
       </motion.div>
 
       <div className="space-y-6">
@@ -146,23 +146,23 @@ export default function TimeDiffCalc() {
           <div className="glass-card p-6 space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium text-[#a8b2c1] block mb-2 ml-1">开始日期时间</label>
+                <label className="text-sm font-medium text-[var(--text-secondary)] block mb-2 ml-1">开始日期时间</label>
                 <input
                   type="datetime-local"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
                   aria-label="开始日期时间"
-                  className="tool-area w-full px-4 py-3 text-sm text-white outline-none focus:border-[#e94560]/30"
+                  className="tool-area w-full px-4 py-3 text-sm text-[var(--text-primary)] outline-none focus:border-[#e94560]/30"
                 />
               </div>
               <div>
-                <label className="text-sm font-medium text-[#a8b2c1] block mb-2 ml-1">结束日期时间</label>
+                <label className="text-sm font-medium text-[var(--text-secondary)] block mb-2 ml-1">结束日期时间</label>
                 <input
                   type="datetime-local"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
                   aria-label="结束日期时间"
-                  className="tool-area w-full px-4 py-3 text-sm text-white outline-none focus:border-[#e94560]/30"
+                  className="tool-area w-full px-4 py-3 text-sm text-[var(--text-primary)] outline-none focus:border-[#e94560]/30"
                 />
               </div>
             </div>
@@ -171,13 +171,13 @@ export default function TimeDiffCalc() {
               <button onClick={swapDates} className="btn-secondary !py-2 !px-4 text-xs">
                 <ArrowLeftRight size={14} className="inline mr-1.5" /> 交换起止日期
               </button>
-              <span className="text-xs text-[#555]">|</span>
-              <span className="text-xs text-[#555] mr-1">快捷:</span>
+              <span className="text-xs text-[var(--text-faint)]">|</span>
+              <span className="text-xs text-[var(--text-faint)] mr-1">快捷:</span>
               {[1, 7, 30, 90, 365].map((d) => (
                 <button
                   key={d}
                   onClick={() => quickSetDays(d)}
-                  className="px-3 py-1.5 rounded-lg text-xs bg-white/5 text-[#a8b2c1] hover:bg-white/10 hover:text-white transition-all"
+                  className="px-3 py-1.5 rounded-lg text-xs bg-[var(--bg-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)] transition-all"
                 >
                   {d < 365 ? `${d}天后` : '1年后'}
                 </button>
@@ -191,7 +191,7 @@ export default function TimeDiffCalc() {
           <div className="glass-card p-6 space-y-6">
             {/* Time Difference */}
             <div>
-              <h3 className="text-xs font-semibold text-[#555] uppercase tracking-widest mb-4">时间差详情</h3>
+              <h3 className="text-xs font-semibold text-[var(--text-faint)] uppercase tracking-widest mb-4">时间差详情</h3>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {[
                   { label: '天', value: diff.days, icon: '📅' },
@@ -199,37 +199,37 @@ export default function TimeDiffCalc() {
                   { label: '分钟', value: diff.minutes, icon: '⏱️' },
                   { label: '秒', value: diff.seconds, icon: '⚡' },
                 ].map((item) => (
-                  <div key={item.label} className="text-center p-4 rounded-xl bg-white/[0.03] border border-white/5">
+                  <div key={item.label} className="text-center p-4 rounded-xl bg-[var(--bg-hover)] border border-[var(--border-color)]">
                     <p className="text-3xl sm:text-4xl font-mono font-bold text-[#e94560]">{item.value}</p>
-                    <p className="text-xs text-[#555] mt-1">{item.label}</p>
+                    <p className="text-xs text-[var(--text-faint)] mt-1">{item.label}</p>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Total Units */}
-            <div className="border-t border-white/5 pt-5">
-              <h3 className="text-xs font-semibold text-[#555] uppercase tracking-widest mb-4">换算单位</h3>
+            <div className="border-t border-[var(--border-color)] pt-5">
+              <h3 className="text-xs font-semibold text-[var(--text-faint)] uppercase tracking-widest mb-4">换算单位</h3>
               <div className="grid grid-cols-3 gap-3">
-                <div className="text-center p-3 rounded-lg bg-white/[0.02]">
-                  <p className="text-lg font-mono text-[#a8b2c1]">{(diff.totalSeconds / 3600).toFixed(2)}</p>
-                  <p className="text-[10px] text-[#555] mt-0.5">小时</p>
+                <div className="text-center p-3 rounded-lg bg-[var(--bg-hover)]">
+                  <p className="text-lg font-mono text-[var(--text-secondary)]">{(diff.totalSeconds / 3600).toFixed(2)}</p>
+                  <p className="text-[10px] text-[var(--text-faint)] mt-0.5">小时</p>
                 </div>
-                <div className="text-center p-3 rounded-lg bg-white/[0.02]">
-                  <p className="text-lg font-mono text-[#a8b2c1]">{(diff.totalSeconds / 60).toFixed(1)}</p>
-                  <p className="text-[10px] text-[#555] mt-0.5">分钟</p>
+                <div className="text-center p-3 rounded-lg bg-[var(--bg-hover)]">
+                  <p className="text-lg font-mono text-[var(--text-secondary)]">{(diff.totalSeconds / 60).toFixed(1)}</p>
+                  <p className="text-[10px] text-[var(--text-faint)] mt-0.5">分钟</p>
                 </div>
-                <div className="text-center p-3 rounded-lg bg-white/[0.02]">
-                  <p className="text-lg font-mono text-[#a8b2c1]">{diff.totalSeconds.toLocaleString()}</p>
-                  <p className="text-[10px] text-[#555] mt-0.5">秒</p>
+                <div className="text-center p-3 rounded-lg bg-[var(--bg-hover)]">
+                  <p className="text-lg font-mono text-[var(--text-secondary)]">{diff.totalSeconds.toLocaleString()}</p>
+                  <p className="text-[10px] text-[var(--text-faint)] mt-0.5">秒</p>
                 </div>
               </div>
             </div>
 
             {/* Natural Language Description */}
-            <div className="border-t border-white/5 pt-5">
+            <div className="border-t border-[var(--border-color)] pt-5">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xs font-semibold text-[#555] uppercase tracking-widest">自然语言描述</h3>
+                <h3 className="text-xs font-semibold text-[var(--text-faint)] uppercase tracking-widest">自然语言描述</h3>
                 <button
                   onClick={() => navigator.clipboard.writeText(`${formatDateTimeForDisplay(startDate)} 至 ${formatDateTimeForDisplay(endDate)} ${naturalDesc}`)}
                   className="btn-secondary !py-1 !px-2 text-[10px]"
@@ -237,19 +237,19 @@ export default function TimeDiffCalc() {
                   <Copy size={11} className="inline mr-1" /> 复制
                 </button>
               </div>
-              <p className="text-sm text-[#a8b2c1] bg-white/[0.03] rounded-lg px-4 py-3">
-                从 <span className="text-white font-mono">{formatDateTimeForDisplay(startDate)}</span>{' '}
-                到 <span className="text-white font-mono">{formatDateTimeForDisplay(endDate)}</span>
+              <p className="text-sm text-[var(--text-secondary)] bg-[var(--bg-hover)] rounded-lg px-4 py-3">
+                从 <span className="text-[var(--text-primary)] font-mono">{formatDateTimeForDisplay(startDate)}</span>{' '}
+                到 <span className="text-[var(--text-primary)] font-mono">{formatDateTimeForDisplay(endDate)}</span>
                 ，{naturalDesc}
               </p>
             </div>
 
             {/* Countdown */}
             {countdown && (
-              <div className="border-t border-white/5 pt-5">
+              <div className="border-t border-[var(--border-color)] pt-5">
                 <div className="flex items-center gap-2 mb-4">
                   <Clock size={14} className="text-[#e94560]" />
-                  <h3 className="text-xs font-semibold text-[#555] uppercase tracking-widest">实时倒计时</h3>
+                  <h3 className="text-xs font-semibold text-[var(--text-faint)] uppercase tracking-widest">实时倒计时</h3>
                 </div>
                 <div className="grid grid-cols-4 gap-3">
                   {[

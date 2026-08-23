@@ -5,7 +5,7 @@ import { Calendar, Clock, Cake, Heart, Star, Timer, Sparkles, Zap } from 'lucide
 const COLOR = '#f472b6';
 
 const ZODIAC_SIGNS: { name: string; symbol: string; start: [number, number]; end: [number, number] }[] = [
-  { name: '摩羯座', symbol: '♑', start: [1, 1], end: [1, 19] },
+  { name: '摩羯座', symbol: '♑', start: [12, 22], end: [1, 19] },
   { name: '水瓶座', symbol: '♒', start: [1, 20], end: [2, 18] },
   { name: '双鱼座', symbol: '♓', start: [2, 19], end: [3, 20] },
   { name: '白羊座', symbol: '♈', start: [3, 21], end: [4, 19] },
@@ -122,9 +122,9 @@ export default function AgeCalculator() {
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${COLOR}26` }}>
             <Cake size={20} style={{ color: COLOR }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">年龄计算器</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">年龄计算器</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">精确计算周岁、已活天数、生日倒计时等</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">精确计算周岁、已活天数、生日倒计时等</p>
       </motion.div>
 
       {/* Input Area */}
@@ -136,7 +136,7 @@ export default function AgeCalculator() {
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
-            <label className="text-sm font-medium text-[#a8b2c1] block mb-2 flex items-center gap-2">
+            <label className="text-sm font-medium text-[var(--text-secondary)] block mb-2 flex items-center gap-2">
               <Calendar size={14} /> 出生日期
             </label>
             <input
@@ -145,11 +145,11 @@ export default function AgeCalculator() {
               onChange={(e) => setBirthDate(e.target.value)}
               max={todayStr}
               aria-label="出生日期"
-              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm outline-none focus:border-[#f472b6]/50 transition-colors [&::-webkit-calendar-picker-indicator]:invert"
+              className="w-full px-4 py-3 rounded-xl bg-[var(--bg-hover)] border border-[var(--border-color)] text-[var(--text-primary)] text-sm outline-none focus:border-[#f472b6]/50 transition-colors [&::-webkit-calendar-picker-indicator]:invert"
             />
           </div>
           <div>
-            <label className="text-sm font-medium text-[#a8b2c1] block mb-2 flex items-center gap-2">
+            <label className="text-sm font-medium text-[var(--text-secondary)] block mb-2 flex items-center gap-2">
               <Timer size={14} /> 目标日期
             </label>
             <input
@@ -157,7 +157,7 @@ export default function AgeCalculator() {
               value={targetDate}
               onChange={(e) => setTargetDate(e.target.value)}
               aria-label="目标日期"
-              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm outline-none focus:border-[#f472b6]/50 transition-colors [&::-webkit-calendar-picker-indicator]:invert"
+              className="w-full px-4 py-3 rounded-xl bg-[var(--bg-hover)] border border-[var(--border-color)] text-[var(--text-primary)] text-sm outline-none focus:border-[#f472b6]/50 transition-colors [&::-webkit-calendar-picker-indicator]:invert"
             />
           </div>
         </div>
@@ -166,7 +166,7 @@ export default function AgeCalculator() {
             <Clock size={13} className="inline mr-1" /> 设为今天
           </button>
           {birthDate && (
-            <span className="text-xs text-[#666]">
+            <span className="text-xs text-[var(--text-faint)]">
               出生日期：{formatDisplayDate(birthDate)} ({result?.birthWeekday})
             </span>
           )}
@@ -182,18 +182,18 @@ export default function AgeCalculator() {
           className="glass-card p-8 mb-6"
         >
           {/* Main Age Display */}
-          <div className="text-center mb-8 pb-8 border-b border-white/10">
+          <div className="text-center mb-8 pb-8 border-b border-[var(--border-color)]">
             <div className="text-6xl sm:text-7xl font-bold font-['Syne'] mb-2" style={{ color: COLOR }}>
               {result.years}
-              <span className="text-3xl text-white/50 mx-1">岁</span>
+              <span className="text-3xl text-[var(--text-muted)] mx-1">岁</span>
               {result.months > 0 && (
                 <>
-                  <span className="text-2xl text-white/30 mx-1">{result.months}</span>
-                  <span className="text-lg text-white/30">个月</span>
+                  <span className="text-2xl text-[var(--text-faint)] mx-1">{result.months}</span>
+                  <span className="text-lg text-[var(--text-faint)]">个月</span>
                 </>
               )}
             </div>
-            <p className="text-[#a8b2c1] text-sm">精确周岁年龄</p>
+            <p className="text-[var(--text-secondary)] text-sm">精确周岁年龄</p>
           </div>
 
           {/* Stats Grid */}
@@ -204,45 +204,45 @@ export default function AgeCalculator() {
               { icon: Star, label: '已活周数', value: `${result.totalWeeks.toLocaleString()} 周`, color: COLOR },
               { icon: Heart, label: '已活月数', value: `${result.totalMonths.toLocaleString()} 个月`, color: COLOR },
             ].map((item, i) => (
-              <div key={i} className="bg-white/5 rounded-xl p-4 text-center hover:bg-white/8 transition-colors">
+              <div key={i} className="bg-[var(--bg-hover)] rounded-xl p-4 text-center hover:bg-[var(--bg-hover)] transition-colors">
                 <item.icon size={18} className="mx-auto mb-2" style={{ color: item.color }} />
-                <div className="text-xs text-[#666] mb-1">{item.label}</div>
-                <div className="font-mono text-sm font-semibold text-[#f0f0f5]">{item.value}</div>
+                <div className="text-xs text-[var(--text-faint)] mb-1">{item.label}</div>
+                <div className="font-mono text-sm font-semibold text-[var(--text-primary)]">{item.value}</div>
               </div>
             ))}
           </div>
 
           {/* Birthday Countdown & Zodiac */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-            <div className="bg-white/5 rounded-xl p-5 text-center">
+            <div className="bg-[var(--bg-hover)] rounded-xl p-5 text-center">
               <Sparkles size={24} className="mx-auto mb-2" style={{ color: COLOR }} />
-              <div className="text-xs text-[#666] mb-1">下一个生日</div>
+              <div className="text-xs text-[var(--text-faint)] mb-1">下一个生日</div>
               <div className="text-2xl font-bold font-mono" style={{ color: COLOR }}>还有 {result.daysUntil} 天</div>
             </div>
-            <div className="bg-white/5 rounded-xl p-5 text-center">
+            <div className="bg-[var(--bg-hover)] rounded-xl p-5 text-center">
               <Star size={24} className="mx-auto mb-2" style={{ color: COLOR }} />
-              <div className="text-xs text-[#666] mb-1">星座</div>
-              <div className="text-2xl font-bold text-white">
+              <div className="text-xs text-[var(--text-faint)] mb-1">星座</div>
+              <div className="text-2xl font-bold text-[var(--text-primary)]">
                 {result.zodiac.symbol} {result.zodiac.name}
               </div>
             </div>
-            <div className="bg-white/5 rounded-xl p-5 text-center">
+            <div className="bg-[var(--bg-hover)] rounded-xl p-5 text-center">
               <Heart size={24} className="mx-auto mb-2" style={{ color: COLOR }} />
-              <div className="text-xs text-[#666] mb-1">生肖属相</div>
-              <div className="text-2xl font-bold text-white">{result.chineseZodiac}</div>
+              <div className="text-xs text-[var(--text-faint)] mb-1">生肖属相</div>
+              <div className="text-2xl font-bold text-[var(--text-primary)]">{result.chineseZodiac}</div>
             </div>
           </div>
 
           {/* Life Progress */}
-          <div className="bg-white/5 rounded-xl p-5">
+          <div className="bg-[var(--bg-hover)] rounded-xl p-5">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <Zap size={16} style={{ color: COLOR }} />
-                <span className="text-sm font-medium text-[#a8b2c1]">人生进度（基于平均寿命80岁）</span>
+                <span className="text-sm font-medium text-[var(--text-secondary)]">人生进度（基于平均寿命80岁）</span>
               </div>
               <span style={{ fontFamily: 'monospace', fontSize: '0.875rem', fontWeight: 600, color: COLOR }}>{result.lifePercent.toFixed(2)}%</span>
             </div>
-            <div className="w-full h-3 bg-white/10 rounded-full overflow-hidden">
+            <div className="w-full h-3 bg-[var(--bg-secondary)] rounded-full overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${Math.min(100, result.lifePercent)}%` }}
@@ -255,7 +255,7 @@ export default function AgeCalculator() {
                 }}
               />
             </div>
-            <div className="flex justify-between mt-2 text-xs text-[#555]">
+            <div className="flex justify-between mt-2 text-xs text-[var(--text-faint)]">
               <span>出生</span>
               <span>{Math.round(result.lifePercent * 80 / 100)}岁 / 80岁</span>
               <span>80岁</span>
@@ -270,7 +270,7 @@ export default function AgeCalculator() {
           animate={{ opacity: 1 }}
           className="glass-card p-6 text-center"
         >
-          <p className="text-red-400 text-sm">⚠ 出生日期不能晚于目标日期</p>
+          <p className="text-[var(--danger)] text-sm">⚠ 出生日期不能晚于目标日期</p>
         </motion.div>
       )}
 
@@ -280,8 +280,8 @@ export default function AgeCalculator() {
           animate={{ opacity: 1 }}
           className="glass-card p-12 text-center"
         >
-          <Cake size={48} className="mx-auto mb-4 text-[#333]" />
-          <p className="text-[#555] text-sm">请选择出生日期开始计算</p>
+          <Cake size={48} className="mx-auto mb-4 text-[var(--text-faint)]" />
+          <p className="text-[var(--text-faint)] text-sm">请选择出生日期开始计算</p>
         </motion.div>
       )}
     </div>

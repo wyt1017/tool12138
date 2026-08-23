@@ -89,9 +89,9 @@ export default function TextReplace() {
           <div className="w-10 h-10 rounded-xl bg-[#a78bfa]/15 flex items-center justify-center">
             <Replace size={20} className="text-[#a78bfa]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">文本替换工具</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">文本替换工具</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">支持普通文本和正则表达式替换，实时预览结果</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">支持普通文本和正则表达式替换，实时预览结果</p>
       </motion.div>
 
       {/* Search & Replace Inputs */}
@@ -99,14 +99,14 @@ export default function TextReplace() {
         <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] gap-4 items-end">
           {/* Search */}
           <div>
-            <label className="text-sm font-medium text-[#a8b2c1] mb-2 block">查找内容</label>
+            <label className="text-sm font-medium text-[var(--text-secondary)] mb-2 block">查找内容</label>
             <input
               type="text"
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
               placeholder="输入要查找的文本或正则..."
               aria-label="查找内容"
-              className="tool-area w-full px-4 py-3 outline-none focus:border-[#a78bfa]/30 transition-colors placeholder:text-[#333]"
+              className="tool-area w-full px-4 py-3 outline-none focus:border-[#a78bfa]/30 transition-colors placeholder:text-[var(--text-faint)]"
             />
           </div>
 
@@ -122,26 +122,26 @@ export default function TextReplace() {
 
           {/* Replace */}
           <div>
-            <label className="text-sm font-medium text-[#a8b2c1] mb-2 block">替换内容</label>
+            <label className="text-sm font-medium text-[var(--text-secondary)] mb-2 block">替换内容</label>
             <input
               type="text"
               value={replaceText}
               onChange={(e) => setReplaceText(e.target.value)}
               placeholder="输入替换后的文本..."
               aria-label="替换内容"
-              className="tool-area w-full px-4 py-3 outline-none focus:border-[#a78bfa]/30 transition-colors placeholder:text-[#333]"
+              className="tool-area w-full px-4 py-3 outline-none focus:border-[#a78bfa]/30 transition-colors placeholder:text-[var(--text-faint)]"
             />
           </div>
         </div>
 
         {/* Options */}
-        <div className="flex flex-wrap gap-3 mt-4 pt-4 border-t border-white/5">
+        <div className="flex flex-wrap gap-3 mt-4 pt-4 border-t border-[var(--border-color)]">
           <button
             onClick={() => setCaseSensitive(!caseSensitive)}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
               caseSensitive
                 ? 'bg-[#a78bfa]/15 text-[#a78bfa]'
-                : 'bg-white/5 text-[#666] hover:text-white'
+                : 'bg-[var(--bg-hover)] text-[var(--text-faint)] hover:text-[var(--text-primary)]'
             }`}
           >
             Aa 区分大小写
@@ -151,7 +151,7 @@ export default function TextReplace() {
             className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
               useRegex
                 ? 'bg-[#a78bfa]/15 text-[#a78bfa]'
-                : 'bg-white/5 text-[#666] hover:text-white'
+                : 'bg-[var(--bg-hover)] text-[var(--text-faint)] hover:text-[var(--text-primary)]'
             }`}
           >
             .* 正则表达式
@@ -161,7 +161,7 @@ export default function TextReplace() {
             className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
               globalReplace
                 ? 'bg-[#a78bfa]/15 text-[#a78bfa]'
-                : 'bg-white/5 text-[#666] hover:text-white'
+                : 'bg-[var(--bg-hover)] text-[var(--text-faint)] hover:text-[var(--text-primary)]'
             }`}
           >
             全局替换
@@ -170,7 +170,7 @@ export default function TextReplace() {
           {/* Match Count */}
           {searchText && inputText && (
             <span className={`ml-auto text-sm font-medium px-3 py-2 rounded-full ${
-              hasMatch ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'
+              hasMatch ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-[var(--danger)]'
             }`}>
               {hasMatch ? `找到 ${result.count} 处匹配` : '未找到匹配'}
             </span>
@@ -178,7 +178,7 @@ export default function TextReplace() {
         </div>
 
         {error && (
-          <p className="text-red-400 text-sm mt-3 flex items-center gap-1">
+          <p className="text-[var(--danger)] text-sm mt-3 flex items-center gap-1">
             <span>⚠</span> {error}
           </p>
         )}
@@ -189,25 +189,25 @@ export default function TextReplace() {
         {/* Original Text */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 }}>
           <div className="flex items-center justify-between mb-2 ml-1">
-            <label className="text-sm font-medium text-[#a8b2c1]">原始文本</label>
-            <span className="text-xs text-[#666]">{inputText.length} 字符</span>
+            <label className="text-sm font-medium text-[var(--text-secondary)]">原始文本</label>
+            <span className="text-xs text-[var(--text-faint)]">{inputText.length} 字符</span>
           </div>
           <textarea
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             placeholder="在此粘贴或输入要处理的文本..."
             aria-label="原始文本"
-            className="tool-area w-full h-[360px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#a78bfa]/30 transition-colors placeholder:text-[#333]"
+            className="tool-area w-full h-[360px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#a78bfa]/30 transition-colors placeholder:text-[var(--text-faint)]"
           />
         </motion.div>
 
         {/* Result Text */}
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
           <div className="flex items-center justify-between mb-2 ml-1">
-            <label className="text-sm font-medium text-[#a8b2c1]">替换结果</label>
+            <label className="text-sm font-medium text-[var(--text-secondary)]">替换结果</label>
             {result.text && (
               <div className="flex gap-2">
-                <span className="text-xs text-[#666]">{result.text.length} 字符</span>
+                <span className="text-xs text-[var(--text-faint)]">{result.text.length} 字符</span>
                 <button onClick={handleCopy} className="btn-secondary !py-1.5 !px-3 text-xs">
                   {copied ? (
                     <span className="text-green-400">已复制</span>
@@ -225,7 +225,7 @@ export default function TextReplace() {
             value={result.text}
             placeholder="替换结果将显示在这里..."
             aria-label="替换结果"
-            className="tool-area w-full h-[360px] p-5 text-sm leading-relaxed resize-none outline-none text-[#a8b2c1] placeholder:text-[#333]"
+            className="tool-area w-full h-[360px] p-5 text-sm leading-relaxed resize-none outline-none text-[var(--text-secondary)] placeholder:text-[var(--text-faint)]"
           />
         </motion.div>
       </div>

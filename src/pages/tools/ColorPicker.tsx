@@ -229,16 +229,16 @@ export default function ColorPicker() {
     <div
       key={field}
       onClick={() => copyToClipboard(value, field)}
-      className="flex items-center justify-between p-3 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] cursor-pointer transition-colors group"
+      className="flex items-center justify-between p-3 rounded-lg bg-[var(--bg-hover)] hover:bg-[var(--bg-hover)] cursor-pointer transition-colors group"
     >
       <div className="flex items-center gap-3">
-        <span className="text-xs text-[#555] w-12">{label}</span>
-        <code className="text-sm text-white font-mono group-hover:text-[#00d9ff] transition-colors">{value}</code>
+        <span className="text-xs text-[var(--text-faint)] w-12">{label}</span>
+        <code className="text-sm text-[var(--text-primary)] font-mono group-hover:text-[#00d9ff] transition-colors">{value}</code>
       </div>
       {copiedField === field ? (
         <Check size={14} className="text-[#6bcb77]" />
       ) : (
-        <Copy size={13} className="text-[#444] opacity-0 group-hover:opacity-100 transition-opacity" />
+        <Copy size={13} className="text-[var(--text-faint)] opacity-0 group-hover:opacity-100 transition-opacity" />
       )}
     </div>
   );
@@ -251,9 +251,9 @@ export default function ColorPicker() {
           <div className="w-10 h-10 rounded-xl bg-[#ffd369]/15 flex items-center justify-center">
             <Palette size={20} className="text-[#ffd369]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">颜色选择器</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">颜色选择器</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">取色、HEX/RGB/HSL格式转换、调色板生成</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">取色、HEX/RGB/HSL格式转换、调色板生成</p>
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -265,12 +265,12 @@ export default function ColorPicker() {
             style={{ backgroundColor: color?.hex || '#000' }}
           >
             <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between">
-              <code className="text-2xl font-['Syne'] font-bold text-white drop-shadow-lg">
+              <code className="text-2xl font-['Syne'] font-bold text-[var(--text-primary)] drop-shadow-lg">
                 {color?.hex || '#000000'}
               </code>
               <div className="text-right">
-                <div className="text-sm text-white/80 drop-shadow">{color?.rgb.r}, {color?.rgb.g}, {color?.rgb.b}</div>
-                <div className="text-xs text-white/60 drop-shadow mt-0.5">
+                <div className="text-sm text-[var(--text-muted)] drop-shadow">{color?.rgb.r}, {color?.rgb.g}, {color?.rgb.b}</div>
+                <div className="text-xs text-[var(--text-muted)] drop-shadow mt-0.5">
                   HSL({color?.hsl.h}, {color?.hsl.s}%, {color?.hsl.l}%)
                 </div>
               </div>
@@ -279,7 +279,7 @@ export default function ColorPicker() {
 
           {/* Color Input */}
           <div className="space-y-4">
-            <label className="block text-sm font-medium text-[#a8b2c1] ml-1">输入颜色值</label>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] ml-1">输入颜色值</label>
             <div className="flex gap-3">
               <input
                 type="color"
@@ -294,11 +294,11 @@ export default function ColorPicker() {
                 onChange={(e) => setColorInput(e.target.value)}
                 placeholder="#6366F1 或 rgb(99,102,241)"
                 aria-label="颜色值"
-                className="flex-1 tool-area !rounded-xl px-4 text-white text-sm outline-none focus:border-[#ffd369]/30 transition-colors font-mono"
+                className="flex-1 tool-area !rounded-xl px-4 text-[var(--text-primary)] text-sm outline-none focus:border-[#ffd369]/30 transition-colors font-mono"
               />
               {/* 图片取色按钮 */}
-              <label className="w-14 h-14 rounded-xl cursor-pointer border border-white/10 hover:border-[#ffd369]/30 flex items-center justify-center transition-colors bg-white/5 hover:bg-[#ffd369]/10">
-                <Image size={20} className="text-[#a8b2c1]" />
+              <label className="w-14 h-14 rounded-xl cursor-pointer border border-[var(--border-color)] hover:border-[#ffd369]/30 flex items-center justify-center transition-colors bg-[var(--bg-hover)] hover:bg-[#ffd369]/10">
+                <Image size={20} className="text-[var(--text-secondary)]" />
                 <input
                   type="file"
                   accept="image/*"
@@ -308,13 +308,13 @@ export default function ColorPicker() {
                 />
               </label>
             </div>
-            <p className="text-xs text-[#666] ml-1">点击图片图标上传图片取色</p>
+            <p className="text-xs text-[var(--text-faint)] ml-1">点击图片图标上传图片取色</p>
           </div>
 
           {/* Palette */}
           {palette.length > 0 && (
             <div className="mt-8">
-              <label className="block text-sm font-medium text-[#a8b2c1] mb-3 ml-1">调色板</label>
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-3 ml-1">调色板</label>
               <div className="flex gap-2">
                 {palette.map((c, i) => (
                   <button
@@ -332,7 +332,7 @@ export default function ColorPicker() {
 
         {/* Right: Values */}
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
-          <label className="block text-sm font-medium text-[#a8b2c1] mb-3 ml-1">颜色值（点击复制）</label>
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-3 ml-1">颜色值（点击复制）</label>
           <div className="space-y-2">
             {color ? (
               <>
@@ -343,7 +343,7 @@ export default function ColorPicker() {
                 {formatRow('HSV', `hsv(${color.hsv.h}, ${color.hsv.s}%, ${color.hsv.v}%)`, 'hsv')}
               </>
             ) : (
-              <div className="text-center py-12 text-[#555] text-sm">请输入有效的颜色值</div>
+              <div className="text-center py-12 text-[var(--text-faint)] text-sm">请输入有效的颜色值</div>
             )}
           </div>
         </motion.div>
@@ -369,7 +369,7 @@ export default function ColorPicker() {
             <div className="flex items-center gap-2 mb-4 px-2">
               <Image size={18} className="text-[#ffd369]" />
               <span className="text-sm font-medium text-white">从图片取色</span>
-              <span className="text-xs text-[#666]">移动鼠标查看颜色，点击选取</span>
+              <span className="text-xs text-[#a8b2c1]">移动鼠标查看颜色，点击选取</span>
             </div>
             
             {/* 图片区域 - 使用 canvas 直接显示和取色 */}
@@ -407,12 +407,12 @@ export default function ColorPicker() {
             {/* 当前颜色预览 */}
             <div className="mt-4 flex items-center gap-3 px-2">
               <div 
-                className="w-10 h-10 rounded-xl border border-white/20"
+                className="w-10 h-10 rounded-xl border border-[var(--border-strong)]"
                 style={{ backgroundColor: magnifierColor }}
               />
               <div>
                 <code className="text-sm font-mono text-white">{magnifierColor}</code>
-                <p className="text-xs text-[#666] mt-0.5">点击图片选取此颜色</p>
+                <p className="text-xs text-[#a8b2c1] mt-0.5">点击图片选取此颜色</p>
               </div>
             </div>
           </motion.div>

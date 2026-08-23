@@ -398,9 +398,9 @@ export default function CodeFormatter() {
           <div className="w-10 h-10 rounded-xl bg-[#00d9ff]/15 flex items-center justify-center">
             <Code2 size={20} className="text-[#00d9ff]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">代码格式化工具</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">代码格式化工具</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">美化或压缩 JS / CSS / HTML / SQL / XML / JSON 代码</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">美化或压缩 JS / CSS / HTML / SQL / XML / JSON 代码</p>
       </motion.div>
 
       {/* Language Tabs */}
@@ -412,7 +412,7 @@ export default function CodeFormatter() {
             className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
               activeTab === tab.id
                 ? 'bg-[#00d9ff]/15 text-[#00d9ff]'
-                : 'bg-white/5 text-[#666]'
+                : 'bg-[var(--bg-hover)] text-[var(--text-faint)]'
             }`}
           >
             <FileCode size={14} className="inline mr-1.5" />
@@ -422,8 +422,8 @@ export default function CodeFormatter() {
 
         {/* Indent Size */}
         <div className="ml-auto flex items-center gap-2">
-          <AlignLeft size={14} className="text-[#666]" />
-          <span className="text-xs text-[#666]">缩进:</span>
+          <AlignLeft size={14} className="text-[var(--text-faint)]" />
+          <span className="text-xs text-[var(--text-faint)]">缩进:</span>
           {[2, 4].map((size) => (
             <button
               key={size}
@@ -431,7 +431,7 @@ export default function CodeFormatter() {
               className={`px-2.5 py-1 rounded text-xs font-mono transition-all ${
                 indentSize === size
                   ? 'bg-[#00d9ff]/15 text-[#00d9ff]'
-                  : 'bg-white/5 text-[#666]'
+                  : 'bg-[var(--bg-hover)] text-[var(--text-faint)]'
               }`}
             >
               {size}sp
@@ -445,7 +445,7 @@ export default function CodeFormatter() {
         {/* Input */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 }}>
           <div className="flex items-center justify-between mb-2 ml-1">
-            <label className="text-sm font-medium text-[#a8b2c1]">原始代码</label>
+            <label className="text-sm font-medium text-[var(--text-secondary)]">原始代码</label>
             <button onClick={loadSample} className="btn-secondary !py-1.5 !px-3 text-xs">
               加载示例
             </button>
@@ -455,14 +455,14 @@ export default function CodeFormatter() {
             onChange={(e) => setInput(e.target.value)}
             placeholder={`粘贴${activeTab.toUpperCase()}代码在这里...`}
             aria-label="原始代码"
-            className="tool-area w-full h-[380px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#00d9ff]/30 transition-colors placeholder:text-[#333] font-mono"
+            className="tool-area w-full h-[380px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#00d9ff]/30 transition-colors placeholder:text-[var(--text-faint)] font-mono"
           />
         </motion.div>
 
         {/* Output */}
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
           <div className="flex items-center justify-between mb-2 ml-1">
-            <label className="text-sm font-medium text-[#a8b2c1]">处理结果</label>
+            <label className="text-sm font-medium text-[var(--text-secondary)]">处理结果</label>
             {output && (
               <button onClick={copyResult} className="btn-secondary !py-1.5 !px-3 text-xs">
                 {copied ? <Check size={13} className="inline mr-1" /> : <Copy size={13} className="inline mr-1" />}
@@ -475,7 +475,7 @@ export default function CodeFormatter() {
             value={output}
             placeholder="处理后的代码将显示在这里..."
             aria-label="处理结果"
-            className="tool-area w-full h-[380px] p-5 text-sm leading-relaxed resize-none outline-none text-[#a8b2c1] placeholder:text-[#333] font-mono"
+            className="tool-area w-full h-[380px] p-5 text-sm leading-relaxed resize-none outline-none text-[var(--text-secondary)] placeholder:text-[var(--text-faint)] font-mono"
           />
         </motion.div>
       </div>

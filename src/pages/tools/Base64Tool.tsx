@@ -126,9 +126,9 @@ export default function Base64Tool() {
           <div className="w-10 h-10 rounded-xl bg-[#e94560]/15 flex items-center justify-center">
             <Binary size={20} className="text-[#e94560]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">Base64编解码</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">Base64编解码</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">文本和图片的Base64编码与解码工具</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">文本和图片的Base64编码与解码工具</p>
       </motion.div>
 
       {/* Mode Toggle */}
@@ -136,7 +136,7 @@ export default function Base64Tool() {
         <button
           onClick={() => setMode('encode')}
           className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-            mode === 'encode' ? 'bg-[#00d9ff]/15 text-[#00d9ff]' : 'bg-white/5 text-[#666]'
+            mode === 'encode' ? 'bg-[#00d9ff]/15 text-[#00d9ff]' : 'bg-[var(--bg-hover)] text-[var(--text-faint)]'
           }`}
         >
           编码 → Base64
@@ -144,7 +144,7 @@ export default function Base64Tool() {
         <button
           onClick={() => setMode('decode')}
           className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-            mode === 'decode' ? 'bg-[#a78bfa]/15 text-[#a78bfa]' : 'bg-white/5 text-[#666]'
+            mode === 'decode' ? 'bg-[#a78bfa]/15 text-[#a78bfa]' : 'bg-[var(--bg-hover)] text-[var(--text-faint)]'
           }`}
         >
           解码 ← Base64
@@ -155,7 +155,7 @@ export default function Base64Tool() {
         {/* Input */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
           <div className="flex items-center justify-between mb-2 ml-1">
-            <label className="text-sm font-medium text-[#a8b2c1]">{mode === 'encode' ? '原始文本' : 'Base64字符串'}</label>
+            <label className="text-sm font-medium text-[var(--text-secondary)]">{mode === 'encode' ? '原始文本' : 'Base64字符串'}</label>
             <label className="btn-secondary !py-1.5 !px-3 text-xs cursor-pointer">
               <Upload size={13} className="inline mr-1" /> 上传图片
               <input type="file" accept="image/*" onChange={handleFileUpload} aria-label="上传图片" className="hidden" />
@@ -166,14 +166,14 @@ export default function Base64Tool() {
             onChange={(e) => setInput(e.target.value)}
             placeholder={mode === 'encode' ? '输入要编码的文本...' : '粘贴Base64字符串...'}
             aria-label={mode === 'encode' ? '原始文本' : 'Base64字符串'}
-            className="tool-area w-full h-[320px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#e94560]/30 transition-colors placeholder:text-[#333] font-mono"
+            className="tool-area w-full h-[320px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#e94560]/30 transition-colors placeholder:text-[var(--text-faint)] font-mono"
           />
         </motion.div>
 
         {/* Output */}
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
           <div className="flex items-center justify-between mb-2 ml-1">
-            <label className="text-sm font-medium text-[#a8b2c1]">{mode === 'encode' ? 'Base64结果' : '解码结果'}</label>
+            <label className="text-sm font-medium text-[var(--text-secondary)]">{mode === 'encode' ? 'Base64结果' : '解码结果'}</label>
             {output && (
               <div className="flex gap-2">
                 <button onClick={() => navigator.clipboard.writeText(output)} className="btn-secondary !py-1.5 !px-3 text-xs">
@@ -197,7 +197,7 @@ export default function Base64Tool() {
               value={output}
               placeholder="输出结果将显示在这里..."
               aria-label="输出结果"
-              className="tool-area w-full h-[320px] p-5 text-sm leading-relaxed resize-none outline-none text-[#a8b2c1] font-mono placeholder:text-[#333]"
+              className="tool-area w-full h-[320px] p-5 text-sm leading-relaxed resize-none outline-none text-[var(--text-secondary)] font-mono placeholder:text-[var(--text-faint)]"
             />
           )}
         </motion.div>

@@ -218,9 +218,9 @@ export default function ImageCompress() {
           <div className="w-10 h-10 rounded-xl bg-[#ffd369]/15 flex items-center justify-center">
             <ImageDown size={20} className="text-[#ffd369]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">图片压缩</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">图片压缩</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">使用 Canvas API 在浏览器中压缩图片，支持 JPEG / WebP / PNG</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">使用 Canvas API 在浏览器中压缩图片，支持 JPEG / WebP / PNG</p>
       </motion.div>
 
       {/* Upload Area */}
@@ -232,19 +232,19 @@ export default function ImageCompress() {
           onDrop={handleDrop}
           onDragOver={(e) => e.preventDefault()}
           onClick={() => fileInputRef.current?.click()}
-          className="glass-card p-12 cursor-pointer border-2 border-dashed border-white/10 hover:border-[#ffd369]/40 transition-all mb-6"
+          className="glass-card p-12 cursor-pointer border-2 border-dashed border-[var(--border-color)] hover:border-[#ffd369]/40 transition-all mb-6"
         >
           <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/gif,image/webp" onChange={handleFileSelect} aria-label="选择图片文件" className="sr-only" />
-          <Upload size={48} className="mx-auto text-[#333] mb-4" />
-          <p className="text-[#666] text-sm text-center">拖拽图片到此处，或点击选择图片文件</p>
-          <p className="text-[#444] text-xs text-center mt-2">支持 JPG、PNG、WebP 等常见格式</p>
+          <Upload size={48} className="mx-auto text-[var(--text-faint)] mb-4" />
+          <p className="text-[var(--text-faint)] text-sm text-center">拖拽图片到此处，或点击选择图片文件</p>
+          <p className="text-[var(--text-faint)] text-xs text-center mt-2">支持 JPG、PNG、WebP 等常见格式</p>
         </motion.div>
       ) : (
         <>
       {/* Settings Panel */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-card p-6 mb-6">
         {error && (
-          <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-sm text-red-400">
+          <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-sm text-[var(--danger)]">
             {error}
           </div>
         )}
@@ -254,8 +254,8 @@ export default function ImageCompress() {
                   {originalPreview && <img src={originalPreview} alt="" className="w-full h-full object-cover" />}
                 </div>
                 <div>
-                  <p className="text-white font-medium text-sm">{file.name}</p>
-                  <p className="text-xs text-[#666]">{formatFileSize(file.size)}</p>
+                  <p className="text-[var(--text-primary)] font-medium text-sm">{file.name}</p>
+                  <p className="text-xs text-[var(--text-faint)]">{formatFileSize(file.size)}</p>
                 </div>
               </div>
               <button
@@ -270,14 +270,14 @@ export default function ImageCompress() {
                 }}
                 className="p-2 hover:bg-red-500/10 rounded-lg transition-colors"
               >
-                <Trash2 size={18} className="text-[#666] hover:text-red-400" />
+                <Trash2 size={18} className="text-[var(--text-faint)] hover:text-[var(--danger)]" />
               </button>
             </div>
 
             {/* Quality Slider */}
             <div className="mb-5">
               <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-medium text-[#a8b2c1]">压缩质量</label>
+                <label className="text-sm font-medium text-[var(--text-secondary)]">压缩质量</label>
                 <span className="text-sm font-mono font-semibold text-[#ffd369]">{Math.round(quality * 100)}%</span>
               </div>
               <input
@@ -288,39 +288,39 @@ export default function ImageCompress() {
                 value={quality}
                 onChange={(e) => setQuality(parseFloat(e.target.value))}
                 aria-label="压缩质量"
-                className="w-full h-1.5 bg-white/10 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#ffd369]"
+                className="w-full h-1.5 bg-[var(--bg-secondary)] rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#ffd369]"
               />
             </div>
 
             {/* Dimensions & Format */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
               <div>
-                <label className="block text-xs text-[#666] mb-1.5 ml-1">最大宽度</label>
+                <label className="block text-xs text-[var(--text-faint)] mb-1.5 ml-1">最大宽度</label>
                 <input
                   type="number"
                   value={maxWidth}
                   onChange={(e) => setMaxWidth(Math.max(1, parseInt(e.target.value) || 1920))}
                   aria-label="最大宽度"
-                  className="tool-area w-full py-2 px-3 text-white text-sm outline-none focus:border-[#ffd369]/30 transition-colors"
+                  className="tool-area w-full py-2 px-3 text-[var(--text-primary)] text-sm outline-none focus:border-[#ffd369]/30 transition-colors"
                 />
               </div>
               <div>
-                <label className="block text-xs text-[#666] mb-1.5 ml-1">最大高度</label>
+                <label className="block text-xs text-[var(--text-faint)] mb-1.5 ml-1">最大高度</label>
                 <input
                   type="number"
                   value={maxHeight}
                   onChange={(e) => setMaxHeight(Math.max(1, parseInt(e.target.value) || 1080))}
                   aria-label="最大高度"
-                  className="tool-area w-full py-2 px-3 text-white text-sm outline-none focus:border-[#ffd369]/30 transition-colors"
+                  className="tool-area w-full py-2 px-3 text-[var(--text-primary)] text-sm outline-none focus:border-[#ffd369]/30 transition-colors"
                 />
               </div>
               <div>
-                <label className="block text-xs text-[#666] mb-1.5 ml-1">输出格式</label>
+                <label className="block text-xs text-[var(--text-faint)] mb-1.5 ml-1">输出格式</label>
                 <select
                   value={format}
                   onChange={(e) => setFormat(e.target.value as ImageFormat)}
                   aria-label="输出格式"
-                  className="tool-area w-full py-2 px-3 text-white text-sm outline-none bg-transparent focus:border-[#ffd369]/30 transition-colors"
+                  className="tool-area w-full py-2 px-3 text-[var(--text-primary)] text-sm outline-none bg-transparent focus:border-[#ffd369]/30 transition-colors"
                 >
                   {FORMAT_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value} className="bg-[#111]">{opt.label}</option>
@@ -350,9 +350,9 @@ export default function ImageCompress() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div className="glass-card p-4">
                   <div className="flex items-center gap-2 mb-3">
-                    <ImageIcon size={14} className="text-[#666]" />
-                    <span className="text-xs font-medium text-[#a8b2c1]">原图预览</span>
-                    <span className="ml-auto text-xs text-[#555]">{result.originalWidth} × {result.originalHeight}</span>
+                    <ImageIcon size={14} className="text-[var(--text-faint)]" />
+                    <span className="text-xs font-medium text-[var(--text-secondary)]">原图预览</span>
+                    <span className="ml-auto text-xs text-[var(--text-faint)]">{result.originalWidth} × {result.originalHeight}</span>
                   </div>
                   <div className="rounded-lg overflow-hidden bg-black/20 flex items-center justify-center min-h-[200px]">
                     {originalPreview && <img src={originalPreview} alt="原图" className="max-w-full max-h-[300px] object-contain" />}
@@ -362,8 +362,8 @@ export default function ImageCompress() {
                 <div className="glass-card p-4">
                   <div className="flex items-center gap-2 mb-3">
                     <ImageIcon size={14} className="text-[#ffd369]" />
-                    <span className="text-xs font-medium text-[#a8b2c1]">压缩后预览</span>
-                    <span className="ml-auto text-xs text-[#555]">{result.width} × {result.height}</span>
+                    <span className="text-xs font-medium text-[var(--text-secondary)]">压缩后预览</span>
+                    <span className="ml-auto text-xs text-[var(--text-faint)]">{result.width} × {result.height}</span>
                   </div>
                   <div className="rounded-lg overflow-hidden bg-black/20 flex items-center justify-center min-h-[200px]">
                     <img src={resultBlobUrl} alt="压缩后" className="max-w-full max-h-[300px] object-contain" />
@@ -373,28 +373,28 @@ export default function ImageCompress() {
 
               {/* Comparison Stats */}
               <div className="glass-card p-5 mb-6">
-                <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+                <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4 flex items-center gap-2">
                   <ImageDown size={16} className="text-[#ffd369]" />
                   压缩对比信息
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  <div className="bg-white/[0.03] rounded-xl p-4">
-                    <div className="text-xs text-[#666] mb-1">原始大小</div>
-                    <div className="font-['Syne'] font-bold text-lg text-white">{formatFileSize(result.originalSize)}</div>
+                  <div className="bg-[var(--bg-hover)] rounded-xl p-4">
+                    <div className="text-xs text-[var(--text-faint)] mb-1">原始大小</div>
+                    <div className="font-['Syne'] font-bold text-lg text-[var(--text-primary)]">{formatFileSize(result.originalSize)}</div>
                   </div>
-                  <div className="bg-white/[0.03] rounded-xl p-4">
-                    <div className="text-xs text-[#666] mb-1">压缩后大小</div>
+                  <div className="bg-[var(--bg-hover)] rounded-xl p-4">
+                    <div className="text-xs text-[var(--text-faint)] mb-1">压缩后大小</div>
                     <div className="font-['Syne'] font-bold text-lg text-[#ffd369]">{formatFileSize(result.blob.size)}</div>
                   </div>
-                  <div className="bg-white/[0.03] rounded-xl p-4">
-                    <div className="text-xs text-[#666] mb-1">压缩率</div>
-                    <div className={`font-['Syne'] font-bold text-lg ${parseFloat(compressionRate!) > 0 ? 'text-emerald-400' : parseFloat(compressionRate!) < 0 ? 'text-red-400' : 'text-[#888]'}`}>
+                  <div className="bg-[var(--bg-hover)] rounded-xl p-4">
+                    <div className="text-xs text-[var(--text-faint)] mb-1">压缩率</div>
+                    <div className={`font-['Syne'] font-bold text-lg ${parseFloat(compressionRate!) > 0 ? 'text-emerald-400' : parseFloat(compressionRate!) < 0 ? 'text-[var(--danger)]' : 'text-[var(--text-faint)]'}`}>
                       {compressionRate}% {parseFloat(compressionRate!) > 0 ? '↓' : parseFloat(compressionRate!) < 0 ? '↑' : ''}
                     </div>
                   </div>
-                  <div className="bg-white/[0.03] rounded-xl p-4">
-                    <div className="text-xs text-[#666] mb-1">输出格式</div>
-                    <div className="font-['Syne'] font-bold text-lg text-white uppercase">{format}</div>
+                  <div className="bg-[var(--bg-hover)] rounded-xl p-4">
+                    <div className="text-xs text-[var(--text-faint)] mb-1">输出格式</div>
+                    <div className="font-['Syne'] font-bold text-lg text-[var(--text-primary)] uppercase">{format}</div>
                   </div>
                 </div>
               </div>

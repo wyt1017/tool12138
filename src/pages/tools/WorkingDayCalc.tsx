@@ -114,9 +114,9 @@ export default function WorkingDayCalc() {
           <div className="w-10 h-10 rounded-xl bg-[#6bcb77]/15 flex items-center justify-center">
             <CalendarDays size={20} className="text-[#6bcb77]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">工作日计算器</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">工作日计算器</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">计算两个日期之间的总天数、工作日天数（排除周末）和周末天数</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">计算两个日期之间的总天数、工作日天数（排除周末）和周末天数</p>
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
@@ -125,7 +125,7 @@ export default function WorkingDayCalc() {
           {/* Date Pickers */}
           <div className="glass-card p-5 space-y-4">
             <div>
-              <label className="text-sm font-medium text-[#a8b2c1] block mb-2">开始日期</label>
+              <label className="text-sm font-medium text-[var(--text-secondary)] block mb-2">开始日期</label>
               <input
                 type="date"
                 value={startDate}
@@ -136,7 +136,7 @@ export default function WorkingDayCalc() {
             </div>
 
             <div>
-              <label className="text-sm font-medium text-[#a8b2c1] block mb-2">结束日期</label>
+              <label className="text-sm font-medium text-[var(--text-secondary)] block mb-2">结束日期</label>
               <input
                 type="date"
                 value={endDate}
@@ -164,16 +164,16 @@ export default function WorkingDayCalc() {
           <div className="glass-card p-5">
             <div className="flex items-center gap-2 mb-2">
               <CalendarPlus size={14} className="text-[#6bcb77]" />
-              <label className="text-sm font-medium text-[#a8b2c1]">手动排除日期</label>
+              <label className="text-sm font-medium text-[var(--text-secondary)]">手动排除日期</label>
             </div>
             <textarea
               value={excludedDates}
               onChange={(e) => setExcludedDates(e.target.value)}
               placeholder="输入要排除的日期，每行一个或用逗号分隔&#10;例如：2024-01-01, 2024-02-10"
               aria-label="手动排除日期"
-              className="tool-area w-full h-[100px] p-3 text-xs resize-none outline-none focus:border-[#6bcb77]/30 transition-colors placeholder:text-[#333]"
+              className="tool-area w-full h-[100px] p-3 text-xs resize-none outline-none focus:border-[#6bcb77]/30 transition-colors placeholder:text-[var(--text-faint)]"
             />
-            <p className="text-xs text-[#666] mt-2 flex items-center gap-1">
+            <p className="text-xs text-[var(--text-faint)] mt-2 flex items-center gap-1">
               <AlertCircle size={12} /> 已排除 {excludedDateSet.size} 个日期（除周末外额外排除）
             </p>
           </div>
@@ -186,15 +186,15 @@ export default function WorkingDayCalc() {
             <>
               <div className="grid grid-cols-3 gap-4">
                 <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="glass-card p-5 text-center border-t-2 border-t-white/10">
-                  <p className="text-xs text-[#666] mb-1">总天数</p>
-                  <p className="text-3xl font-bold text-white font-['Syne']">{result.totalDays}</p>
+                  <p className="text-xs text-[var(--text-faint)] mb-1">总天数</p>
+                  <p className="text-3xl font-bold text-[var(--text-primary)] font-['Syne']">{result.totalDays}</p>
                 </motion.div>
                 <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="glass-card p-5 text-center border-t-2 border-t-[#6bcb77]">
-                  <p className="text-xs text-[#666] mb-1">工作日</p>
+                  <p className="text-xs text-[var(--text-faint)] mb-1">工作日</p>
                   <p className="text-3xl font-bold text-[#6bcb77] font-['Syne']">{result.workdays}</p>
                 </motion.div>
                 <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="glass-card p-5 text-center border-t-2 border-t-[#f472b6]">
-                  <p className="text-xs text-[#666] mb-1">周末天数</p>
+                  <p className="text-xs text-[var(--text-faint)] mb-1">周末天数</p>
                   <p className="text-3xl font-bold text-[#f472b6] font-['Syne']">{result.weekendDays}</p>
                 </motion.div>
               </div>
@@ -202,7 +202,7 @@ export default function WorkingDayCalc() {
               {/* Day List */}
               <div className="glass-card p-5">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-sm font-medium text-[#a8b2c1]">日期明细</h3>
+                  <h3 className="text-sm font-medium text-[var(--text-secondary)]">日期明细</h3>
                   <button onClick={handleCopyResult} className="btn-secondary !py-1 !px-3 text-xs">
                     <Copy size={12} className="inline mr-1" /> {copied ? '已复制' : '复制统计'}
                   </button>
@@ -213,10 +213,10 @@ export default function WorkingDayCalc() {
                       key={idx}
                       className={`flex items-center justify-between py-2 px-3 rounded-lg text-xs ${
                         day.isExcluded
-                          ? 'bg-red-500/10 text-red-400'
+                          ? 'bg-red-500/10 text-[var(--danger)]'
                           : day.isWeekend
-                            ? 'bg-white/5 text-[#888]'
-                            : 'bg-[#6bcb77]/10 text-[#a8b2c1]'
+                            ? 'bg-[var(--bg-hover)] text-[var(--text-faint)]'
+                            : 'bg-[#6bcb77]/10 text-[var(--text-secondary)]'
                       }`}
                     >
                       <span className="font-mono">{formatDate(day.date)}</span>
@@ -231,8 +231,8 @@ export default function WorkingDayCalc() {
             </>
           ) : (
             <div className="glass-card p-12 text-center">
-              <CalendarDays size={40} className="mx-auto text-[#333] mb-3" />
-              <p className="text-[#555]">请选择开始和结束日期以查看结果</p>
+              <CalendarDays size={40} className="mx-auto text-[var(--text-faint)] mb-3" />
+              <p className="text-[var(--text-faint)]">请选择开始和结束日期以查看结果</p>
             </div>
           )}
         </motion.div>

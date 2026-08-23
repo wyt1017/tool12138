@@ -139,9 +139,9 @@ export default function GithubCard() {
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${color}24` }}>
             <Github size={20} style={{ color }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">GitHub 卡片生成器</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">GitHub 卡片生成器</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">输入用户名，自动拉取公开资料生成 SVG 统计卡，可下载或复制代码嵌入 README</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">输入用户名，自动拉取公开资料生成 SVG 统计卡，可下载或复制代码嵌入 README</p>
       </motion.div>
 
       {/* Input */}
@@ -152,7 +152,7 @@ export default function GithubCard() {
             onChange={(e) => setUsername(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && generate()}
             placeholder="输入 GitHub 用户名，如 torvalds"
-            className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white outline-none focus:border-[#00d9ff]/30"
+            className="flex-1 bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-[var(--text-primary)] outline-none focus:border-[#00d9ff]/30"
           />
           <button onClick={generate} disabled={loading || !username.trim()} className="btn-primary flex items-center gap-2 !px-5 disabled:opacity-40">
             {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />} 生成
@@ -175,13 +175,13 @@ export default function GithubCard() {
           <div className="glass-card p-6 flex flex-col sm:flex-row items-center gap-6">
             <img src={user.avatar_url} alt={user.login} className="w-20 h-20 rounded-2xl" />
             <div className="text-center sm:text-left">
-              <div className="font-['Syne'] font-bold text-xl text-white">{user.name || user.login}</div>
-              <div className="text-sm text-[#666]">@{user.login}</div>
-              {user.bio && <div className="text-sm text-[#a8b2c1] mt-1 max-w-md">{user.bio}</div>}
+              <div className="font-['Syne'] font-bold text-xl text-[var(--text-primary)]">{user.name || user.login}</div>
+              <div className="text-sm text-[var(--text-faint)]">@{user.login}</div>
+              {user.bio && <div className="text-sm text-[var(--text-secondary)] mt-1 max-w-md">{user.bio}</div>}
               <div className="flex flex-wrap gap-4 justify-center sm:justify-start mt-3 text-sm">
-                <span className="text-white">👥 {user.followers} <span className="text-[#666]">followers</span></span>
-                <span className="text-white">🔭 {user.following} <span className="text-[#666]">following</span></span>
-                <span className="text-white">📦 {user.public_repos} <span className="text-[#666]">repos</span></span>
+                <span className="text-[var(--text-primary)]">👥 {user.followers} <span className="text-[var(--text-faint)]">followers</span></span>
+                <span className="text-[var(--text-primary)]">🔭 {user.following} <span className="text-[var(--text-faint)]">following</span></span>
+                <span className="text-[var(--text-primary)]">📦 {user.public_repos} <span className="text-[var(--text-faint)]">repos</span></span>
               </div>
             </div>
           </div>
@@ -189,7 +189,7 @@ export default function GithubCard() {
           {/* Language bar */}
           {languages.length > 0 && (
             <div className="glass-card p-5">
-              <div className="text-sm text-[#a8b2c1] mb-3">主要语言</div>
+              <div className="text-sm text-[var(--text-secondary)] mb-3">主要语言</div>
               <div className="flex h-3 rounded-full overflow-hidden mb-3">
                 {languages.map((l) => (
                   <div key={l.name} style={{ width: `${l.pct}%`, background: l.color }} title={`${l.name} ${l.pct.toFixed(0)}%`} />
@@ -197,7 +197,7 @@ export default function GithubCard() {
               </div>
               <div className="flex flex-wrap gap-3 text-xs">
                 {languages.map((l) => (
-                  <span key={l.name} className="flex items-center gap-1.5 text-[#a8b2c1]">
+                  <span key={l.name} className="flex items-center gap-1.5 text-[var(--text-secondary)]">
                     <span className="w-2.5 h-2.5 rounded-full" style={{ background: l.color }} /> {l.name} {l.pct.toFixed(0)}%
                   </span>
                 ))}
@@ -207,7 +207,7 @@ export default function GithubCard() {
 
           {/* SVG card preview */}
           <div className="glass-card p-6">
-            <div className="text-sm text-[#a8b2c1] mb-3">SVG 卡片预览</div>
+            <div className="text-sm text-[var(--text-secondary)] mb-3">SVG 卡片预览</div>
             <div className="bg-[#0d1117] rounded-xl p-4 flex justify-center overflow-x-auto" dangerouslySetInnerHTML={{ __html: buildSvg() }} />
             <div className="flex gap-3 mt-4">
               <button onClick={downloadSvg} className="btn-secondary flex items-center gap-2"><Download size={15} /> 下载 SVG</button>

@@ -90,9 +90,15 @@ function parseCronField(field: string, min: number, max: number): number[] {
             if (v >= min && v <= max) values.add(v);
           }
         } else {
-          // Single value, just add it
-          if (val >= min && val <= max) values.add(val);
+          // 简单数字：超出允许域即为非法（如分钟字段 "99"）
+          if (val < min || val > max) {
+            throw new Error('Value out of range: ' + part);
+          }
+          values.add(val);
         }
+      } else {
+        // 无法解析的 token（如 "abc"）视为非法
+        throw new Error('Invalid cron token: ' + part);
       }
     }
   }
@@ -278,9 +284,9 @@ export default function CrontabParser() {
           <div className="w-10 h-10 rounded-xl bg-[#ffd369]/15 flex items-center justify-center">
             <Clock size={20} className="text-[#ffd369]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">Crontab表达式解析</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">Crontab表达式解析</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">解析和验证Cron定时任务表达式，查看执行时间和倒计时</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">解析和验证Cron定时任务表达式，查看执行时间和倒计时</p>
       </motion.div>
 
       {/* Cron Expression Input */}
@@ -296,7 +302,7 @@ export default function CrontabParser() {
         <div className="grid grid-cols-5 gap-3">
           {FIELD_CONFIGS.map((config, idx) => (
             <div key={config.name}>
-              <label className="text-xs text-[#666] mb-1 block">{config.label}</label>
+              <label className="text-xs text-[var(--text-faint)] mb-1 block">{config.label}</label>
               <input
                 type="text"
                 value={fields[idx]}
@@ -310,7 +316,7 @@ export default function CrontabParser() {
                 placeholder={config.label}
               />
               {!parsedFields[idx].valid && (
-                <p className="text-xs text-red-400 mt-1 flex items-center gap-1">
+                <p className="text-xs text-[var(--danger)] mt-1 flex items-center gap-1">
                   <AlertCircle size={11} /> 无效
                 </p>
               )}
@@ -321,9 +327,9 @@ export default function CrontabParser() {
         {/* Field Descriptions */}
         <div className="mt-4 grid grid-cols-5 gap-3">
           {parsedFields.map((pf, idx) => (
-            <div key={idx} className={`text-xs p-2 rounded ${pf.valid ? 'bg-white/5' : 'bg-red-500/10'}`}>
-              <span className="text-[#555]">{FIELD_CONFIGS[idx].name}:</span>{' '}
-              <span className={`${pf.valid ? 'text-[#a8b2c1]' : 'text-red-400'}`}>
+            <div key={idx} className={`text-xs p-2 rounded ${pf.valid ? 'bg-[var(--bg-hover)]' : 'bg-red-500/10'}`}>
+              <span className="text-[var(--text-faint)]">{FIELD_CONFIGS[idx].name}:</span>{' '}
+              <span className={`${pf.valid ? 'text-[var(--text-secondary)]' : 'text-[var(--danger)]'}`}>
                 {describeField(pf, FIELD_CONFIGS[idx])}
               </span>
             </div>
@@ -333,7 +339,7 @@ export default function CrontabParser() {
 
       {/* Dynamic Presets */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }} className="mb-6">
-        <h3 className="text-sm font-medium text-[#a8b2c1] mb-3">基于当前时间的预设</h3>
+        <h3 className="text-sm font-medium text-[var(--text-secondary)] mb-3">基于当前时间的预设</h3>
         <div className="flex flex-wrap gap-2">
           {getDynamicPresets().map((preset) => (
             <button
@@ -350,13 +356,13 @@ export default function CrontabParser() {
 
       {/* Static Presets */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mb-6">
-        <h3 className="text-sm font-medium text-[#a8b2c1] mb-3">常用预设</h3>
+        <h3 className="text-sm font-medium text-[var(--text-secondary)] mb-3">常用预设</h3>
         <div className="flex flex-wrap gap-2">
           {STATIC_PRESETS.map((preset) => (
             <button
               key={preset.expr}
               onClick={() => applyPreset(preset.expr)}
-              className="px-3 py-1.5 rounded-lg text-xs font-mono bg-white/5 hover:bg-[#ffd369]/10 text-[#a8b2c1] hover:text-[#ffd369] border border-white/10 hover:border-[#ffd369]/30 transition-all"
+              className="px-3 py-1.5 rounded-lg text-xs font-mono bg-[var(--bg-hover)] hover:bg-[#ffd369]/10 text-[var(--text-secondary)] hover:text-[#ffd369] border border-[var(--border-color)] hover:border-[#ffd369]/30 transition-all"
             >
               {preset.expr}
               <span className="ml-1.5 opacity-50 normal-case font-sans">{preset.desc}</span>
@@ -371,7 +377,7 @@ export default function CrontabParser() {
           {/* Natural Language Description */}
           {naturalDescription && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="glass-card p-4 mb-6">
-              <p className="text-sm text-[#a8b2c1]">{naturalDescription}</p>
+              <p className="text-sm text-[var(--text-secondary)]">{naturalDescription}</p>
             </motion.div>
           )}
 
@@ -382,10 +388,10 @@ export default function CrontabParser() {
                 <Timer size={16} className="text-[#ffd369]" />
                 <h3 className="text-sm font-semibold text-[#ffd369]">下次执行倒计时</h3>
               </div>
-              <p className="text-2xl font-bold text-white font-mono">
+              <p className="text-2xl font-bold text-[var(--text-primary)] font-mono">
                 {formatCountdown(nextRuns[0])}
               </p>
-              <p className="text-xs text-[#666] mt-1">
+              <p className="text-xs text-[var(--text-faint)] mt-1">
                 下次执行时间：{nextRuns[0].toLocaleString('zh-CN')}
               </p>
             </motion.div>
@@ -402,11 +408,11 @@ export default function CrontabParser() {
                 <div
                   key={idx}
                   className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm ${
-                    idx === 0 ? 'bg-[#ffd369]/10 border border-[#ffd369]/20' : 'bg-white/5'
+                    idx === 0 ? 'bg-[#ffd369]/10 border border-[#ffd369]/20' : 'bg-[var(--bg-hover)]'
                   }`}
                 >
-                  <span className="text-[#666]">第{idx + 1}次</span>
-                  <span className="font-mono text-[#f0f0f5]">{date.toLocaleString('zh-CN')}</span>
+                  <span className="text-[var(--text-faint)]">第{idx + 1}次</span>
+                  <span className="font-mono text-[var(--text-primary)]">{date.toLocaleString('zh-CN')}</span>
                   {idx === 0 && (
                     <span className="text-xs text-[#ffd369] font-mono">{formatCountdown(date)}</span>
                   )}
@@ -419,7 +425,7 @@ export default function CrontabParser() {
 
       {!allValid && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="glass-card p-4 border-red-500/30">
-          <p className="text-sm text-red-400 flex items-center gap-2">
+          <p className="text-sm text-[var(--danger)] flex items-center gap-2">
             <AlertCircle size={16} /> 表达式存在错误，请检查上方标红的字段
           </p>
         </motion.div>

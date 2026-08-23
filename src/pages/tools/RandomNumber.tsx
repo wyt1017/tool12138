@@ -114,41 +114,41 @@ export default function RandomNumber() {
           <div className="w-10 h-10 rounded-xl bg-[#a78bfa]/15 flex items-center justify-center">
             <Dices size={20} className="text-[#a78bfa]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">随机数生成器</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">随机数生成器</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">生成指定范围内的随机数字，支持整数与小数、去重等选项</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">生成指定范围内的随机数字，支持整数与小数、去重等选项</p>
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Settings Panel */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="lg:col-span-1">
           <div className="glass-card p-6 space-y-5">
-            <h3 className="text-sm font-semibold text-white mb-4">参数设置</h3>
+            <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4">参数设置</h3>
 
             <div>
-              <label className="text-xs text-[#a8b2c1] block mb-1.5">最小值</label>
+              <label className="text-xs text-[var(--text-secondary)] block mb-1.5">最小值</label>
               <input
                 type="number"
                 value={minVal}
                 onChange={(e) => setMinVal(Number(e.target.value))}
                 aria-label="最小值"
-                className="tool-area w-full px-3 py-2 text-sm text-white outline-none focus:border-[#a78bfa]/30"
+                className="tool-area w-full px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[#a78bfa]/30"
               />
             </div>
 
             <div>
-              <label className="text-xs text-[#a8b2c1] block mb-1.5">最大值</label>
+              <label className="text-xs text-[var(--text-secondary)] block mb-1.5">最大值</label>
               <input
                 type="number"
                 value={maxVal}
                 onChange={(e) => setMaxVal(Number(e.target.value))}
                 aria-label="最大值"
-                className="tool-area w-full px-3 py-2 text-sm text-white outline-none focus:border-[#a78bfa]/30"
+                className="tool-area w-full px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[#a78bfa]/30"
               />
             </div>
 
             <div>
-              <label className="text-xs text-[#a8b2c1] block mb-1.5">生成数量</label>
+              <label className="text-xs text-[var(--text-secondary)] block mb-1.5">生成数量</label>
               <input
                 type="number"
                 value={count}
@@ -156,16 +156,16 @@ export default function RandomNumber() {
                 min={1}
                 max={10000}
                 aria-label="生成数量"
-                className="tool-area w-full px-3 py-2 text-sm text-white outline-none focus:border-[#a78bfa]/30"
+                className="tool-area w-full px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[#a78bfa]/30"
               />
             </div>
 
             {/* Decimal Toggle */}
             <div className="flex items-center justify-between">
-              <label className="text-xs text-[#a8b2c1]">包含小数</label>
+              <label className="text-xs text-[var(--text-secondary)]">包含小数</label>
               <button
                 onClick={() => setAllowDecimal(!allowDecimal)}
-                className={`relative w-11 h-6 rounded-full transition-colors ${allowDecimal ? 'bg-[#a78bfa]' : 'bg-white/10'}`}
+                className={`relative w-11 h-6 rounded-full transition-colors ${allowDecimal ? 'bg-[#a78bfa]' : 'bg-[var(--bg-secondary)]'}`}
               >
                 <span className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-transform ${allowDecimal ? 'translate-x-5' : ''}`} />
               </button>
@@ -173,7 +173,7 @@ export default function RandomNumber() {
 
             {allowDecimal && (
               <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}>
-                <label className="text-xs text-[#a8b2c1] block mb-1.5">小数位数 ({decimalPlaces})</label>
+                <label className="text-xs text-[var(--text-secondary)] block mb-1.5">小数位数 ({decimalPlaces})</label>
                 <input
                   type="range"
                   min={1}
@@ -183,7 +183,7 @@ export default function RandomNumber() {
                   aria-label="小数位数"
                   className="w-full accent-[#a78bfa]"
                 />
-                <div className="flex justify-between text-[10px] text-[#555] mt-1">
+                <div className="flex justify-between text-[10px] text-[var(--text-faint)] mt-1">
                   <span>1位</span><span>10位</span>
                 </div>
               </motion.div>
@@ -191,17 +191,17 @@ export default function RandomNumber() {
 
             {/* Duplicate Toggle */}
             <div className="flex items-center justify-between">
-              <label className="text-xs text-[#a8b2c1]">允许重复</label>
+              <label className="text-xs text-[var(--text-secondary)]">允许重复</label>
               <button
                 onClick={() => setAllowDuplicate(!allowDuplicate)}
-                className={`relative w-11 h-6 rounded-full transition-colors ${allowDuplicate ? 'bg-[#a78bfa]' : 'bg-white/10'}`}
+                className={`relative w-11 h-6 rounded-full transition-colors ${allowDuplicate ? 'bg-[#a78bfa]' : 'bg-[var(--bg-secondary)]'}`}
               >
                 <span className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-transform ${allowDuplicate ? 'translate-x-5' : ''}`} />
               </button>
             </div>
 
-            <div className="pt-2 border-t border-white/5">
-              <p className="text-xs text-[#555]">范围: [{minVal}, {maxVal}]</p>
+            <div className="pt-2 border-t border-[var(--border-color)]">
+              <p className="text-xs text-[var(--text-faint)]">范围: [{minVal}, {maxVal}]</p>
             </div>
 
             <button onClick={generate} className="btn-primary w-full">
@@ -215,13 +215,13 @@ export default function RandomNumber() {
           {/* Separator & Actions */}
           {results.length > 0 && (
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs text-[#555] mr-1">分隔符:</span>
+              <span className="text-xs text-[var(--text-faint)] mr-1">分隔符:</span>
               {[',', '\n', ' '].map((s) => (
                 <button
                   key={s}
                   onClick={() => setSeparator(s as Separator)}
                   className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                    separator === s ? 'bg-[#a78bfa]/15 text-[#a78bfa]' : 'bg-white/5 text-[#666]'
+                    separator === s ? 'bg-[#a78bfa]/15 text-[#a78bfa]' : 'bg-[var(--bg-hover)] text-[var(--text-faint)]'
                   }`}
                 >
                   {s === ',' ? '逗号' : s === '\n' ? '换行' : '空格'}
@@ -243,13 +243,13 @@ export default function RandomNumber() {
             {results.length > 0 ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 font-mono text-sm">
                 {results.map((n, i) => (
-                  <span key={i} className="px-3 py-1.5 rounded-lg bg-white/[0.03] text-[#d0d0e0] break-all">
+                  <span key={i} className="px-3 py-1.5 rounded-lg bg-[var(--bg-hover)] text-[#d0d0e0] break-all">
                     {allowDecimal ? n.toString() : n.toString()}
                   </span>
                 ))}
               </div>
             ) : (
-              <div className="flex items-center justify-center h-[260px] text-[#555] text-sm">
+              <div className="flex items-center justify-center h-[260px] text-[var(--text-faint)] text-sm">
                 点击左侧「生成随机数」按钮开始
               </div>
             )}
@@ -258,22 +258,22 @@ export default function RandomNumber() {
           {/* Stats */}
           {stats && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-5">
-              <h4 className="text-xs font-semibold text-[#a8b2c1] mb-3">统计信息</h4>
+              <h4 className="text-xs font-semibold text-[var(--text-secondary)] mb-3">统计信息</h4>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <div className="text-center">
-                  <p className="text-[10px] text-[#555] uppercase tracking-wider mb-1">最小值</p>
+                  <p className="text-[10px] text-[var(--text-faint)] uppercase tracking-wider mb-1">最小值</p>
                   <p className="text-lg font-mono font-semibold text-[#a78bfa]">{allowDecimal ? stats.min.toFixed(decimalPlaces) : stats.min}</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-[10px] text-[#555] uppercase tracking-wider mb-1">最大值</p>
+                  <p className="text-[10px] text-[var(--text-faint)] uppercase tracking-wider mb-1">最大值</p>
                   <p className="text-lg font-mono font-semibold text-[#a78bfa]">{allowDecimal ? stats.max.toFixed(decimalPlaces) : stats.max}</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-[10px] text-[#555] uppercase tracking-wider mb-1">平均值</p>
+                  <p className="text-[10px] text-[var(--text-faint)] uppercase tracking-wider mb-1">平均值</p>
                   <p className="text-lg font-mono font-semibold text-[#a78bfa]">{allowDecimal ? stats.avg.toFixed(decimalPlaces) : stats.avg.toFixed(2)}</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-[10px] text-[#555] uppercase tracking-wider mb-1">求和</p>
+                  <p className="text-[10px] text-[var(--text-faint)] uppercase tracking-wider mb-1">求和</p>
                   <p className="text-lg font-mono font-semibold text-[#a78bfa]">{allowDecimal ? stats.sum.toFixed(decimalPlaces) : stats.sum}</p>
                 </div>
               </div>

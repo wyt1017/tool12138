@@ -207,9 +207,9 @@ export default function MortgageCalculator() {
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${color}24` }}>
             <Landmark size={20} style={{ color }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">房贷 / 复利计算器</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">房贷 / 复利计算器</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">房贷月供测算与复利投资收益增长曲线</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">房贷月供测算与复利投资收益增长曲线</p>
       </motion.div>
 
       {/* Mode Tabs */}
@@ -222,7 +222,7 @@ export default function MortgageCalculator() {
             key={m.k}
             onClick={() => { setMode(m.k); setResult(null); }}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-              mode === m.k ? '' : 'bg-white/5 text-[#666] hover:text-white hover:bg-white/10'
+              mode === m.k ? '' : 'bg-[var(--bg-hover)] text-[var(--text-faint)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]'
             }`}
             style={mode === m.k ? { background: `${color}30`, border: `1px solid ${color}50` } : {}}
           >
@@ -243,7 +243,7 @@ export default function MortgageCalculator() {
                   key={m.k}
                   onClick={() => { setRepay(m.k); setResult(null); }}
                   className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                    repay === m.k ? '' : 'bg-white/5 text-[#666] hover:text-white'
+                    repay === m.k ? '' : 'bg-[var(--bg-hover)] text-[var(--text-faint)] hover:text-[var(--text-primary)]'
                   }`}
                   style={repay === m.k ? { background: `${color}30`, border: `1px solid ${color}50` } : {}}
                 >
@@ -253,22 +253,22 @@ export default function MortgageCalculator() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
               <div>
-                <label className="text-xs text-[#666] mb-1.5 block">贷款总额（万元）</label>
+                <label className="text-xs text-[var(--text-faint)] mb-1.5 block">贷款总额（万元）</label>
                 <input type="number" value={amount} onChange={(e) => { setAmount(e.target.value); setResult(null); }}
                   onKeyDown={(e) => e.key === 'Enter' && handleCalc()}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white text-lg outline-none focus:border-[#f59e0b]/40 placeholder:text-[#444]" />
+                  className="w-full bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-[var(--text-primary)] text-lg outline-none focus:border-[#f59e0b]/40 placeholder:text-[var(--text-faint)]" />
               </div>
               <div>
-                <label className="text-xs text-[#666] mb-1.5 block">年利率（%）</label>
+                <label className="text-xs text-[var(--text-faint)] mb-1.5 block">年利率（%）</label>
                 <input type="number" value={rate} onChange={(e) => { setRate(e.target.value); setResult(null); }}
                   onKeyDown={(e) => e.key === 'Enter' && handleCalc()}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white text-lg outline-none focus:border-[#f59e0b]/40 placeholder:text-[#444]" />
+                  className="w-full bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-[var(--text-primary)] text-lg outline-none focus:border-[#f59e0b]/40 placeholder:text-[var(--text-faint)]" />
               </div>
               <div>
-                <label className="text-xs text-[#666] mb-1.5 block">贷款年限（年）</label>
+                <label className="text-xs text-[var(--text-faint)] mb-1.5 block">贷款年限（年）</label>
                 <input type="number" value={years} onChange={(e) => { setYears(e.target.value); setResult(null); }}
                   onKeyDown={(e) => e.key === 'Enter' && handleCalc()}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white text-lg outline-none focus:border-[#f59e0b]/40 placeholder:text-[#444]" />
+                  className="w-full bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-[var(--text-primary)] text-lg outline-none focus:border-[#f59e0b]/40 placeholder:text-[var(--text-faint)]" />
               </div>
             </div>
           </>
@@ -276,37 +276,37 @@ export default function MortgageCalculator() {
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
               <div>
-                <label className="text-xs text-[#666] mb-1.5 block">初始本金（元）</label>
+                <label className="text-xs text-[var(--text-faint)] mb-1.5 block">初始本金（元）</label>
                 <input type="number" value={principal} onChange={(e) => { setPrincipal(e.target.value); setResult(null); }}
                   onKeyDown={(e) => e.key === 'Enter' && handleCalc()}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white text-lg outline-none focus:border-[#f59e0b]/40 placeholder:text-[#444]" />
+                  className="w-full bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-[var(--text-primary)] text-lg outline-none focus:border-[#f59e0b]/40 placeholder:text-[var(--text-faint)]" />
               </div>
               <div>
-                <label className="text-xs text-[#666] mb-1.5 block">年化收益率（%）</label>
+                <label className="text-xs text-[var(--text-faint)] mb-1.5 block">年化收益率（%）</label>
                 <input type="number" value={ret} onChange={(e) => { setRet(e.target.value); setResult(null); }}
                   onKeyDown={(e) => e.key === 'Enter' && handleCalc()}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white text-lg outline-none focus:border-[#f59e0b]/40 placeholder:text-[#444]" />
+                  className="w-full bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-[var(--text-primary)] text-lg outline-none focus:border-[#f59e0b]/40 placeholder:text-[var(--text-faint)]" />
               </div>
               <div>
-                <label className="text-xs text-[#666] mb-1.5 block">投资年限（年）</label>
+                <label className="text-xs text-[var(--text-faint)] mb-1.5 block">投资年限（年）</label>
                 <input type="number" value={cyears} onChange={(e) => { setCYears(e.target.value); setResult(null); }}
                   onKeyDown={(e) => e.key === 'Enter' && handleCalc()}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white text-lg outline-none focus:border-[#f59e0b]/40 placeholder:text-[#444]" />
+                  className="w-full bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-[var(--text-primary)] text-lg outline-none focus:border-[#f59e0b]/40 placeholder:text-[var(--text-faint)]" />
               </div>
               <div>
-                <label className="text-xs text-[#666] mb-1.5 block">每月定投（元）</label>
+                <label className="text-xs text-[var(--text-faint)] mb-1.5 block">每月定投（元）</label>
                 <input type="number" value={deposit} onChange={(e) => { setDeposit(e.target.value); setResult(null); }}
                   onKeyDown={(e) => e.key === 'Enter' && handleCalc()}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white text-lg outline-none focus:border-[#f59e0b]/40 placeholder:text-[#444]" />
+                  className="w-full bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-[var(--text-primary)] text-lg outline-none focus:border-[#f59e0b]/40 placeholder:text-[var(--text-faint)]" />
               </div>
             </div>
             <div className="mb-5">
-              <label className="text-xs text-[#666] mb-1.5 block">复利频率</label>
+              <label className="text-xs text-[var(--text-faint)] mb-1.5 block">复利频率</label>
               <div className="flex flex-wrap gap-2">
                 {Object.keys(FREQ).map((f) => (
                   <button key={f} onClick={() => { setFreq(f); setResult(null); }}
                     className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                      freq === f ? '' : 'bg-white/5 text-[#666] hover:text-white'
+                      freq === f ? '' : 'bg-[var(--bg-hover)] text-[var(--text-faint)] hover:text-[var(--text-primary)]'
                     }`}
                     style={freq === f ? { background: `${color}30`, border: `1px solid ${color}50` } : {}}>
                     {f}
@@ -332,45 +332,45 @@ export default function MortgageCalculator() {
             <div className="flex-1">
               {mode === 'mortgage' ? (
                 <>
-                  <div className="text-xs text-[#666] mb-1">
+                  <div className="text-xs text-[var(--text-faint)] mb-1">
                     {repay === 'equal-installment' ? '每月月供' : '首月月供'}
                   </div>
-                  <div className="font-['Syne'] font-bold text-3xl text-white mb-1">
-                    {fmt(result.monthly as number)} <span className="text-base text-[#a8b2c1]">元</span>
+                  <div className="font-['Syne'] font-bold text-3xl text-[var(--text-primary)] mb-1">
+                    {fmt(result.monthly as number)} <span className="text-base text-[var(--text-secondary)]">元</span>
                   </div>
                   {repay === 'equal-principal' && (
                     <>
                       <div className="text-xs text-[#f59e0b] mb-1 font-medium">首月月供（逐月递减）</div>
-                      <div className="text-sm text-[#a8b2c1] mb-3">
-                        每月递减 <span className="text-white font-semibold">{fmt(result.decrease as number)}</span> 元
+                      <div className="text-sm text-[var(--text-secondary)] mb-3">
+                        每月递减 <span className="text-[var(--text-primary)] font-semibold">{fmt(result.decrease as number)}</span> 元
                       </div>
                     </>
                   )}
                   <div className="grid grid-cols-2 gap-3 text-sm">
-                    <div className="bg-white/5 rounded-lg px-3 py-2">
-                      <div className="text-[#666] text-xs">总利息</div>
-                      <div className="text-white font-semibold">{fmt(result.totalInterest as number)}</div>
+                    <div className="bg-[var(--bg-hover)] rounded-lg px-3 py-2">
+                      <div className="text-[var(--text-faint)] text-xs">总利息</div>
+                      <div className="text-[var(--text-primary)] font-semibold">{fmt(result.totalInterest as number)}</div>
                     </div>
-                    <div className="bg-white/5 rounded-lg px-3 py-2">
-                      <div className="text-[#666] text-xs">总还款</div>
-                      <div className="text-white font-semibold">{fmt(result.totalPay as number)}</div>
+                    <div className="bg-[var(--bg-hover)] rounded-lg px-3 py-2">
+                      <div className="text-[var(--text-faint)] text-xs">总还款</div>
+                      <div className="text-[var(--text-primary)] font-semibold">{fmt(result.totalPay as number)}</div>
                     </div>
                   </div>
                 </>
               ) : (
                 <>
-                  <div className="text-xs text-[#666] mb-1">期末总额</div>
-                  <div className="font-['Syne'] font-bold text-3xl text-white mb-4">
-                    {fmt(result.final as number)} <span className="text-base text-[#a8b2c1]">元</span>
+                  <div className="text-xs text-[var(--text-faint)] mb-1">期末总额</div>
+                  <div className="font-['Syne'] font-bold text-3xl text-[var(--text-primary)] mb-4">
+                    {fmt(result.final as number)} <span className="text-base text-[var(--text-secondary)]">元</span>
                   </div>
                   <div className="grid grid-cols-2 gap-3 text-sm">
-                    <div className="bg-white/5 rounded-lg px-3 py-2">
-                      <div className="text-[#666] text-xs">累计本金</div>
-                      <div className="text-white font-semibold">{fmt(result.totalPrincipal as number)}</div>
+                    <div className="bg-[var(--bg-hover)] rounded-lg px-3 py-2">
+                      <div className="text-[var(--text-faint)] text-xs">累计本金</div>
+                      <div className="text-[var(--text-primary)] font-semibold">{fmt(result.totalPrincipal as number)}</div>
                     </div>
-                    <div className="bg-white/5 rounded-lg px-3 py-2">
-                      <div className="text-[#666] text-xs">累计收益</div>
-                      <div className="text-white font-semibold text-[#6bcb77]">+{fmt(result.totalInterest as number)}</div>
+                    <div className="bg-[var(--bg-hover)] rounded-lg px-3 py-2">
+                      <div className="text-[var(--text-faint)] text-xs">累计收益</div>
+                      <div className="text-[var(--text-primary)] font-semibold text-[#6bcb77]">+{fmt(result.totalInterest as number)}</div>
                     </div>
                   </div>
                 </>
@@ -383,17 +383,17 @@ export default function MortgageCalculator() {
 
           {mode === 'compound' && (
             <div className="glass-card p-5">
-              <h3 className="text-xs text-[#666] mb-3 uppercase tracking-widest">增长曲线（总额 vs 本金）</h3>
+              <h3 className="text-xs text-[var(--text-faint)] mb-3 uppercase tracking-widest">增长曲线（总额 vs 本金）</h3>
               <GrowthChart points={result.points as number[]} totalPrincipal={result.totalPrincipal as number} />
             </div>
           )}
 
           {mode === 'mortgage' && yearly.length > 0 && (
             <div className="glass-card p-5 overflow-x-auto">
-              <h3 className="text-xs text-[#666] mb-3 uppercase tracking-widest">逐年还款（年末剩余本金）</h3>
+              <h3 className="text-xs text-[var(--text-faint)] mb-3 uppercase tracking-widest">逐年还款（年末剩余本金）</h3>
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-[#666] text-xs">
+                  <tr className="text-[var(--text-faint)] text-xs">
                     <th className="text-left py-2">年份</th>
                     <th className="text-right py-2">当年利息</th>
                     <th className="text-right py-2">年末剩余</th>
@@ -401,10 +401,10 @@ export default function MortgageCalculator() {
                 </thead>
                 <tbody>
                   {yearly.map((y) => (
-                    <tr key={y.year} className="border-t border-white/5">
-                      <td className="py-2 text-white">第 {y.year} 年</td>
-                      <td className="py-2 text-right text-[#a8b2c1]">{fmt(y.interest)}</td>
-                      <td className="py-2 text-right text-white">{fmt(y.remain)}</td>
+                    <tr key={y.year} className="border-t border-[var(--border-color)]">
+                      <td className="py-2 text-[var(--text-primary)]">第 {y.year} 年</td>
+                      <td className="py-2 text-right text-[var(--text-secondary)]">{fmt(y.interest)}</td>
+                      <td className="py-2 text-right text-[var(--text-primary)]">{fmt(y.remain)}</td>
                     </tr>
                   ))}
                 </tbody>

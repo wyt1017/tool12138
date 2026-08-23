@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import DynamicIcon from '@/components/DynamicIcon';
+import IconBadge from '@/components/IconBadge';
 import type { Tool } from '@/data/tools';
 import { categories } from '@/data/tools';
 
@@ -44,35 +44,33 @@ export default function ToolCard({ tool, index }: ToolCardProps) {
 
           {/* 图标 & 标题 */}
           <div className="flex items-start gap-4 mb-3">
-            <div
-              className="tool-icon w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{
-                background: `linear-gradient(135deg, ${catBg}, ${catColor}22)`,
-                color: catColor,
-              }}
-            >
-              <DynamicIcon name={tool.icon} size={22} />
-            </div>
-            <h3 className="tool-title font-display font-semibold text-lg text-white pt-1">
+            <IconBadge
+              name={tool.icon}
+              size={22}
+              className="tool-icon w-11 h-11 rounded-xl"
+              catColor={catColor}
+              catBg={catBg}
+            />
+            <h3 className="tool-title font-display font-semibold text-lg text-[var(--text-primary)] pt-1">
               {tool.name}
             </h3>
           </div>
 
           {/* 描述 */}
-          <p className="text-sm text-[#a8b2c1] leading-relaxed line-clamp-2">
+          <p className="text-sm text-[var(--text-secondary)] leading-relaxed line-clamp-2">
             {tool.description}
           </p>
 
           {/* 热门标记 */}
           {tool.hot && (
-            <div className="absolute top-4 right-4 flex items-center gap-1 text-xs text-[#e94560] font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#e94560] animate-pulse" />
+            <div className="absolute top-4 right-4 flex items-center gap-1 text-xs text-danger font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-danger animate-pulse" />
               热门
             </div>
           )}
 
           {/* hover 箭头：颜色跟随分类色 */}
-          <div className="mt-4 flex items-center gap-1 text-xs text-[#555] group-hover:text-[color:var(--cat-color)] opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300">
+          <div className="mt-4 flex items-center gap-1 text-xs text-[var(--text-faint)] group-hover:text-[color:var(--cat-color)] opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300">
             使用工具
             <ArrowRight size={13} />
           </div>

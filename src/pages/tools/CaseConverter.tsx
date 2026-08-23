@@ -80,16 +80,16 @@ export default function CaseConverter() {
           <div className="w-10 h-10 rounded-xl bg-[#ffd369]/15 flex items-center justify-center">
             <Type size={20} className="text-[#ffd369]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">大小写转换</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">大小写转换</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">英文文本多种格式互转：全大写、小写、驼峰、蛇形等</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">英文文本多种格式互转：全大写、小写、驼峰、蛇形等</p>
       </motion.div>
 
       {/* Input Area */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
         <div className="flex items-center justify-between mb-2 ml-1">
-          <label className="text-sm font-medium text-[#a8b2c1]">输入文本</label>
-          <div className="flex items-center gap-4 text-xs text-[#666]">
+          <label className="text-sm font-medium text-[var(--text-secondary)]">输入文本</label>
+          <div className="flex items-center gap-4 text-xs text-[var(--text-faint)]">
             <span><FileText size={12} className="inline mr-1" />{sentenceCount} 句</span>
             <span><Hash size={12} className="inline mr-1" />{wordCount} 词</span>
             <span>{input.length} 字符</span>
@@ -100,7 +100,7 @@ export default function CaseConverter() {
           onChange={(e) => setInput(e.target.value)}
           placeholder="输入要转换的英文文本..."
           aria-label="输入文本"
-          className="tool-area w-full h-[160px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#ffd369]/30 transition-colors placeholder:text-[#333]"
+          className="tool-area w-full h-[160px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#ffd369]/30 transition-colors placeholder:text-[var(--text-faint)]"
         />
       </motion.div>
 
@@ -123,8 +123,8 @@ export default function CaseConverter() {
                   <Copy size={11} className="inline mr-1" /> 复制
                 </button>
               </div>
-              <p className="font-mono text-sm text-white break-all leading-relaxed">
-                {format.value || <span className="text-[#444]">-</span>}
+              <p className="font-mono text-sm text-[var(--text-primary)] break-all leading-relaxed">
+                {format.value || <span className="text-[var(--text-faint)]">-</span>}
               </p>
             </div>
           </motion.div>
@@ -138,8 +138,8 @@ export default function CaseConverter() {
           transition={{ delay: 0.2 }}
           className="glass-card p-8 mt-6 text-center"
         >
-          <Type size={32} className="mx-auto text-[#333] mb-3" />
-          <p className="text-sm text-[#555]">在上方输入框中输入英文文本，将自动生成7种格式的转换结果</p>
+          <Type size={32} className="mx-auto text-[var(--text-faint)] mb-3" />
+          <p className="text-sm text-[var(--text-faint)]">在上方输入框中输入英文文本，将自动生成7种格式的转换结果</p>
         </motion.div>
       )}
     </div>

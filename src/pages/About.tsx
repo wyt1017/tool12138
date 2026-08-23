@@ -33,7 +33,7 @@ export default function About() {
           <Zap size={28} className="text-white" />
         </div>
         <h1 className="font-['Syne'] font-extrabold text-4xl sm:text-5xl gradient-text mb-4">关于 瓜崎工具</h1>
-        <p className="text-[#a8b2c1] text-lg max-w-2xl mx-auto leading-relaxed">
+        <p className="text-[var(--text-secondary)] text-lg max-w-2xl mx-auto leading-relaxed">
           一个面向开发者和创作者的免费在线工具集合，致力于提供简单、快速、安全的实用工具。
         </p>
       </motion.div>
@@ -57,8 +57,8 @@ export default function About() {
               >
                 <Icon size={22} />
               </div>
-              <h3 className="font-['Syne'] font-semibold text-lg text-white mb-2">{feat.title}</h3>
-              <p className="text-sm text-[#a8b2c1] leading-relaxed">{feat.desc}</p>
+              <h3 className="font-['Syne'] font-semibold text-lg text-[var(--text-primary)] mb-2">{feat.title}</h3>
+              <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{feat.desc}</p>
             </motion.div>
           );
         })}
@@ -71,7 +71,7 @@ export default function About() {
         viewport={{ once: true }}
         className="glass-card p-8 mb-12"
       >
-        <h2 className="font-['Syne'] font-bold text-xl text-white mb-6">已上线工具</h2>
+        <h2 className="font-['Syne'] font-bold text-xl text-[var(--text-primary)] mb-6">已上线工具</h2>
         <div className="space-y-3">
           {tools.map((tool) => {
             const cat = categories.find((c) => c.key === tool.category);
@@ -79,7 +79,7 @@ export default function About() {
               <Link
                 key={tool.id}
                 to={tool.path}
-                className="flex items-center gap-4 p-4 rounded-xl hover:bg-white/[0.04] transition-colors group"
+                className="flex items-center gap-4 p-4 rounded-xl hover:bg-[var(--bg-hover)] transition-colors group"
               >
                 <div
                   className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
@@ -88,8 +88,8 @@ export default function About() {
                   <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-medium text-white group-hover:text-[#00d9ff] transition-colors">{tool.name}</div>
-                  <div className="text-xs text-[#666] truncate">{tool.description}</div>
+                  <div className="font-medium text-[var(--text-primary)] group-hover:text-[#00d9ff] transition-colors">{tool.name}</div>
+                  <div className="text-xs text-[var(--text-faint)] truncate">{tool.description}</div>
                 </div>
                 <span
                   className="text-xs px-2 py-1 rounded-full flex-shrink-0"
@@ -110,8 +110,8 @@ export default function About() {
         viewport={{ once: true }}
         className="text-center py-12"
       >
-        <Heart size={18} className="inline text-[#e94560] mr-2" />
-        <p className="text-[#666] text-sm inline">
+        <Heart size={18} className="inline text-danger mr-2" />
+        <p className="text-[var(--text-faint)] text-sm inline">
           如果觉得有用，欢迎分享给身边的朋友
         </p>
         <div className="mt-6">

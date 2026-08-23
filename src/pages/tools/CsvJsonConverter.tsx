@@ -148,7 +148,7 @@ export default function CsvJsonConverter() {
           <div style={{ width: 40, height: 40, borderRadius: 12, background: `${color}24`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Table size={20} style={{ color }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">CSV/JSON互转</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">CSV/JSON互转</h1>
         </div>
         <p style={{ color: '#a8b2c1', marginLeft: 52 }}>CSV文本与JSON数组互相转换，支持带表头解析和自定义分隔符</p>
       </motion.div>
@@ -189,12 +189,12 @@ export default function CsvJsonConverter() {
             </button>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-[#666]">分隔符：</span>
+            <span className="text-xs text-[var(--text-faint)]">分隔符：</span>
             <select
               value={delimiter}
               onChange={(e) => setDelimiter(e.target.value)}
               aria-label="分隔符"
-              className="bg-white/5 border border-white/10 rounded px-2 py-1 text-xs text-white"
+              className="bg-[var(--bg-hover)] border border-[var(--border-color)] rounded px-2 py-1 text-xs text-[var(--text-primary)]"
             >
               <option value=",">逗号 (,)</option>
               <option value=";">分号 (;)</option>
@@ -202,7 +202,7 @@ export default function CsvJsonConverter() {
               <option value="|">竖线 (|)</option>
             </select>
           </div>
-          <label className="flex items-center gap-2 cursor-pointer text-xs text-[#a8b2c1]">
+          <label className="flex items-center gap-2 cursor-pointer text-xs text-[var(--text-secondary)]">
             <input
               type="checkbox"
               checked={hasHeader}
@@ -219,7 +219,7 @@ export default function CsvJsonConverter() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
-          <label className="text-sm font-medium text-[#a8b2c1] mb-2 ml-1 block">
+          <label className="text-sm font-medium text-[var(--text-secondary)] mb-2 ml-1 block">
             {mode === 'csv2json' ? 'CSV输入' : 'JSON输入'}
           </label>
           <textarea
@@ -227,14 +227,14 @@ export default function CsvJsonConverter() {
             onChange={(e) => setInput(e.target.value)}
             placeholder={mode === 'csv2json' ? '粘贴CSV内容...' : '粘贴JSON数组...'}
             aria-label={mode === 'csv2json' ? 'CSV输入' : 'JSON输入'}
-            className="tool-area w-full h-[300px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#6bcb77]/30 transition-colors placeholder:text-[#333] font-mono"
+            className="tool-area w-full h-[300px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#6bcb77]/30 transition-colors placeholder:text-[var(--text-faint)] font-mono"
           />
         </motion.div>
 
         {/* Output */}
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
           <div className="flex items-center justify-between mb-2 ml-1">
-            <label className="text-sm font-medium text-[#a8b2c1]">
+            <label className="text-sm font-medium text-[var(--text-secondary)]">
               {mode === 'csv2json' ? 'JSON输出' : 'CSV输出'}
             </label>
             {output && (
@@ -248,7 +248,7 @@ export default function CsvJsonConverter() {
             value={output}
             placeholder="结果将显示在这里..."
             aria-label="输出结果"
-            className="tool-area w-full h-[300px] p-5 text-sm leading-relaxed resize-none outline-none text-[#a8b2c1] placeholder:text-[#333] font-mono"
+            className="tool-area w-full h-[300px] p-5 text-sm leading-relaxed resize-none outline-none text-[var(--text-secondary)] placeholder:text-[var(--text-faint)] font-mono"
           />
         </motion.div>
       </div>
@@ -256,7 +256,7 @@ export default function CsvJsonConverter() {
       {/* Error */}
       {error && (
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-4 mt-6 border border-red-500/30">
-          <span className="text-red-400 text-sm">{error}</span>
+          <span className="text-[var(--danger)] text-sm">{error}</span>
         </motion.div>
       )}
 

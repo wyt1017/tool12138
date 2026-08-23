@@ -67,7 +67,7 @@ export default function QrCodeDecoder() {
           <div style={{ width: 40, height: 40, borderRadius: 12, background: `${color}24`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <QrCode size={20} style={{ color }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">二维码解码器</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">二维码解码器</h1>
         </div>
         <p style={{ color: '#a8b2c1', marginLeft: 52 }}>上传二维码图片，自动解析并显示其中的文本、链接或联系信息</p>
       </motion.div>
@@ -75,10 +75,10 @@ export default function QrCodeDecoder() {
       {/* Upload */}
       {!image && (
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
-          <label className="glass-card p-12 flex flex-col items-center justify-center cursor-pointer hover:bg-white/5 transition-colors">
-            <Upload size={48} className="text-[#666] mb-4" />
-            <span className="text-[#a8b2c1] mb-2">点击上传二维码图片</span>
-            <span className="text-xs text-[#666]">支持 JPG、PNG、GIF 等格式</span>
+          <label className="glass-card p-12 flex flex-col items-center justify-center cursor-pointer hover:bg-[var(--bg-hover)] transition-colors">
+            <Upload size={48} className="text-[var(--text-faint)] mb-4" />
+            <span className="text-[var(--text-secondary)] mb-2">点击上传二维码图片</span>
+            <span className="text-xs text-[var(--text-faint)]">支持 JPG、PNG、GIF 等格式</span>
             <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" aria-label="上传二维码图片" />
           </label>
         </motion.div>
@@ -91,7 +91,7 @@ export default function QrCodeDecoder() {
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
             <div className="glass-card p-4">
               <div className="flex items-center justify-between mb-3">
-                <label className="text-sm font-medium text-[#a8b2c1]">上传的图片</label>
+                <label className="text-sm font-medium text-[var(--text-secondary)]">上传的图片</label>
                 <label className="btn-secondary !py-1.5 !px-3 text-xs cursor-pointer">
                   <Upload size={13} className="inline mr-1" /> 更换图片
                   <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" aria-label="更换图片" />
@@ -107,17 +107,17 @@ export default function QrCodeDecoder() {
           {/* Decoded Result */}
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
             <div className="glass-card p-6 h-full">
-              <h2 className="text-lg font-semibold text-white mb-4">解码结果</h2>
+              <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">解码结果</h2>
 
               {error && (
-                <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-sm text-red-400">
+                <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-sm text-[var(--danger)]">
                   {error}
                 </div>
               )}
 
               {decoded && (
                 <div className="space-y-4">
-                  <div className="bg-white/5 rounded-lg p-4 font-mono text-sm text-[#a8b2c1] break-all">
+                  <div className="bg-[var(--bg-hover)] rounded-lg p-4 font-mono text-sm text-[var(--text-secondary)] break-all">
                     {decoded}
                   </div>
                   <button onClick={copyDecoded} className="btn-primary w-full">
@@ -127,7 +127,7 @@ export default function QrCodeDecoder() {
               )}
 
               {!decoded && !error && (
-                <div className="text-[#666] text-sm">正在解码...</div>
+                <div className="text-[var(--text-faint)] text-sm">正在解码...</div>
               )}
             </div>
           </motion.div>

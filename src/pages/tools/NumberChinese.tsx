@@ -186,9 +186,9 @@ export default function NumberChinese() {
           <div className="w-10 h-10 rounded-xl bg-[#fb923c]/15 flex items-center justify-center">
             <Languages size={20} className="text-[#fb923c]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">数字转中文大写</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">数字转中文大写</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">将阿拉伯数字转换为中文大写形式，支持普通、金额大写和年度格式</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">将阿拉伯数字转换为中文大写形式，支持普通、金额大写和年度格式</p>
       </motion.div>
 
       <div className="space-y-6">
@@ -196,20 +196,20 @@ export default function NumberChinese() {
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
           <div className="glass-card p-6 space-y-5">
             <div>
-              <label className="text-sm font-medium text-[#a8b2c1] block mb-2 ml-1">输入数字</label>
+              <label className="text-sm font-medium text-[var(--text-secondary)] block mb-2 ml-1">输入数字</label>
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="请输入数字，如：1234 或 2026.50"
                 aria-label="输入数字"
-                className="tool-area w-full px-4 py-3 text-lg text-white outline-none focus:border-[#fb923c]/30 placeholder:text-[#333]"
+                className="tool-area w-full px-4 py-3 text-lg text-[var(--text-primary)] outline-none focus:border-[#fb923c]/30 placeholder:text-[var(--text-faint)]"
               />
             </div>
 
             {/* Mode Selection */}
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs text-[#555] mr-1">模式:</span>
+              <span className="text-xs text-[var(--text-faint)] mr-1">模式:</span>
               {([
                 { key: 'normal' as Mode, label: '普通中文' },
                 { key: 'financial' as Mode, label: '金额大写' },
@@ -219,7 +219,7 @@ export default function NumberChinese() {
                   key={m.key}
                   onClick={() => setMode(m.key)}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                    mode === m.key ? 'bg-[#fb923c]/15 text-[#fb923c]' : 'bg-white/5 text-[#666]'
+                    mode === m.key ? 'bg-[#fb923c]/15 text-[#fb923c]' : 'bg-[var(--bg-hover)] text-[var(--text-faint)]'
                   }`}
                 >
                   {m.label}
@@ -228,13 +228,13 @@ export default function NumberChinese() {
             </div>
 
             {/* Quick Examples */}
-            <div className="flex items-center gap-2 flex-wrap pt-2 border-t border-white/5">
-              <span className="text-xs text-[#555] mr-1">示例:</span>
+            <div className="flex items-center gap-2 flex-wrap pt-2 border-t border-[var(--border-color)]">
+              <span className="text-xs text-[var(--text-faint)] mr-1">示例:</span>
               {EXAMPLES.map((ex) => (
                 <button
                   key={ex.label}
                   onClick={() => setInput(ex.value)}
-                  className="px-3 py-1.5 rounded-lg text-xs font-mono bg-white/5 text-[#a8b2c1] hover:bg-white/10 hover:text-white transition-all"
+                  className="px-3 py-1.5 rounded-lg text-xs font-mono bg-[var(--bg-hover)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)] transition-all"
                 >
                   {ex.label}
                 </button>
@@ -246,7 +246,7 @@ export default function NumberChinese() {
         {/* Result Display */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
           <div className="glass-card p-8 text-center">
-            <p className="text-xs text-[#555] uppercase tracking-widest mb-3">转换结果</p>
+            <p className="text-xs text-[var(--text-faint)] uppercase tracking-widest mb-3">转换结果</p>
             <p className="text-3xl sm:text-4xl font-['Syne'] font-bold text-[#fb923c] leading-relaxed break-all min-h-[3rem]">
               {result || '—'}
             </p>
@@ -265,14 +265,14 @@ export default function NumberChinese() {
         {breakdown.length > 0 && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
             <div className="glass-card p-6">
-              <h3 className="text-sm font-semibold text-[#a8b2c1] mb-4">数字拆解说明</h3>
+              <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-4">数字拆解说明</h3>
               <div className="flex flex-wrap gap-2">
                 {breakdown.map((item, i) => (
-                  <div key={i} className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/5">
-                    <span className="font-mono text-base text-white">{item.digit}</span>
-                    <span className="text-[#555] text-xs">→</span>
+                  <div key={i} className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[var(--bg-hover)] border border-[var(--border-color)]">
+                    <span className="font-mono text-base text-[var(--text-primary)]">{item.digit}</span>
+                    <span className="text-[var(--text-faint)] text-xs">→</span>
                     <span className="text-[#fb923c] font-medium">{item.chinese}</span>
-                    {item.unit && <span className="text-[10px] text-[#555]">{item.unit}</span>}
+                    {item.unit && <span className="text-[10px] text-[var(--text-faint)]">{item.unit}</span>}
                   </div>
                 ))}
               </div>

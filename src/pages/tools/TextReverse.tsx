@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useRef } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeftRight, Copy, RotateCcw, Shuffle } from 'lucide-react';
 
@@ -25,7 +25,7 @@ export default function TextReverse() {
   const [input, setInput] = useState('');
   const [activeMode, setActiveMode] = useState<ReverseMode>('full');
   const [copied, setCopied] = useState(false);
-  const shuffleRef = useRef(0);
+  const [shuffleVersion, setShuffleVersion] = useState(0);
 
   const result = useMemo(() => {
     if (!input) return '';
@@ -50,7 +50,7 @@ export default function TextReverse() {
       default:
         return input;
     }
-  }, [input, activeMode]);
+  }, [input, activeMode, shuffleVersion]);
 
   const originalCount = useMemo(() => input.length, [input]);
   const resultCount = useMemo(() => result.length, [result]);
@@ -70,9 +70,9 @@ export default function TextReverse() {
           <div className="w-10 h-10 rounded-xl bg-[#38bdf8]/15 flex items-center justify-center">
             <ArrowLeftRight size={20} className="text-[#38bdf8]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">文本反转排序</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">文本反转排序</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">多种文本反转和排序模式，支持字符、单词、行级别操作</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">多种文本反转和排序模式，支持字符、单词、行级别操作</p>
       </motion.div>
 
       {/* Mode Selector */}
@@ -84,7 +84,7 @@ export default function TextReverse() {
             className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2 ${
               activeMode === mode.key
                 ? 'bg-[#38bdf8]/15 text-[#38bdf8] border border-[#38bdf8]/30'
-                : 'bg-white/5 text-[#666] border border-transparent hover:bg-white/10'
+                : 'bg-[var(--bg-hover)] text-[var(--text-faint)] border border-transparent hover:bg-[var(--bg-secondary)]'
             }`}
           >
             <span>{mode.icon}</span>
@@ -100,7 +100,7 @@ export default function TextReverse() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-4"
       >
-        <p className="text-xs text-[#666] ml-1">
+        <p className="text-xs text-[var(--text-faint)] ml-1">
           当前模式：<span className="text-[#38bdf8]">{MODES.find((m) => m.key === activeMode)?.label}</span> —{' '}
           {MODES.find((m) => m.key === activeMode)?.desc}
         </p>
@@ -110,15 +110,15 @@ export default function TextReverse() {
         {/* Input Area */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
           <div className="flex items-center justify-between mb-2 ml-1">
-            <label className="text-sm font-medium text-[#a8b2c1]">原始文本</label>
-            <span className="text-xs text-[#555]">{originalCount} 字符</span>
+            <label className="text-sm font-medium text-[var(--text-secondary)]">原始文本</label>
+            <span className="text-xs text-[var(--text-faint)]">{originalCount} 字符</span>
           </div>
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="输入要处理的文本..."
             aria-label="原始文本"
-            className="tool-area w-full h-[360px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#38bdf8]/30 transition-colors placeholder:text-[#333]"
+            className="tool-area w-full h-[360px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#38bdf8]/30 transition-colors placeholder:text-[var(--text-faint)]"
           />
         </motion.div>
 
@@ -127,11 +127,11 @@ export default function TextReverse() {
           <div className="flex items-center justify-between mb-2 ml-1">
             <label className="text-sm font-medium text-[#38bdf8]">处理结果</label>
             <div className="flex items-center gap-2">
-              <span className="text-xs text-[#555]">{resultCount} 字符</span>
+              <span className="text-xs text-[var(--text-faint)]">{resultCount} 字符</span>
               {result && (
                 <>
                   {activeMode === 'shuffle' && (
-            <button onClick={() => { shuffleRef.current++; }} className="btn-secondary !py-1 !px-2 text-xs">
+            <button onClick={() => { setShuffleVersion((v) => v + 1); }} className="btn-secondary !py-1 !px-2 text-xs">
                       <Shuffle size={12} className="inline" />
                     </button>
                   )}
@@ -144,9 +144,9 @@ export default function TextReverse() {
           </div>
           <div className={`tool-area w-full h-[360px] overflow-y-auto p-5 text-sm leading-relaxed ${!result ? '' : ''}`}>
             {result ? (
-              <pre className="whitespace-pre-wrap font-sans text-[#f0f0f5]">{result}</pre>
+              <pre className="whitespace-pre-wrap font-sans text-[var(--text-primary)]">{result}</pre>
             ) : (
-              <span className="text-[#333]">处理结果将显示在这里...</span>
+              <span className="text-[var(--text-faint)]">处理结果将显示在这里...</span>
             )}
           </div>
         </motion.div>
@@ -156,24 +156,24 @@ export default function TextReverse() {
       {input && result && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="mt-4 glass-card p-4 flex items-center justify-around">
           <div className="text-center">
-            <p className="text-xs text-[#666]">原始</p>
-            <p className="text-lg font-bold text-white font-mono">{originalCount}</p>
-            <p className="text-[10px] text-[#555]">字符</p>
+            <p className="text-xs text-[var(--text-faint)]">原始</p>
+            <p className="text-lg font-bold text-[var(--text-primary)] font-mono">{originalCount}</p>
+            <p className="text-[10px] text-[var(--text-faint)]">字符</p>
           </div>
-          <div className="w-px h-10 bg-white/10" />
+          <div className="w-px h-10 bg-[var(--bg-secondary)]" />
           <div className="text-center">
-            <p className="text-xs text-[#666]">处理后</p>
+            <p className="text-xs text-[var(--text-faint)]">处理后</p>
             <p className="text-lg font-bold text-[#38bdf8] font-mono">{resultCount}</p>
-            <p className="text-[10px] text-[#555]">字符</p>
+            <p className="text-[10px] text-[var(--text-faint)]">字符</p>
           </div>
-          <div className="w-px h-10 bg-white/10" />
+          <div className="w-px h-10 bg-[var(--bg-secondary)]" />
           <div className="text-center">
-            <p className="text-xs text-[#666]">变化</p>
+            <p className="text-xs text-[var(--text-faint)]">变化</p>
             <p className={`text-lg font-bold font-mono ${resultCount !== originalCount ? 'text-[#fb923c]' : 'text-[#6bcb77]'}`}>
               {resultCount === originalCount ? '=' : resultCount > originalCount ? '+' : '-'}
               {Math.abs(resultCount - originalCount)}
             </p>
-            <p className="text-[10px] text-[#555]">字符</p>
+            <p className="text-[10px] text-[var(--text-faint)]">字符</p>
           </div>
         </motion.div>
       )}

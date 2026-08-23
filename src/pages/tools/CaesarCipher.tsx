@@ -55,9 +55,9 @@ export default function CaesarCipher() {
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${COLOR}26` }}>
             <Lock size={20} style={{ color: COLOR }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">凯撒密码/ROT13</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">凯撒密码/ROT13</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">简单移位加密，支持自定义偏移量或ROT13</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">简单移位加密，支持自定义偏移量或ROT13</p>
       </motion.div>
 
       {/* Mode Toggle */}
@@ -65,7 +65,7 @@ export default function CaesarCipher() {
         <button
           onClick={() => setMode('encrypt')}
           className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-            mode === 'encrypt' ? `bg-[#a78bfa]/15 text-[#a78bfa]` : 'bg-white/5 text-[#666]'
+            mode === 'encrypt' ? `bg-[#a78bfa]/15 text-[#a78bfa]` : 'bg-[var(--bg-hover)] text-[var(--text-faint)]'
           }`}
         >
           加密
@@ -73,7 +73,7 @@ export default function CaesarCipher() {
         <button
           onClick={() => setMode('decrypt')}
           className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-            mode === 'decrypt' ? `bg-[#00d9ff]/15 text-[#00d9ff]` : 'bg-white/5 text-[#666]'
+            mode === 'decrypt' ? `bg-[#00d9ff]/15 text-[#00d9ff]` : 'bg-[var(--bg-hover)] text-[var(--text-faint)]'
           }`}
         >
           解密
@@ -83,7 +83,7 @@ export default function CaesarCipher() {
       {/* Offset Control */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="glass-card p-6 mb-6">
         <div className="flex items-center justify-between mb-3">
-          <label className="text-sm font-medium text-[#a8b2c1]">偏移量</label>
+          <label className="text-sm font-medium text-[var(--text-secondary)]">偏移量</label>
           <div className="flex items-center gap-3">
             <span className="text-lg font-bold font-mono px-3 py-1 rounded-lg" style={{ color: COLOR, backgroundColor: `${COLOR}1A` }}>{offset}</span>
             <button onClick={setRot13} className="btn-secondary !py-1.5 !px-3 text-xs">
@@ -98,13 +98,13 @@ export default function CaesarCipher() {
           value={offset}
           onChange={(e) => setOffset(Number(e.target.value))}
           aria-label="偏移量"
-          className="w-full h-2 bg-white/10 rounded-full appearance-none cursor-pointer accent-[#a78bfa]"
+          className="w-full h-2 bg-[var(--bg-secondary)] rounded-full appearance-none cursor-pointer accent-[#a78bfa]"
         />
-        <div className="flex justify-between text-xs text-[#666] mt-1">
+        <div className="flex justify-between text-xs text-[var(--text-faint)] mt-1">
           <span>1</span>
           <span>25</span>
         </div>
-        <p className="text-xs text-[#666] mt-3">
+        <p className="text-xs text-[var(--text-faint)] mt-3">
           ROT13（偏移量13）是凯撒密码的特殊形式，加密和解密使用相同的偏移量，对字母表循环移位。
         </p>
       </motion.div>
@@ -113,20 +113,20 @@ export default function CaesarCipher() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
-          <label className="text-sm font-medium text-[#a8b2c1] mb-2 ml-1 block">输入文本</label>
+          <label className="text-sm font-medium text-[var(--text-secondary)] mb-2 ml-1 block">输入文本</label>
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="输入要加密或解密的文本..."
             aria-label="输入文本"
-            className="tool-area w-full h-[280px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#a78bfa]/30 transition-colors placeholder:text-[#333]"
+            className="tool-area w-full h-[280px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#a78bfa]/30 transition-colors placeholder:text-[var(--text-faint)]"
           />
         </motion.div>
 
         {/* Output */}
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
           <div className="flex items-center justify-between mb-2 ml-1">
-            <label className="text-sm font-medium text-[#a8b2c1]">输出结果</label>
+            <label className="text-sm font-medium text-[var(--text-secondary)]">输出结果</label>
             {output && (
               <button onClick={() => navigator.clipboard.writeText(output)} className="btn-secondary !py-1.5 !px-3 text-xs">
                 <Copy size={13} className="inline mr-1" /> 复制
@@ -138,7 +138,7 @@ export default function CaesarCipher() {
             value={output}
             placeholder="结果将显示在这里..."
             aria-label="输出结果"
-            className="tool-area w-full h-[280px] p-5 text-sm leading-relaxed resize-none outline-none text-[#a8b2c1] placeholder:text-[#333]"
+            className="tool-area w-full h-[280px] p-5 text-sm leading-relaxed resize-none outline-none text-[var(--text-secondary)] placeholder:text-[var(--text-faint)]"
           />
         </motion.div>
       </div>

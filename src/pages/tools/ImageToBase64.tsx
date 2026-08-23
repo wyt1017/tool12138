@@ -92,17 +92,17 @@ export default function ImageToBase64() {
           <div className="w-10 h-10 rounded-xl bg-[#f472b6]/15 flex items-center justify-center">
             <ImageUp size={20} className="text-[#f472b6]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">图片转Base64</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">图片转Base64</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">将图片转换为 Base64 编码字符串，支持 JPG/PNG/GIF/WebP</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">将图片转换为 Base64 编码字符串，支持 JPG/PNG/GIF/WebP</p>
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Upload Area */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
-          <label className="block text-sm font-medium text-[#a8b2c1] mb-2 ml-1">上传图片</label>
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2 ml-1">上传图片</label>
           {error && (
-            <div className="mb-3 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-sm text-red-400">
+            <div className="mb-3 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-sm text-[var(--danger)]">
               {error}
             </div>
           )}
@@ -116,11 +116,11 @@ export default function ImageToBase64() {
                 isDragging ? 'border-[#f472b6]/50 bg-[#f472b6]/5' : ''
               }`}
             >
-              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 ${isDragging ? 'bg-[#f472b6]/20' : 'bg-white/5'}`}>
-                <FileImage size={32} className={`${isDragging ? 'text-[#f472b6]' : 'text-[#555]'}`} />
+              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 ${isDragging ? 'bg-[#f472b6]/20' : 'bg-[var(--bg-hover)]'}`}>
+                <FileImage size={32} className={`${isDragging ? 'text-[#f472b6]' : 'text-[var(--text-faint)]'}`} />
               </div>
-              <p className="text-sm text-[#a8b2c1] mb-1">拖拽图片到此处，或点击上传</p>
-              <p className="text-xs text-[#555]">支持 JPG / PNG / GIF / WebP</p>
+              <p className="text-sm text-[var(--text-secondary)] mb-1">拖拽图片到此处，或点击上传</p>
+              <p className="text-xs text-[var(--text-faint)]">支持 JPG / PNG / GIF / WebP</p>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -136,7 +136,7 @@ export default function ImageToBase64() {
             </div>
           )}
           {imageFile && (
-            <div className="mt-3 flex items-center gap-4 text-xs text-[#888] ml-1">
+            <div className="mt-3 flex items-center gap-4 text-xs text-[var(--text-faint)] ml-1">
               <span>文件名: {imageFile.name}</span>
               <span>大小: {formatSize(imageFile.size)}</span>
             </div>
@@ -146,7 +146,7 @@ export default function ImageToBase64() {
         {/* Output Area */}
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
           <div className="flex items-center justify-between mb-2 ml-1">
-            <label className="text-sm font-medium text-[#a8b2c1]">Base64 输出</label>
+            <label className="text-sm font-medium text-[var(--text-secondary)]">Base64 输出</label>
             {base64Output && (
               <button onClick={() => navigator.clipboard.writeText(displayOutput)} className="btn-secondary !py-1.5 !px-3 text-xs">
                 <Copy size={13} className="inline mr-1" /> 复制
@@ -158,10 +158,10 @@ export default function ImageToBase64() {
             value={displayOutput}
             placeholder="上传图片后，Base64 字符串将显示在这里..."
             aria-label="Base64输出"
-            className="tool-area w-full h-[280px] p-5 text-sm leading-relaxed resize-none outline-none text-[#a8b2c1] font-mono placeholder:text-[#333]"
+            className="tool-area w-full h-[280px] p-5 text-sm leading-relaxed resize-none outline-none text-[var(--text-secondary)] font-mono placeholder:text-[var(--text-faint)]"
           />
           {base64Output && (
-            <div className="mt-3 flex items-center gap-4 text-xs text-[#888] ml-1">
+            <div className="mt-3 flex items-center gap-4 text-xs text-[var(--text-faint)] ml-1">
               <span>长度: {displayOutput.length.toLocaleString()} 字符</span>
               {imageFile && <span>原始大小: {formatSize(imageFile.size)}</span>}
             </div>
@@ -181,7 +181,7 @@ export default function ImageToBase64() {
           <button
             onClick={() => setFormatMode('full')}
             className={`px-4 py-2 rounded-full text-xs font-medium transition-all ${
-              formatMode === 'full' ? 'bg-[#f472b6]/15 text-[#f472b6]' : 'bg-white/5 text-[#666]'
+              formatMode === 'full' ? 'bg-[#f472b6]/15 text-[#f472b6]' : 'bg-[var(--bg-hover)] text-[var(--text-faint)]'
             }`}
           >
             完整 Data URL
@@ -189,7 +189,7 @@ export default function ImageToBase64() {
           <button
             onClick={() => setFormatMode('pure')}
             className={`px-4 py-2 rounded-full text-xs font-medium transition-all ${
-              formatMode === 'pure' ? 'bg-[#f472b6]/15 text-[#f472b6]' : 'bg-white/5 text-[#666]'
+              formatMode === 'pure' ? 'bg-[#f472b6]/15 text-[#f472b6]' : 'bg-[var(--bg-hover)] text-[var(--text-faint)]'
             }`}
           >
             纯 Base64

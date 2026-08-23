@@ -74,7 +74,7 @@ export default function TextDuplicateStats() {
           <div style={{ width: 40, height: 40, borderRadius: 12, background: `${color}24`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <BarChart3 size={20} style={{ color }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">文本重复内容统计</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">文本重复内容统计</h1>
         </div>
         <p style={{ color: '#a8b2c1', marginLeft: 52 }}>分析文本中重复的行或单词，统计每个重复项的出现次数并排序</p>
       </motion.div>
@@ -149,7 +149,7 @@ export default function TextDuplicateStats() {
           onChange={(e) => setInput(e.target.value)}
           placeholder="输入或粘贴要分析的文本..."
           aria-label="输入文本"
-          className="tool-area w-full h-[200px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#e94560]/30 transition-colors placeholder:text-[#333]"
+          className="tool-area w-full h-[200px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#e94560]/30 transition-colors placeholder:text-[var(--text-faint)]"
         />
       </motion.div>
 
@@ -166,7 +166,7 @@ export default function TextDuplicateStats() {
           </div>
           <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: 12, padding: 16, textAlign: 'center' }}>
             <div style={{ fontSize: 11, color: '#666', marginBottom: 4 }}>最高重复</div>
-            <div style={{ fontSize: 28, fontWeight: 700, fontFamily: 'monospace', color: pink }}>{stats[0]?.count || 0}</div>
+            <div style={{ fontSize: 28, fontWeight: 700, fontFamily: 'monospace', color: pink }}>{maxCount || 0}</div>
           </div>
         </motion.div>
       )}

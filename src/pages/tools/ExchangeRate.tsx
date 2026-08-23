@@ -75,18 +75,18 @@ export default function ExchangeRate() {
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${color}24` }}>
             <TrendingUp size={20} style={{ color }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">汇率看板</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">汇率看板</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">实时多币种汇率换算，数据来自 Frankfurter（欧洲央行参考汇率）</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">实时多币种汇率换算，数据来自 Frankfurter（欧洲央行参考汇率）</p>
       </motion.div>
 
       {/* Controls */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="glass-card p-5 mb-6">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
           <div>
-            <label className="text-xs text-[#666] block mb-2">基准币种</label>
+            <label className="text-xs text-[var(--text-faint)] block mb-2">基准币种</label>
             <select value={base} onChange={(e) => setBase(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white outline-none focus:border-[#00d9ff]/30"
+              className="w-full bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-2.5 text-[var(--text-primary)] outline-none focus:border-[#00d9ff]/30"
               style={{ backgroundColor: '#1a1a2e' }}>
               {CURRENCIES.map((c) => (
                 <option key={c.code} value={c.code} style={{ backgroundColor: '#1a1a2e', color: '#fff' }}>
@@ -96,10 +96,10 @@ export default function ExchangeRate() {
             </select>
           </div>
           <div>
-            <label className="text-xs text-[#666] block mb-2">金额</label>
+            <label className="text-xs text-[var(--text-faint)] block mb-2">金额</label>
             <input type="number" value={amount} min={0}
               onChange={(e) => setAmount(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white outline-none focus:border-[#00d9ff]/30" />
+              className="w-full bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-2.5 text-[var(--text-primary)] outline-none focus:border-[#00d9ff]/30" />
           </div>
           <button onClick={() => fetchRates()} disabled={loading}
             className="btn-secondary flex items-center justify-center gap-2 !py-2.5 disabled:opacity-40">
@@ -107,7 +107,7 @@ export default function ExchangeRate() {
           </button>
         </div>
         {date && !error && (
-          <div className="text-xs text-[#666] mt-3">汇率日期：{date} · 1 {base} = 基准</div>
+          <div className="text-xs text-[var(--text-faint)] mt-3">汇率日期：{date} · 1 {base} = 基准</div>
         )}
       </motion.div>
 
@@ -122,12 +122,12 @@ export default function ExchangeRate() {
 
       {/* Table */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-card p-6">
-        <div className="flex items-center gap-2 mb-4 text-sm text-[#a8b2c1]">
+        <div className="flex items-center gap-2 mb-4 text-sm text-[var(--text-secondary)]">
           <ArrowLeftRight size={15} style={{ color }} />
           {amt} {baseInfo?.flag} {base} 可兑换
         </div>
         {loading && !rates ? (
-          <div className="text-center text-[#666] py-10">加载中...</div>
+          <div className="text-center text-[var(--text-faint)] py-10">加载中...</div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {DISPLAY.filter((c) => c !== base).map((code) => {
@@ -135,16 +135,16 @@ export default function ExchangeRate() {
               const rate = rates?.[code] ?? 0;
               const value = amt * rate;
               return (
-                <div key={code} className="bg-white/5 rounded-xl p-4">
+                <div key={code} className="bg-[var(--bg-hover)] rounded-xl p-4">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-lg">{info.flag}</span>
-                    <span className="text-sm text-white font-medium">{code}</span>
-                    <span className="text-xs text-[#666]">{info.name}</span>
+                    <span className="text-sm text-[var(--text-primary)] font-medium">{code}</span>
+                    <span className="text-xs text-[var(--text-faint)]">{info.name}</span>
                   </div>
-                  <div className="font-['Syne'] font-bold text-xl text-white">
+                  <div className="font-['Syne'] font-bold text-xl text-[var(--text-primary)]">
                     {value.toLocaleString('zh-CN', { maximumFractionDigits: 2 })}
                   </div>
-                  <div className="text-xs text-[#555]">1 {base} = {rate.toLocaleString('zh-CN', { maximumFractionDigits: 4 })} {code}</div>
+                  <div className="text-xs text-[var(--text-faint)]">1 {base} = {rate.toLocaleString('zh-CN', { maximumFractionDigits: 4 })} {code}</div>
                 </div>
               );
             })}
@@ -152,7 +152,7 @@ export default function ExchangeRate() {
         )}
       </motion.div>
 
-      <p className="text-xs text-[#555] mt-6 text-center">
+      <p className="text-xs text-[var(--text-faint)] mt-6 text-center">
         汇率为欧洲央行每日参考价，仅供参考，非实时交易价。浏览器直连公开 API，无需后端。
       </p>
     </div>

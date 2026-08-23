@@ -115,9 +115,9 @@ export default function WorldClock() {
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${color}24` }}>
             <Globe size={20} style={{ color }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">世界时钟</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">世界时钟</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">实时显示全球城市时间，支持添加删除城市，时差一目了然</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">实时显示全球城市时间，支持添加删除城市，时差一目了然</p>
       </motion.div>
 
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="mb-6">
@@ -129,22 +129,22 @@ export default function WorldClock() {
             <Plus size={16} /> 添加城市
           </button>
           {searchOpen && (
-            <div className="absolute top-full left-0 mt-2 w-72 bg-[#111] border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden" data-search-panel>
-              <div className="p-3 border-b border-white/10">
-                <div className="flex items-center gap-2 bg-white/5 rounded-lg px-3 py-2">
-                  <Search size={14} className="text-[#666]" />
+            <div className="absolute top-full left-0 mt-2 w-72 bg-[#111] border border-[var(--border-color)] rounded-xl shadow-2xl z-50 overflow-hidden" data-search-panel>
+              <div className="p-3 border-b border-[var(--border-color)]">
+                <div className="flex items-center gap-2 bg-[var(--bg-hover)] rounded-lg px-3 py-2">
+                  <Search size={14} className="text-[var(--text-faint)]" />
                   <input
                     ref={inputRef}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="搜索城市或时区..."
-                    className="bg-transparent text-white text-sm outline-none flex-1 placeholder:text-[#444]"
+                    className="bg-transparent text-[var(--text-primary)] text-sm outline-none flex-1 placeholder:text-[var(--text-faint)]"
                   />
                 </div>
               </div>
               <div className="max-h-64 overflow-y-auto">
                 {filteredCities.length === 0 ? (
-                  <div className="px-4 py-6 text-center text-[#666] text-sm">未找到匹配城市</div>
+                  <div className="px-4 py-6 text-center text-[var(--text-faint)] text-sm">未找到匹配城市</div>
                 ) : (
                   filteredCities.map((c) => {
                     const alreadyAdded = cities.some((cc) => cc.tz === c.tz);
@@ -155,12 +155,12 @@ export default function WorldClock() {
                         disabled={alreadyAdded}
                         className={`w-full text-left px-4 py-3 text-sm flex items-center justify-between transition-colors ${
                           alreadyAdded
-                            ? 'text-[#444] cursor-not-allowed'
-                            : 'text-white hover:bg-white/5'
+                            ? 'text-[var(--text-faint)] cursor-not-allowed'
+                            : 'text-[var(--text-primary)] hover:bg-[var(--bg-hover)]'
                         }`}
                       >
                         <span>{c.label}</span>
-                        <span className="text-xs text-[#666]">{c.offset}</span>
+                        <span className="text-xs text-[var(--text-faint)]">{c.offset}</span>
                       </button>
                     );
                   })
@@ -180,27 +180,27 @@ export default function WorldClock() {
             <div key={city.id} className="glass-card p-6 relative group">
               <button
                 onClick={() => removeCity(city.id)}
-                className="absolute top-4 right-4 w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-[#666] hover:text-[#e94560] hover:bg-[#e94560]/10 opacity-0 group-hover:opacity-100 transition-all"
+                className="absolute top-4 right-4 w-7 h-7 rounded-full bg-[var(--bg-hover)] flex items-center justify-center text-[var(--text-faint)] hover:text-[#e94560] hover:bg-[#e94560]/10 opacity-0 group-hover:opacity-100 transition-all"
                 title="删除"
               >
                 <Trash2 size={13} />
               </button>
-              <div className="flex items-center gap-2 text-sm text-[#666] mb-3">
+              <div className="flex items-center gap-2 text-sm text-[var(--text-faint)] mb-3">
                 <MapPin size={13} />
-                <span className="font-medium text-white">{city.label}</span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-white/5">{offset}</span>
+                <span className="font-medium text-[var(--text-primary)]">{city.label}</span>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--bg-hover)]">{offset}</span>
               </div>
-              <div className="font-['Syne'] font-bold text-4xl text-white tabular-nums">
+              <div className="font-['Syne'] font-bold text-4xl text-[var(--text-primary)] tabular-nums">
                 {timeInfo.time}
               </div>
-              <div className="text-sm text-[#a8b2c1] mt-1">
+              <div className="text-sm text-[var(--text-secondary)] mt-1">
                 {dayOfWeek} · {timeInfo.date}
               </div>
             </div>
           );
         })}
         {cities.length === 0 && (
-          <div className="sm:col-span-2 text-center py-16 text-[#666]">
+          <div className="sm:col-span-2 text-center py-16 text-[var(--text-faint)]">
             <Globe size={40} className="mx-auto mb-4 opacity-30" />
             <div className="text-base mb-2">暂无城市</div>
             <div className="text-sm">点击「添加城市」开始使用</div>

@@ -125,9 +125,9 @@ export default function PasswordGenerator() {
           <div className="w-10 h-10 rounded-xl bg-[#e94560]/15 flex items-center justify-center">
             <KeyRound size={20} className="text-[#e94560]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">随机密码生成器</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">随机密码生成器</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">生成安全随机密码，支持自定义长度和字符类型</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">生成安全随机密码，支持自定义长度和字符类型</p>
       </motion.div>
 
       {/* Options */}
@@ -135,8 +135,8 @@ export default function PasswordGenerator() {
         {/* Length Slider */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-3">
-            <label className="text-sm font-medium text-[#a8b2c1]">密码长度</label>
-            <span className="text-lg font-bold text-white font-mono bg-white/5 px-3 py-1 rounded-lg">{length}</span>
+            <label className="text-sm font-medium text-[var(--text-secondary)]">密码长度</label>
+            <span className="text-lg font-bold text-[var(--text-primary)] font-mono bg-[var(--bg-hover)] px-3 py-1 rounded-lg">{length}</span>
           </div>
           <input
             type="range"
@@ -145,9 +145,9 @@ export default function PasswordGenerator() {
             value={length}
             onChange={(e) => setLength(Number(e.target.value))}
             aria-label="密码长度"
-            className="w-full h-2 bg-white/10 rounded-full appearance-none cursor-pointer accent-[#e94560]"
+            className="w-full h-2 bg-[var(--bg-secondary)] rounded-full appearance-none cursor-pointer accent-[#e94560]"
           />
-          <div className="flex justify-between text-xs text-[#666] mt-1">
+          <div className="flex justify-between text-xs text-[var(--text-faint)] mt-1">
             <span>6</span>
             <span>128</span>
           </div>
@@ -155,7 +155,7 @@ export default function PasswordGenerator() {
 
         {/* Character Options */}
         <div className="mb-6">
-          <label className="text-sm font-medium text-[#a8b2c1] mb-3 block">字符类型</label>
+          <label className="text-sm font-medium text-[var(--text-secondary)] mb-3 block">字符类型</label>
           <div className="grid grid-cols-2 gap-3">
             {[
               { key: 'uppercase' as const, label: '大写字母 A-Z', example: 'ABCXYZ' },
@@ -168,8 +168,8 @@ export default function PasswordGenerator() {
                 onClick={() => setOptions((prev) => ({ ...prev, [opt.key]: !prev[opt.key] }))}
                 className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${
                   options[opt.key]
-                    ? 'border-[#e94560]/30 bg-[#e94560]/10 text-white'
-                    : 'border-white/10 bg-white/5 text-[#666]'
+                    ? 'border-[#e94560]/30 bg-[#e94560]/10 text-[var(--text-primary)]'
+                    : 'border-[var(--border-color)] bg-[var(--bg-hover)] text-[var(--text-faint)]'
                 }`}
               >
                 <div
@@ -178,7 +178,7 @@ export default function PasswordGenerator() {
                   }`}
                 >
                   {options[opt.key] && (
-                    <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <svg className="w-3 h-3 text-[var(--text-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   )}
@@ -195,8 +195,8 @@ export default function PasswordGenerator() {
         {/* Batch Count */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-3">
-            <label className="text-sm font-medium text-[#a8b2c1]">批量生成数量</label>
-            <span className="text-lg font-bold text-white font-mono bg-white/5 px-3 py-1 rounded-lg">{batchCount}</span>
+            <label className="text-sm font-medium text-[var(--text-secondary)]">批量生成数量</label>
+            <span className="text-lg font-bold text-[var(--text-primary)] font-mono bg-[var(--bg-hover)] px-3 py-1 rounded-lg">{batchCount}</span>
           </div>
           <input
             type="range"
@@ -205,7 +205,7 @@ export default function PasswordGenerator() {
             value={batchCount}
             onChange={(e) => setBatchCount(Number(e.target.value))}
             aria-label="批量生成数量"
-            className="w-full h-2 bg-white/10 rounded-full appearance-none cursor-pointer accent-[#e94560]"
+            className="w-full h-2 bg-[var(--bg-secondary)] rounded-full appearance-none cursor-pointer accent-[#e94560]"
           />
         </div>
 
@@ -219,7 +219,7 @@ export default function PasswordGenerator() {
       {passwords.length > 0 && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+            <h2 className="text-lg font-semibold text-[var(--text-primary)] flex items-center gap-2">
               <Shield size={18} className="text-[#e94560]" /> 生成结果
             </h2>
             {passwords.length > 1 && (
@@ -236,16 +236,16 @@ export default function PasswordGenerator() {
                 <div key={index} className="glass-card p-4 group">
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex-1 min-w-0">
-                      <div className="font-mono text-lg text-white break-all tracking-wider">{pwd}</div>
+                      <div className="font-mono text-lg text-[var(--text-primary)] break-all tracking-wider">{pwd}</div>
                       <div className="mt-2 flex items-center gap-3">
-                        <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden max-w-[200px]">
+                        <div className="flex-1 h-1.5 bg-[var(--bg-secondary)] rounded-full overflow-hidden max-w-[200px]">
                           <div
                             className="h-full rounded-full transition-all duration-300"
                             style={{ width: strength.width, backgroundColor: strength.color }}
                           />
                         </div>
                         <span className="text-xs font-medium" style={{ color: strength.color }}>{strength.level}</span>
-                        <span className="text-xs text-[#666]">{pwd.length} 位</span>
+                        <span className="text-xs text-[var(--text-faint)]">{pwd.length} 位</span>
                       </div>
                     </div>
                     <button

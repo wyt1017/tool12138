@@ -90,14 +90,14 @@ export default function PasswordStrength() {
           <div className="w-10 h-10 rounded-xl bg-[#e94560]/15 flex items-center justify-center">
             <Shield size={20} className="text-[#e94560]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">密码强度检测</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">密码强度检测</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">实时分析密码安全性，估算暴力破解时间</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">实时分析密码安全性，估算暴力破解时间</p>
       </motion.div>
 
       {/* Password Input */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-card p-6 mb-6">
-        <label className="block text-sm font-medium text-[#a8b2c1] mb-3">输入密码</label>
+        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-3">输入密码</label>
         <div className="relative">
           <input
             type={showPassword ? 'text' : 'password'}
@@ -105,11 +105,11 @@ export default function PasswordStrength() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="输入要检测的密码..."
             aria-label="输入密码"
-            className="tool-area w-full py-3.5 pl-4 pr-12 text-white text-sm outline-none focus:border-[#e94560]/30 transition-colors placeholder:text-[#333]"
+            className="tool-area w-full py-3.5 pl-4 pr-12 text-[var(--text-primary)] text-sm outline-none focus:border-[#e94560]/30 transition-colors placeholder:text-[var(--text-faint)]"
           />
           <button
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#666] hover:text-white transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-faint)] hover:text-[var(--text-primary)] transition-colors"
           >
             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
@@ -119,12 +119,12 @@ export default function PasswordStrength() {
         {password && (
           <div className="mt-5">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs text-[#666]">密码长度：{password.length} 字符</span>
+              <span className="text-xs text-[var(--text-faint)]">密码长度：{password.length} 字符</span>
               <span className="text-xs font-semibold" style={{ color: result.levelColor }}>
                 {result.level}
               </span>
             </div>
-            <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+            <div className="w-full h-2 bg-[var(--bg-hover)] rounded-full overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${result.score}%` }}
@@ -134,9 +134,9 @@ export default function PasswordStrength() {
               />
             </div>
             <div className="flex justify-between mt-1">
-              <span className="text-[10px] text-[#333]">0</span>
-              <span className="text-[10px] text-[#333]">{result.score}%</span>
-              <span className="text-[10px] text-[#333]">100</span>
+              <span className="text-[10px] text-[var(--text-faint)]">0</span>
+              <span className="text-[10px] text-[var(--text-faint)]">{result.score}%</span>
+              <span className="text-[10px] text-[var(--text-faint)]">100</span>
             </div>
           </div>
         )}
@@ -150,7 +150,7 @@ export default function PasswordStrength() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <AlertTriangle size={18} className="text-[#e94560]" />
-                <span className="text-sm text-[#a8b2c1]">暴力破解预估时间（100亿次/秒）</span>
+                <span className="text-sm text-[var(--text-secondary)]">暴力破解预估时间（100亿次/秒）</span>
               </div>
               <span className="font-['Syne'] font-bold text-lg" style={{ color: result.levelColor }}>
                 {result.crackTime}
@@ -160,14 +160,14 @@ export default function PasswordStrength() {
 
           {/* Checklist */}
           <div className="glass-card p-5 mb-4">
-            <h3 className="text-sm font-semibold text-white mb-4">安全检查项</h3>
+            <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4">安全检查项</h3>
             <div className="space-y-3">
               {result.checks.map((check, idx) => (
                 <div key={idx} className="flex items-center gap-3">
                   <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${check.passed ? 'bg-emerald-500/20' : 'bg-red-500/20'}`}>
-                    {check.passed ? <Check size={12} className="text-emerald-400" /> : <X size={12} className="text-red-400" />}
+                    {check.passed ? <Check size={12} className="text-emerald-400" /> : <X size={12} className="text-[var(--danger)]" />}
                   </div>
-                  <span className={`text-sm ${check.passed ? 'text-[#a8b2c1]' : 'text-red-400'}`}>{check.label}</span>
+                  <span className={`text-sm ${check.passed ? 'text-[var(--text-secondary)]' : 'text-[var(--danger)]'}`}>{check.label}</span>
                 </div>
               ))}
             </div>
@@ -176,13 +176,13 @@ export default function PasswordStrength() {
           {/* Suggestions */}
           {result.suggestions.length > 0 && (
             <div className="glass-card p-5 border-l-2 border-[#e94560]/50">
-              <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3 flex items-center gap-2">
                 <AlertTriangle size={15} className="text-[#e94560]" />
                 改进建议
               </h3>
               <ul className="space-y-2">
                 {result.suggestions.map((suggestion, idx) => (
-                  <li key={idx} className="text-sm text-[#a8b2c1] flex items-start gap-2">
+                  <li key={idx} className="text-sm text-[var(--text-secondary)] flex items-start gap-2">
                     <span className="text-[#e94560] mt-0.5">•</span>
                     {suggestion}
                   </li>
@@ -196,7 +196,7 @@ export default function PasswordStrength() {
       {!password && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="glass-card p-12 text-center">
           <Shield size={48} className="mx-auto text-[#222] mb-4" />
-          <p className="text-[#555] text-sm">在上方输入框中输入密码，即可查看安全分析结果</p>
+          <p className="text-[var(--text-faint)] text-sm">在上方输入框中输入密码，即可查看安全分析结果</p>
         </motion.div>
       )}
     </div>

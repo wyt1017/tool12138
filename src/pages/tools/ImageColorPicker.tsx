@@ -82,18 +82,18 @@ export default function ImageColorPicker() {
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${COLOR}26` }}>
             <Palette size={20} style={{ color: COLOR }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">图片取色器</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">图片取色器</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">上传图片后鼠标悬停/点击，拾取任意像素点的HEX/RGB值</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">上传图片后鼠标悬停/点击，拾取任意像素点的HEX/RGB值</p>
       </motion.div>
 
       {/* Upload */}
       {!image && (
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
-          <label className="glass-card p-12 flex flex-col items-center justify-center cursor-pointer hover:bg-white/5 transition-colors">
-            <Upload size={48} className="text-[#666] mb-4" />
-            <span className="text-[#a8b2c1] mb-2">点击上传图片</span>
-            <span className="text-xs text-[#666]">支持 JPG、PNG、GIF、WebP 等格式</span>
+          <label className="glass-card p-12 flex flex-col items-center justify-center cursor-pointer hover:bg-[var(--bg-hover)] transition-colors">
+            <Upload size={48} className="text-[var(--text-faint)] mb-4" />
+            <span className="text-[var(--text-secondary)] mb-2">点击上传图片</span>
+            <span className="text-xs text-[var(--text-faint)]">支持 JPG、PNG、GIF、WebP 等格式</span>
             <input type="file" accept="image/*" onChange={handleFileUpload} aria-label="上传图片" className="hidden" />
           </label>
         </motion.div>
@@ -106,7 +106,7 @@ export default function ImageColorPicker() {
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="lg:col-span-2">
             <div className="glass-card p-4">
               <div className="flex items-center justify-between mb-3">
-                <label className="text-sm font-medium text-[#a8b2c1]">图片预览</label>
+                <label className="text-sm font-medium text-[var(--text-secondary)]">图片预览</label>
                 <label className="btn-secondary !py-1.5 !px-3 text-xs cursor-pointer">
                   <Upload size={13} className="inline mr-1" /> 更换图片
                   <input type="file" accept="image/*" onChange={handleFileUpload} aria-label="更换图片" className="hidden" />
@@ -129,26 +129,26 @@ export default function ImageColorPicker() {
                   style={{ position: 'absolute', visibility: 'hidden' }}
                 />
               </div>
-              <p className="text-xs text-[#666] mt-2">鼠标移动查看颜色，点击添加到历史记录</p>
+              <p className="text-xs text-[var(--text-faint)] mt-2">鼠标移动查看颜色，点击添加到历史记录</p>
             </div>
           </motion.div>
 
           {/* Color Info */}
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
             <div className="glass-card p-6 h-full">
-              <h2 className="text-lg font-semibold text-white mb-4">当前颜色</h2>
+              <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">当前颜色</h2>
 
               {/* Color Preview */}
               <div
-                className="w-full h-[100px] rounded-xl mb-4 border border-white/10"
+                className="w-full h-[100px] rounded-xl mb-4 border border-[var(--border-color)]"
                 style={{ backgroundColor: color.hex }}
               />
 
               {/* HEX */}
               <div className="mb-4">
-                <label className="text-xs text-[#666] block mb-1.5">HEX</label>
+                <label className="text-xs text-[var(--text-faint)] block mb-1.5">HEX</label>
                 <div className="flex items-center gap-2">
-                  <code className="font-mono text-lg text-white bg-white/5 px-3 py-2 rounded-lg flex-1">{color.hex}</code>
+                  <code className="font-mono text-lg text-[var(--text-primary)] bg-[var(--bg-hover)] px-3 py-2 rounded-lg flex-1">{color.hex}</code>
                   <button
                     onClick={() => navigator.clipboard.writeText(color.hex)}
                     className="btn-secondary !py-2 !px-3"
@@ -160,9 +160,9 @@ export default function ImageColorPicker() {
 
               {/* RGB */}
               <div className="mb-4">
-                <label className="text-xs text-[#666] block mb-1.5">RGB</label>
+                <label className="text-xs text-[var(--text-faint)] block mb-1.5">RGB</label>
                 <div className="flex items-center gap-2">
-                  <code className="font-mono text-lg text-white bg-white/5 px-3 py-2 rounded-lg flex-1">
+                  <code className="font-mono text-lg text-[var(--text-primary)] bg-[var(--bg-hover)] px-3 py-2 rounded-lg flex-1">
                     rgb({color.rgb.r}, {color.rgb.g}, {color.rgb.b})
                   </code>
                   <button
@@ -177,13 +177,13 @@ export default function ImageColorPicker() {
               {/* Color History */}
               {colorHistory.length > 0 && (
                 <div>
-                  <label className="text-xs text-[#666] block mb-2">历史记录</label>
+                  <label className="text-xs text-[var(--text-faint)] block mb-2">历史记录</label>
                   <div className="flex flex-wrap gap-2">
                     {colorHistory.map((c, i) => (
                       <button
                         key={i}
                         onClick={() => setColor(c)}
-                        className="w-8 h-8 rounded-lg border border-white/10 hover:scale-110 transition-transform"
+                        className="w-8 h-8 rounded-lg border border-[var(--border-color)] hover:scale-110 transition-transform"
                         style={{ backgroundColor: c.hex }}
                         title={c.hex}
                       />

@@ -193,27 +193,27 @@ export default function Base64FileDecoder() {
           <div style={{ width: 40, height: 40, borderRadius: 12, background: `${color}24`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <FileDown size={20} style={{ color }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">Base64文件还原工具</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">Base64文件还原工具</h1>
         </div>
         <p style={{ color: '#a8b2c1', marginLeft: 52 }}>将Base64字符串解码并还原为原始文件，提供下载</p>
       </motion.div>
 
       {/* Input */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="mb-6">
-        <label className="text-sm font-medium text-[#a8b2c1] mb-2 ml-1 block">Base64字符串</label>
+        <label className="text-sm font-medium text-[var(--text-secondary)] mb-2 ml-1 block">Base64字符串</label>
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="粘贴Base64字符串，支持 data:image/png;base64,... 格式"
           aria-label="Base64字符串"
-          className="tool-area w-full h-[200px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#6bcb77]/30 transition-colors placeholder:text-[#333] font-mono"
+          className="tool-area w-full h-[200px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#6bcb77]/30 transition-colors placeholder:text-[var(--text-faint)] font-mono"
         />
       </motion.div>
 
       {/* Error */}
       {error && (
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-4 mb-6 border border-red-500/30">
-          <span className="text-red-400 text-sm">{error}</span>
+          <span className="text-[var(--danger)] text-sm">{error}</span>
         </motion.div>
       )}
 
@@ -230,7 +230,7 @@ export default function Base64FileDecoder() {
       {/* Result */}
       {result && (
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="glass-card p-6">
-          <h2 className="text-sm font-medium text-[#a8b2c1] mb-4">解码结果</h2>
+          <h2 className="text-sm font-medium text-[var(--text-secondary)] mb-4">解码结果</h2>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
             <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: 8, padding: 16 }}>
@@ -254,7 +254,7 @@ export default function Base64FileDecoder() {
           {/* Preview for images */}
           {result.mimeType.startsWith('image/') && (
             <div className="mb-6">
-              <label className="text-xs text-[#666] block mb-2">图片预览</label>
+              <label className="text-xs text-[var(--text-faint)] block mb-2">图片预览</label>
               <div className="bg-white rounded-lg p-4 flex items-center justify-center">
                 <img src={result.blobUrl} alt="Decoded Image" className="max-w-full max-h-[300px]" />
               </div>
@@ -270,8 +270,8 @@ export default function Base64FileDecoder() {
 
       {/* Tips */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="glass-card p-4 mt-6">
-        <p className="text-xs text-[#666]">
-          <strong className="text-[#a8b2c1]">说明：</strong>
+        <p className="text-xs text-[var(--text-faint)]">
+          <strong className="text-[var(--text-secondary)]">说明：</strong>
           支持两种格式：1) 带 data: 前缀的完整格式（如 data:image/png;base64,iVBORw0KGgo...）；2) 纯 Base64 字符串。
           解码后自动识别文件类型并提供下载。
         </p>

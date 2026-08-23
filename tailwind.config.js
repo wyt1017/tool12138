@@ -9,41 +9,66 @@ export default {
       padding: { DEFAULT: "1rem", sm: "1.5rem", lg: "2rem" },
     },
     extend: {
-      // 品牌主色系：基于现有强调色 #00d9ff 青色，提供完整色阶用于统一强调
+      // 颜色全部映射到 index.css 的主题令牌，保证深浅色主题一致
       colors: {
         brand: {
-          50: "#ecfeff",
-          100: "#cffafe",
-          200: "#a5f3fc",
-          300: "#67e8f9",
-          400: "#22d3ee",
-          500: "#00d9ff",
-          600: "#0891b2",
-          700: "#0e7490",
-          800: "#155e75",
-          900: "#164e63",
+          DEFAULT: "var(--brand)",
+          soft: "var(--brand-soft)",
+          text: "var(--brand-text)",
+          glow: "var(--brand-glow)",
+          "glow-soft": "var(--brand-glow-soft)",
         },
+        violet: { DEFAULT: "var(--violet)", glow: "var(--violet-glow)" },
+        bg: {
+          DEFAULT: "var(--bg-primary)",
+          secondary: "var(--bg-secondary)",
+          card: "var(--bg-card)",
+          "card-solid": "var(--bg-card-solid)",
+          elevated: "var(--bg-elevated)",
+          hover: "var(--bg-hover)",
+        },
+        border: {
+          DEFAULT: "var(--border-color)",
+          strong: "var(--border-strong)",
+        },
+        text: {
+          primary: "var(--text-primary)",
+          secondary: "var(--text-secondary)",
+          muted: "var(--text-muted)",
+          faint: "var(--text-faint)",
+        },
+        danger: "var(--danger)",
+        success: "var(--success)",
+        warn: "var(--warn)",
       },
-      // 字体令牌：替代行内 font-['Syne'] / font-['DM Sans'] 写法
+      // 字体令牌
       fontFamily: {
         display: ["Syne", "sans-serif"],
         body: ['"DM Sans"', "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+        mono: ['"JetBrains Mono"', "ui-monospace", "monospace"],
       },
-      // 发光阴影令牌：统一卡片/按钮的辉光效果
+      // 发光/卡片阴影令牌
       boxShadow: {
-        glow: "0 0 30px rgba(0, 217, 255, 0.3)",
-        "glow-sm": "0 0 20px rgba(0, 217, 255, 0.15)",
-        card: "0 20px 60px rgba(0, 217, 255, 0.08), 0 8px 24px rgba(0, 0, 0, 0.3)",
+        glow: "0 0 30px var(--brand-glow)",
+        "glow-sm": "0 0 20px var(--brand-glow-soft)",
+        card: "0 20px 60px color-mix(in srgb, var(--brand) 16%, transparent), 0 8px 24px rgba(11, 26, 48, 0.14)",
+        "md": "var(--shadow-md)",
+        "lg": "var(--shadow-lg)",
       },
-      // 统一动画令牌（与 index.css keyframes 配合）
+      // 动画令牌
       animation: {
         float: "float 5s ease-in-out infinite",
         "pulse-glow": "pulse-glow 3s ease-in-out infinite",
+        aurora: "aurora-shift 18s ease-in-out infinite",
         "spin-slow": "spin-slow 16s linear infinite",
         "fade-in": "fade-in 0.5s ease-out",
         "slide-up": "slide-up 0.5s ease-out",
       },
       keyframes: {
+        "aurora-shift": {
+          "0%,100%": { transform: "translate(0,0) scale(1)" },
+          "50%": { transform: "translate(6%,-5%) scale(1.06)" },
+        },
         float: {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-12px)" },
@@ -64,10 +89,14 @@ export default {
           to: { opacity: "1", transform: "translateY(0)" },
         },
       },
-      // 常用渐变令牌
+      // 渐变令牌
       backgroundImage: {
-        "gradient-brand": "linear-gradient(135deg, #00d9ff 0%, #6366f1 100%)",
-        "gradient-text": "linear-gradient(135deg, #00d9ff 0%, #a78bfa 50%, #e94560 100%)",
+        "gradient-brand": "var(--gradient-brand)",
+        "gradient-rich": "var(--gradient-rich)",
+      },
+      // 应用级缓动
+      transitionTimingFunction: {
+        app: "var(--ease-app)",
       },
     },
   },

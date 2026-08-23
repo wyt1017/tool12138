@@ -126,27 +126,27 @@ export default function RegexTester() {
           <div className="w-10 h-10 rounded-xl bg-[#e94560]/15 flex items-center justify-center">
             <Regex size={20} className="text-[#e94560]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">正则表达式测试</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">正则表达式测试</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">实时测试正则表达式，支持匹配高亮和捕获组显示</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">实时测试正则表达式，支持匹配高亮和捕获组显示</p>
       </motion.div>
 
       {/* Pattern Input & Flags */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
         <div className="glass-card p-5 mb-6">
           <div className="flex items-center gap-3 mb-4">
-            <span className="text-sm font-medium text-[#a8b2c1]">正则表达式</span>
+            <span className="text-sm font-medium text-[var(--text-secondary)]">正则表达式</span>
             <div className="flex-1 relative">
-              <code className="absolute left-4 top-1/2 -translate-y-1/2 text-[#555] text-xs select-none">/</code>
+              <code className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-faint)] text-xs select-none">/</code>
               <input
                 type="text"
                 value={pattern}
                 onChange={(e) => setPattern(e.target.value)}
                 placeholder="输入正则表达式，如 \\d+、[a-z]+ 等"
                 aria-label="正则表达式"
-                className="tool-area w-full h-[44px] pl-7 pr-8 text-sm outline-none focus:border-[#e94560]/30 transition-colors placeholder:text-[#333] font-mono"
+                className="tool-area w-full h-[44px] pl-7 pr-8 text-sm outline-none focus:border-[#e94560]/30 transition-colors placeholder:text-[var(--text-faint)] font-mono"
               />
-              <code className="absolute right-4 top-1/2 -translate-y-1/2 text-[#555] text-xs select-none">/{Array.from(flags).join('')}</code>
+              <code className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-faint)] text-xs select-none">/{Array.from(flags).join('')}</code>
             </div>
           </div>
 
@@ -159,7 +159,7 @@ export default function RegexTester() {
                 className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-all ${
                   flags.has(flag.key)
                     ? 'bg-[#e94560]/15 text-[#e94560]'
-                    : 'bg-white/5 text-[#666] hover:text-[#a8b2c1]'
+                    : 'bg-[var(--bg-hover)] text-[var(--text-faint)] hover:text-[var(--text-secondary)]'
                 }`}
               >
                 {flag.label}
@@ -171,13 +171,13 @@ export default function RegexTester() {
 
       {/* Test String Input */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-        <label className="text-sm font-medium text-[#a8b2c1] ml-1 mb-2 block">测试文本</label>
+        <label className="text-sm font-medium text-[var(--text-secondary)] ml-1 mb-2 block">测试文本</label>
         <textarea
           value={testString}
           onChange={(e) => setTestString(e.target.value)}
           placeholder="输入要匹配的测试文本..."
           aria-label="测试文本"
-          className="tool-area w-full h-[180px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#e94560]/30 transition-colors placeholder:text-[#333]"
+          className="tool-area w-full h-[180px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#e94560]/30 transition-colors placeholder:text-[var(--text-faint)]"
         />
       </motion.div>
 
@@ -190,17 +190,17 @@ export default function RegexTester() {
               <div className="flex items-center gap-3">
                 {result.error ? (
                   <>
-                    <AlertCircle size={18} className="text-red-400" />
-                    <span className="text-red-400 text-sm">{result.error}</span>
+                    <AlertCircle size={18} className="text-[var(--danger)]" />
+                    <span className="text-[var(--danger)] text-sm">{result.error}</span>
                   </>
                 ) : pattern ? (
                   <>
                     {result.isMatch ? (
                       <CheckCircle2 size={18} className="text-green-400" />
                     ) : (
-                      <AlertCircle size={18} className="text-[#666]" />
+                      <AlertCircle size={18} className="text-[var(--text-faint)]" />
                     )}
-                    <span className={`text-sm ${result.isMatch ? 'text-green-400' : 'text-[#888]'}`}>
+                    <span className={`text-sm ${result.isMatch ? 'text-green-400' : 'text-[var(--text-faint)]'}`}>
                       {result.isMatch
                         ? `匹配成功 — 共 ${result.matchCount} 处匹配`
                         : '未找到匹配'}
@@ -215,7 +215,7 @@ export default function RegexTester() {
           {!result.error && pattern && testString && (
             <div className="glass-card p-5">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs text-[#666] flex items-center gap-1.5">
+                <span className="text-xs text-[var(--text-faint)] flex items-center gap-1.5">
                   <Brackets size={12} /> 匹配高亮
                 </span>
                 <button
@@ -234,7 +234,7 @@ export default function RegexTester() {
                         ) : (
                           <mark
                             key={i}
-                            className="bg-[#e94560]/25 text-white rounded px-0.5"
+                            className="bg-[#e94560]/25 text-[var(--text-primary)] rounded px-0.5"
                           >
                             {part.text}
                           </mark>
@@ -251,12 +251,12 @@ export default function RegexTester() {
             <div className="glass-card p-5">
               <div className="flex items-center gap-2 mb-3">
                 <Hash size={14} className="text-[#e94560]" />
-                <span className="text-xs text-[#666]">捕获组 ({result.captureGroups.length} 组)</span>
+                <span className="text-xs text-[var(--text-faint)]">捕获组 ({result.captureGroups.length} 组)</span>
               </div>
               <div className="space-y-2 max-h-[200px] overflow-auto">
                 {result.captureGroups.map((groups, idx) => (
-                  <div key={idx} className="flex items-start gap-3 py-1.5 px-3 rounded-lg bg-white/[0.02]">
-                    <span className="text-xs text-[#555] font-mono shrink-0 pt-0.5">#{idx + 1}</span>
+                  <div key={idx} className="flex items-start gap-3 py-1.5 px-3 rounded-lg bg-[var(--bg-hover)]">
+                    <span className="text-xs text-[var(--text-faint)] font-mono shrink-0 pt-0.5">#{idx + 1}</span>
                     <div className="flex flex-wrap gap-2">
                       {groups.map(
                         (group, gIdx) =>

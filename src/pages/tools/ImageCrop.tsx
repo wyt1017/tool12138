@@ -341,12 +341,12 @@ export default function ImageCrop() {
           <div className="w-10 h-10 rounded-xl bg-[#ffd369]/15 flex items-center justify-center">
             <CropIcon size={20} className="text-[#ffd369]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">图片裁剪</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">图片裁剪</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">上传图片拖拽选区裁剪，支持多比例预设，导出 PNG / JPEG / WebP</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">上传图片拖拽选区裁剪，支持多比例预设，导出 PNG / JPEG / WebP</p>
       </motion.div>
 
-      {error && <div className="mb-4 text-sm text-red-400">{error}</div>}
+      {error && <div className="mb-4 text-sm text-[var(--danger)]">{error}</div>}
 
       {/* Upload */}
       {!image ? (
@@ -357,10 +357,10 @@ export default function ImageCrop() {
           onDrop={handleDrop}
           onDragOver={(e) => e.preventDefault()}
         >
-          <label className="glass-card p-12 flex flex-col items-center justify-center cursor-pointer hover:bg-white/5 transition-colors">
-            <Upload size={48} className="text-[#666] mb-4" />
-            <span className="text-[#a8b2c1] mb-2">点击或拖拽图片到此处</span>
-            <span className="text-xs text-[#666]">支持 JPG、PNG、WebP 等常见格式</span>
+          <label className="glass-card p-12 flex flex-col items-center justify-center cursor-pointer hover:bg-[var(--bg-hover)] transition-colors">
+            <Upload size={48} className="text-[var(--text-faint)] mb-4" />
+            <span className="text-[var(--text-secondary)] mb-2">点击或拖拽图片到此处</span>
+            <span className="text-xs text-[var(--text-faint)]">支持 JPG、PNG、WebP 等常见格式</span>
             <input type="file" accept="image/*" onChange={handleInputChange} aria-label="上传图片" className="hidden" />
           </label>
         </motion.div>
@@ -370,7 +370,7 @@ export default function ImageCrop() {
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="lg:col-span-2">
             <div className="glass-card p-4">
               <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                <span className="text-sm font-medium text-[#a8b2c1]">裁剪区域</span>
+                <span className="text-sm font-medium text-[var(--text-secondary)]">裁剪区域</span>
                 <div className="flex gap-2">
                   <button onClick={resetCrop} className="btn-secondary !py-1.5 !px-3 text-xs">
                     <RotateCcw size={13} className="inline mr-1" /> 重置选区
@@ -414,18 +414,18 @@ export default function ImageCrop() {
                 </div>
               </div>
 
-              <p className="text-xs text-[#666] mt-2">拖拽框体移动选区，拖拽手柄调整大小</p>
+              <p className="text-xs text-[var(--text-faint)] mt-2">拖拽框体移动选区，拖拽手柄调整大小</p>
             </div>
           </motion.div>
 
           {/* Settings */}
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
             <div className="glass-card p-6">
-              <h2 className="text-sm font-medium text-[#a8b2c1] mb-4">裁剪设置</h2>
+              <h2 className="text-sm font-medium text-[var(--text-secondary)] mb-4">裁剪设置</h2>
 
               {/* Ratio */}
               <div className="mb-4">
-                <label className="text-xs text-[#666] block mb-2">比例预设</label>
+                <label className="text-xs text-[var(--text-faint)] block mb-2">比例预设</label>
                 <div className="flex flex-wrap gap-2">
                   {RATIO_OPTIONS.map((o) => (
                     <button
@@ -434,7 +434,7 @@ export default function ImageCrop() {
                       className={`px-3 py-1.5 rounded-lg text-xs border transition-colors ${
                         ratio === o.value
                           ? 'bg-[#ffd369]/15 border-[#ffd369]/50 text-[#ffd369]'
-                          : 'bg-white/5 border-white/10 text-[#a8b2c1] hover:bg-white/10'
+                          : 'bg-[var(--bg-hover)] border-[var(--border-color)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)]'
                       }`}
                     >
                       {o.label}
@@ -445,7 +445,7 @@ export default function ImageCrop() {
 
               {/* Format */}
               <div className="mb-4">
-                <label className="text-xs text-[#666] block mb-2">输出格式</label>
+                <label className="text-xs text-[var(--text-faint)] block mb-2">输出格式</label>
                 <div className="flex gap-2">
                   {FORMAT_OPTIONS.map((o) => (
                     <button
@@ -454,7 +454,7 @@ export default function ImageCrop() {
                       className={`px-3 py-1.5 rounded-lg text-xs border transition-colors ${
                         format === o.value
                           ? 'bg-[#ffd369]/15 border-[#ffd369]/50 text-[#ffd369]'
-                          : 'bg-white/5 border-white/10 text-[#a8b2c1] hover:bg-white/10'
+                          : 'bg-[var(--bg-hover)] border-[var(--border-color)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)]'
                       }`}
                     >
                       {o.label}
@@ -467,7 +467,7 @@ export default function ImageCrop() {
               {format !== 'png' && (
                 <div className="mb-5">
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-xs text-[#666]">质量</label>
+                    <label className="text-xs text-[var(--text-faint)]">质量</label>
                     <span className="text-xs font-mono text-[#ffd369]">{Math.round(quality * 100)}%</span>
                   </div>
                   <input
@@ -478,7 +478,7 @@ export default function ImageCrop() {
                     value={quality}
                     onChange={(e) => setQuality(parseFloat(e.target.value))}
                     aria-label="输出质量"
-                    className="w-full h-1.5 bg-white/10 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#ffd369]"
+                    className="w-full h-1.5 bg-[var(--bg-secondary)] rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#ffd369]"
                   />
                 </div>
               )}
@@ -494,7 +494,7 @@ export default function ImageCrop() {
                   <div className="rounded-lg overflow-hidden bg-black/20 mb-3">
                     <img src={result.url} alt="裁剪结果" className="max-w-full" />
                   </div>
-                  <div className="text-xs text-[#666] mb-3">
+                  <div className="text-xs text-[var(--text-faint)] mb-3">
                     {result.width} × {result.height} · {formatFileSize(result.blob.size)}
                   </div>
                   <button onClick={download} className="btn-primary w-full">

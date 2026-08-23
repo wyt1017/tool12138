@@ -163,7 +163,7 @@ export default function MusicMiniPlayer() {
         {open && (
           <div
             onPointerDown={stop}
-            className="absolute right-full mr-2 flex items-center gap-1 h-12 rounded-full bg-[#111128]/95 backdrop-blur-xl border border-white/10 pl-3.5 pr-1.5 shadow-xl"
+            className="absolute right-full mr-2 flex items-center gap-1 h-12 rounded-full bg-[#111128]/95 backdrop-blur-xl border border-[var(--border-color)] pl-3.5 pr-1.5 shadow-xl"
             style={{ width: BAR_W }}
           >
             <div className="min-w-0 flex-1">
@@ -212,7 +212,7 @@ export default function MusicMiniPlayer() {
         )}
 
         {/* 小球：封面 / 图标 + 进度环 */}
-        <div className="relative w-12 h-12 rounded-full overflow-hidden border border-white/15 shadow-lg bg-[#1a1a2e]">
+        <div className="relative w-12 h-12 rounded-full overflow-hidden border border-[var(--border-strong)] shadow-lg bg-[#1a1a2e]">
           {currentSong?.cover ? (
             <img
               src={currentSong.cover}

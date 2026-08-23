@@ -100,7 +100,7 @@ export default function MediaQueryTester() {
           <div style={{ width: 40, height: 40, borderRadius: 12, background: `${color}24`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Monitor size={20} style={{ color }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">屏幕尺寸与媒体查询测试</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">屏幕尺寸与媒体查询测试</h1>
         </div>
         <p style={{ color: '#a8b2c1', marginLeft: 52 }}>显示当前窗口尺寸、设备像素比，自定义媒体查询条件并实时测试匹配结果</p>
       </motion.div>
@@ -187,7 +187,7 @@ export default function MediaQueryTester() {
             onChange={(e) => setCustomQuery(e.target.value)}
             placeholder="输入媒体查询，如 (min-width: 500px)"
             aria-label="自定义媒体查询"
-            className="bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white outline-none focus:border-[#00d9ff]/30 flex-1 font-mono"
+            className="bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-sm text-[var(--text-primary)] outline-none focus:border-[#00d9ff]/30 flex-1 font-mono"
           />
           <div style={{
             padding: '12px 16px',
@@ -200,7 +200,7 @@ export default function MediaQueryTester() {
         </div>
 
         {/* Query Reference */}
-        <div className="mt-4 p-4 bg-white/5 rounded-lg">
+        <div className="mt-4 p-4 bg-[var(--bg-hover)] rounded-lg">
           <h3 style={{ fontSize: 12, color: '#666', marginBottom: 8 }}>媒体查询语法参考</h3>
           <div style={{ fontSize: 12, color: '#a8b2c1' }}>
             <p style={{ marginBottom: 4 }}>• <code style={{ background: 'rgba(255,255,255,0.1)', padding: '2px 4px', borderRadius: 4 }}>(min-width: 768px)</code> - 最小宽度</p>

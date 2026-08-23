@@ -73,18 +73,18 @@ export default function ImageFormatConverter() {
           <div className="w-10 h-10 rounded-xl bg-[#ffd369]/15 flex items-center justify-center">
             <Image size={20} className="text-[#ffd369]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">图片格式转换</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">图片格式转换</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">PNG/JPEG/WEBP/BMP等格式互转，可调整图片质量并下载</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">PNG/JPEG/WEBP/BMP等格式互转，可调整图片质量并下载</p>
       </motion.div>
 
       {/* Upload */}
       {!image && (
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
-          <label className="glass-card p-12 flex flex-col items-center justify-center cursor-pointer hover:bg-white/5 transition-colors">
-            <Upload size={48} className="text-[#666] mb-4" />
-            <span className="text-[#a8b2c1] mb-2">点击上传图片</span>
-            <span className="text-xs text-[#666]">支持 PNG、JPEG、WebP 等格式</span>
+          <label className="glass-card p-12 flex flex-col items-center justify-center cursor-pointer hover:bg-[var(--bg-hover)] transition-colors">
+            <Upload size={48} className="text-[var(--text-faint)] mb-4" />
+            <span className="text-[var(--text-secondary)] mb-2">点击上传图片</span>
+            <span className="text-xs text-[var(--text-faint)]">支持 PNG、JPEG、WebP 等格式</span>
             <input type="file" accept="image/*" onChange={handleFileUpload} aria-label="上传图片" className="hidden" />
           </label>
         </motion.div>
@@ -97,8 +97,8 @@ export default function ImageFormatConverter() {
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
             <div className="glass-card p-4">
               <div className="flex items-center justify-between mb-3">
-                <label className="text-sm font-medium text-[#a8b2c1]">原始图片</label>
-                <span className="text-xs text-[#666]">{originalFormat?.toUpperCase()}</span>
+                <label className="text-sm font-medium text-[var(--text-secondary)]">原始图片</label>
+                <span className="text-xs text-[var(--text-faint)]">{originalFormat?.toUpperCase()}</span>
               </div>
               <div className="bg-white rounded-lg p-2 flex items-center justify-center">
                 <img src={image} alt="Original" className="max-w-full max-h-[200px]" />
@@ -112,15 +112,15 @@ export default function ImageFormatConverter() {
 
           {/* Options */}
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="glass-card p-6">
-            <h2 className="text-sm font-medium text-[#a8b2c1] mb-4">转换设置</h2>
+            <h2 className="text-sm font-medium text-[var(--text-secondary)] mb-4">转换设置</h2>
 
             <div className="mb-4">
-              <label className="text-xs text-[#666] block mb-2">目标格式</label>
+              <label className="text-xs text-[var(--text-faint)] block mb-2">目标格式</label>
               {/* Custom dropdown */}
               <div className="relative">
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm text-white outline-none focus:border-[#ffd369]/30 w-full flex items-center justify-between"
+                  className="bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[#ffd369]/30 w-full flex items-center justify-between"
                 >
                   <span>{FORMAT_OPTIONS.find(o => o.value === format)?.label}</span>
                   <svg className={`w-4 h-4 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -130,13 +130,13 @@ export default function ImageFormatConverter() {
                 {dropdownOpen && (
                   <>
                     <div className="fixed inset-0 z-10" onClick={() => setDropdownOpen(false)} />
-                    <div className="absolute top-full left-0 mt-1 w-full bg-[#1a1a2e] border border-white/10 rounded-lg shadow-xl z-20 overflow-hidden">
+                    <div className="absolute top-full left-0 mt-1 w-full bg-[var(--bg-elevated)] border border-[var(--border-color)] rounded-lg shadow-xl z-20 overflow-hidden">
                       {FORMAT_OPTIONS.map(opt => (
                         <button
                           key={opt.value}
                           onClick={() => selectFormat(opt.value)}
                           className={`w-full px-4 py-2.5 text-left text-sm transition-colors ${
-                            format === opt.value ? 'bg-[#ffd369]/15 text-[#ffd369]' : 'text-[#a8b2c1] hover:bg-white/5'
+                            format === opt.value ? 'bg-[#ffd369]/15 text-[#ffd369]' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]'
                           }`}
                         >
                           {opt.label}
@@ -150,7 +150,7 @@ export default function ImageFormatConverter() {
 
             {format === 'jpeg' && (
               <div className="mb-4">
-                <label className="text-xs text-[#666] block mb-2">图片质量</label>
+                <label className="text-xs text-[var(--text-faint)] block mb-2">图片质量</label>
                 <input
                   type="range"
                   min={0.1}
@@ -161,7 +161,7 @@ export default function ImageFormatConverter() {
                   aria-label="图片质量"
                   className="w-full"
                 />
-                <div className="text-xs text-[#a8b2c1] mt-1">{Math.round(quality * 100)}%</div>
+                <div className="text-xs text-[var(--text-secondary)] mt-1">{Math.round(quality * 100)}%</div>
               </div>
             )}
 
@@ -174,8 +174,8 @@ export default function ImageFormatConverter() {
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
             <div className="glass-card p-4 h-full">
               <div className="flex items-center justify-between mb-3">
-                <label className="text-sm font-medium text-[#a8b2c1]">转换结果</label>
-                <span className="text-xs text-[#666]">{format.toUpperCase()}</span>
+                <label className="text-sm font-medium text-[var(--text-secondary)]">转换结果</label>
+                <span className="text-xs text-[var(--text-faint)]">{format.toUpperCase()}</span>
               </div>
               {converted ? (
                 <>
@@ -187,7 +187,7 @@ export default function ImageFormatConverter() {
                   </button>
                 </>
               ) : (
-                <div className="text-[#666] text-sm text-center py-8">等待转换...</div>
+                <div className="text-[var(--text-faint)] text-sm text-center py-8">等待转换...</div>
               )}
             </div>
           </motion.div>

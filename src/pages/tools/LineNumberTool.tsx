@@ -60,9 +60,9 @@ export default function LineNumberTool() {
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${COLOR}26` }}>
             <ListOrdered size={20} style={{ color: COLOR }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">文本行编号工具</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">文本行编号工具</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">为每行文本添加行号，或去除已有行号</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">为每行文本添加行号，或去除已有行号</p>
       </motion.div>
 
       {/* Mode Toggle */}
@@ -70,7 +70,7 @@ export default function LineNumberTool() {
         <button
           onClick={() => setMode('add')}
           className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-            mode === 'add' ? `bg-[#00d9ff]/15 text-[#00d9ff]` : 'bg-white/5 text-[#666]'
+            mode === 'add' ? `bg-[#00d9ff]/15 text-[#00d9ff]` : 'bg-[var(--bg-hover)] text-[var(--text-faint)]'
           }`}
         >
           添加行号
@@ -78,7 +78,7 @@ export default function LineNumberTool() {
         <button
           onClick={() => setMode('remove')}
           className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-            mode === 'remove' ? `bg-[#e94560]/15 text-[#e94560]` : 'bg-white/5 text-[#666]'
+            mode === 'remove' ? `bg-[#e94560]/15 text-[#e94560]` : 'bg-[var(--bg-hover)] text-[var(--text-faint)]'
           }`}
         >
           移除行号
@@ -90,34 +90,34 @@ export default function LineNumberTool() {
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="glass-card p-6 mb-6">
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="text-xs text-[#666] block mb-2">起始编号</label>
+              <label className="text-xs text-[var(--text-faint)] block mb-2">起始编号</label>
               <input
                 type="number"
                 value={startNumber}
                 onChange={(e) => setStartNumber(Number(e.target.value))}
                 aria-label="起始编号"
-                className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-[#00d9ff]/30 w-full"
+                className="bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[#00d9ff]/30 w-full"
               />
             </div>
             <div>
-              <label className="text-xs text-[#666] block mb-2">分隔符</label>
+              <label className="text-xs text-[var(--text-faint)] block mb-2">分隔符</label>
               <input
                 type="text"
                 value={separator}
                 onChange={(e) => setSeparator(e.target.value)}
                 aria-label="分隔符"
-                className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-[#00d9ff]/30 w-full"
+                className="bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[#00d9ff]/30 w-full"
               />
             </div>
             <div>
-              <label className="text-xs text-[#666] block mb-2">步长</label>
+              <label className="text-xs text-[var(--text-faint)] block mb-2">步长</label>
               <input
                 type="number"
                 value={step}
                 onChange={(e) => setStep(Number(e.target.value))}
                 min={1}
                 aria-label="步长"
-                className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-[#00d9ff]/30 w-full"
+                className="bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[#00d9ff]/30 w-full"
               />
             </div>
           </div>
@@ -128,20 +128,20 @@ export default function LineNumberTool() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
-          <label className="text-sm font-medium text-[#a8b2c1] mb-2 ml-1 block">输入文本</label>
+          <label className="text-sm font-medium text-[var(--text-secondary)] mb-2 ml-1 block">输入文本</label>
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="输入多行文本..."
             aria-label="输入文本"
-            className="tool-area w-full h-[350px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#00d9ff]/30 transition-colors placeholder:text-[#333]"
+            className="tool-area w-full h-[350px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#00d9ff]/30 transition-colors placeholder:text-[var(--text-faint)]"
           />
         </motion.div>
 
         {/* Output */}
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
           <div className="flex items-center justify-between mb-2 ml-1">
-            <label className="text-sm font-medium text-[#a8b2c1]">输出结果</label>
+            <label className="text-sm font-medium text-[var(--text-secondary)]">输出结果</label>
             {output && (
               <button onClick={() => navigator.clipboard.writeText(output)} className="btn-secondary !py-1.5 !px-3 text-xs">
                 <Copy size={13} className="inline mr-1" /> 复制
@@ -153,7 +153,7 @@ export default function LineNumberTool() {
             value={output}
             placeholder="结果将显示在这里..."
             aria-label="输出结果"
-            className="tool-area w-full h-[350px] p-5 text-sm leading-relaxed resize-none outline-none text-[#a8b2c1] placeholder:text-[#333]"
+            className="tool-area w-full h-[350px] p-5 text-sm leading-relaxed resize-none outline-none text-[var(--text-secondary)] placeholder:text-[var(--text-faint)]"
           />
         </motion.div>
       </div>

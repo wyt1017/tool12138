@@ -148,7 +148,7 @@ export default function TextDiff() {
       case 'modify':
         return 'bg-amber-500/15 border-l-2 border-amber-500 text-amber-300';
       default:
-        return 'bg-white/[0.02] border-l-2 border-white/10 text-[#888]';
+        return 'bg-[var(--bg-hover)] border-l-2 border-[var(--border-color)] text-[var(--text-faint)]';
     }
   };
 
@@ -173,32 +173,32 @@ export default function TextDiff() {
           <div className="w-10 h-10 rounded-xl bg-[#00d9ff]/15 flex items-center justify-center">
             <GitCompare size={20} className="text-[#00d9ff]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">文本差异对比</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">文本差异对比</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">逐行对比两段文本，高亮显示新增、删除和修改内容</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">逐行对比两段文本，高亮显示新增、删除和修改内容</p>
       </motion.div>
 
       {/* Input Areas */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
-          <label className="block text-sm font-medium text-[#a8b2c1] mb-2 ml-1">原始文本</label>
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2 ml-1">原始文本</label>
           <textarea
             value={oldText}
             onChange={(e) => setOldText(e.target.value)}
             placeholder="粘贴原始文本..."
             aria-label="原始文本"
-            className="tool-area w-full h-[280px] p-4 text-white text-sm leading-relaxed resize-none outline-none focus:border-[#00d9ff]/30 transition-colors placeholder:text-[#333]"
+            className="tool-area w-full h-[280px] p-4 text-[var(--text-primary)] text-sm leading-relaxed resize-none outline-none focus:border-[#00d9ff]/30 transition-colors placeholder:text-[var(--text-faint)]"
           />
         </motion.div>
 
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 }}>
-          <label className="block text-sm font-medium text-[#a8b2c1] mb-2 ml-1">新文本</label>
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2 ml-1">新文本</label>
           <textarea
             value={newText}
             onChange={(e) => setNewText(e.target.value)}
             placeholder="粘贴新文本..."
             aria-label="新文本"
-            className="tool-area w-full h-[280px] p-4 text-white text-sm leading-relaxed resize-none outline-none focus:border-[#00d9ff]/30 transition-colors placeholder:text-[#333]"
+            className="tool-area w-full h-[280px] p-4 text-[var(--text-primary)] text-sm leading-relaxed resize-none outline-none focus:border-[#00d9ff]/30 transition-colors placeholder:text-[var(--text-faint)]"
           />
         </motion.div>
       </div>
@@ -230,16 +230,16 @@ export default function TextDiff() {
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex flex-wrap gap-4">
                 <span className="flex items-center gap-1.5 text-sm">
-                  <span className="w-3 h-3 rounded bg-emerald-500" /> 新增 <strong className="text-white ml-1">{stats.add}</strong> 行
+                  <span className="w-3 h-3 rounded bg-emerald-500" /> 新增 <strong className="text-[var(--text-primary)] ml-1">{stats.add}</strong> 行
                 </span>
                 <span className="flex items-center gap-1.5 text-sm">
-                  <span className="w-3 h-3 rounded bg-red-500" /> 删除 <strong className="text-white ml-1">{stats.remove}</strong> 行
+                  <span className="w-3 h-3 rounded bg-red-500" /> 删除 <strong className="text-[var(--text-primary)] ml-1">{stats.remove}</strong> 行
                 </span>
                 <span className="flex items-center gap-1.5 text-sm">
-                  <span className="w-3 h-3 rounded bg-amber-500" /> 修改 <strong className="text-white ml-1">{stats.modify}</strong> 行
+                  <span className="w-3 h-3 rounded bg-amber-500" /> 修改 <strong className="text-[var(--text-primary)] ml-1">{stats.modify}</strong> 行
                 </span>
                 <span className="flex items-center gap-1.5 text-sm">
-                  <span className="w-3 h-3 rounded bg-white/20" /> 未变 <strong className="text-white ml-1">{stats.unchanged}</strong> 行
+                  <span className="w-3 h-3 rounded bg-[var(--bg-secondary)]" /> 未变 <strong className="text-[var(--text-primary)] ml-1">{stats.unchanged}</strong> 行
                 </span>
               </div>
               <button onClick={handleCopy} className="btn-secondary !py-1.5 !px-3 text-xs">
@@ -260,7 +260,7 @@ export default function TextDiff() {
               <div className="font-mono text-xs sm:text-sm">
                 {diffResult.map((line, idx) => (
                   <div key={idx} className={`flex ${getLineColor(line.type)} py-1 px-3`}>
-                    <span className="w-7 text-right mr-3 text-[#555] select-none flex-shrink-0">
+                    <span className="w-7 text-right mr-3 text-[var(--text-faint)] select-none flex-shrink-0">
                       {line.oldLineNum ?? line.newLineNum ?? ''}
                     </span>
                     <span className="w-4 text-center mr-3 select-none flex-shrink-0 font-bold">{getSymbol(line.type)}</span>
@@ -269,7 +269,7 @@ export default function TextDiff() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12 text-[#666]">两段文本完全相同，无差异</div>
+              <div className="text-center py-12 text-[var(--text-faint)]">两段文本完全相同，无差异</div>
             )}
           </div>
         </motion.div>

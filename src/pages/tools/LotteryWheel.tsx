@@ -187,9 +187,9 @@ export default function LotteryWheel() {
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${color}24` }}>
             <Dice1 size={20} style={{ color }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">抽奖转盘 / 抽签</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">抽奖转盘 / 抽签</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">可自定义奖项与权重的概率转盘，以及随机抽签</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">可自定义奖项与权重的概率转盘，以及随机抽签</p>
       </motion.div>
 
       <div className="flex flex-wrap gap-2 mb-6">
@@ -201,7 +201,7 @@ export default function LotteryWheel() {
             key={m.k}
             onClick={() => setTab(m.k)}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-              tab === m.k ? '' : 'bg-white/5 text-[#666] hover:text-white hover:bg-white/10'
+              tab === m.k ? '' : 'bg-[var(--bg-hover)] text-[var(--text-faint)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]'
             }`}
             style={tab === m.k ? { background: `${color}30`, border: `1px solid ${color}50` } : {}}
           >
@@ -215,7 +215,7 @@ export default function LotteryWheel() {
           <div className="glass-card p-6">
             <div className="relative w-72 h-72 mx-auto mb-4">
               <div
-                className="absolute inset-0 rounded-full border-4 border-white/10 shadow-2xl"
+                className="absolute inset-0 rounded-full border-4 border-[var(--border-color)] shadow-2xl"
                 style={{
                   background: `conic-gradient(${gradient})`,
                   transform: `rotate(${rotation}deg)`,
@@ -254,23 +254,23 @@ export default function LotteryWheel() {
             {winner && !spinning && (
               <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
                 className="text-center mb-4">
-                <div className="text-xs text-[#666] mb-2">🎉 中奖</div>
+                <div className="text-xs text-[var(--text-faint)] mb-2">🎉 中奖</div>
                 <div
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-full"
                   style={{ background: `${winnerColor ?? color}1a`, border: `1px solid ${winnerColor ?? color}50` }}
                 >
                   <span className="w-2.5 h-2.5 rounded-full" style={{ background: winnerColor ?? color }} />
-                  <span className="font-['Syne'] font-bold text-xl text-white">{winner}</span>
+                  <span className="font-['Syne'] font-bold text-xl text-[var(--text-primary)]">{winner}</span>
                 </div>
               </motion.div>
             )}
 
             <div className="flex flex-wrap gap-2 mb-4">
               {prizes.map((p, i) => (
-                <div key={i} className="flex items-center gap-1.5 bg-white/5 rounded-full px-3 py-1 text-xs">
+                <div key={i} className="flex items-center gap-1.5 bg-[var(--bg-hover)] rounded-full px-3 py-1 text-xs">
                   <span className="w-2.5 h-2.5 rounded-full" style={{ background: PALETTE[i % PALETTE.length] }} />
-                  <span className="text-white">{p.name}</span>
-                  <span className="text-[#666]">{((Math.max(p.weight, 0) / totalWeight) * 100).toFixed(0)}%</span>
+                  <span className="text-[var(--text-primary)]">{p.name}</span>
+                  <span className="text-[var(--text-faint)]">{((Math.max(p.weight, 0) / totalWeight) * 100).toFixed(0)}%</span>
                 </div>
               ))}
             </div>
@@ -278,7 +278,7 @@ export default function LotteryWheel() {
 
           <div className="glass-card p-6">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm text-white font-medium">奖项设置</h3>
+              <h3 className="text-sm text-[var(--text-primary)] font-medium">奖项设置</h3>
               <button onClick={addPrize} className="btn-secondary flex items-center gap-1 !px-3 !py-1.5 text-xs">
                 <Plus size={12} /> 添加
               </button>
@@ -290,38 +290,38 @@ export default function LotteryWheel() {
                   <input
                     value={p.name}
                     onChange={(e) => updatePrize(i, { name: e.target.value })}
-                    className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-[#f472b6]/40"
+                    className="flex-1 bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-3 py-2 text-[var(--text-primary)] text-sm outline-none focus:border-[#f472b6]/40"
                   />
-                  <div className="flex items-center gap-1 text-xs text-[#666]">
+                  <div className="flex items-center gap-1 text-xs text-[var(--text-faint)]">
                     <span>权重</span>
                     <input
                       type="number"
                       value={p.weight}
                       min={0}
                       onChange={(e) => updatePrize(i, { weight: parseFloat(e.target.value) || 0 })}
-                      className="w-16 bg-white/5 border border-white/10 rounded-lg px-2 py-2 text-white text-sm outline-none focus:border-[#f472b6]/40"
+                      className="w-16 bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-2 py-2 text-[var(--text-primary)] text-sm outline-none focus:border-[#f472b6]/40"
                     />
                   </div>
-                  <button onClick={() => removePrize(i)} className="text-[#666] hover:text-[#e94560] p-1">
+                  <button onClick={() => removePrize(i)} className="text-[var(--text-faint)] hover:text-[#e94560] p-1">
                     <Trash2 size={14} />
                   </button>
                 </div>
               ))}
             </div>
             {wheelHistory.length > 0 && (
-              <div className="mt-4 pt-3 border-t border-white/5">
+              <div className="mt-4 pt-3 border-t border-[var(--border-color)]">
                 <div className="flex items-center justify-between mb-2">
-                  <div className="text-xs text-[#666]">最近中奖</div>
+                  <div className="text-xs text-[var(--text-faint)]">最近中奖</div>
                   <button
                     onClick={() => setWheelHistory([])}
-                    className="text-[10px] text-[#666] hover:text-[#e94560] flex items-center gap-1"
+                    className="text-[10px] text-[var(--text-faint)] hover:text-[#e94560] flex items-center gap-1"
                   >
                     <RotateCcw size={10} /> 清空
                   </button>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {wheelHistory.map((h, i) => (
-                    <span key={i} className="bg-white/5 rounded px-2 py-0.5 text-xs text-[#a8b2c1]">{h}</span>
+                    <span key={i} className="bg-[var(--bg-hover)] rounded px-2 py-0.5 text-xs text-[var(--text-secondary)]">{h}</span>
                   ))}
                 </div>
               </div>
@@ -331,25 +331,25 @@ export default function LotteryWheel() {
       ) : (
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
           <div className="glass-card p-6">
-            <label className="text-xs text-[#666] mb-1.5 block">候选名单（每行一个，或用逗号分隔）</label>
+            <label className="text-xs text-[var(--text-faint)] mb-1.5 block">候选名单（每行一个，或用逗号分隔）</label>
             <textarea
               value={candidates}
               onChange={(e) => setCandidates(e.target.value)}
               rows={5}
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white text-sm outline-none focus:border-[#f472b6]/40 resize-none"
+              className="w-full bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-[var(--text-primary)] text-sm outline-none focus:border-[#f472b6]/40 resize-none"
             />
             <div className="flex flex-wrap items-center gap-4 mt-4">
-              <div className="flex items-center gap-2 text-sm text-[#666]">
+              <div className="flex items-center gap-2 text-sm text-[var(--text-faint)]">
                 <span>抽取数量</span>
                 <input
                   type="number"
                   min={1}
                   value={drawCount}
                   onChange={(e) => setDrawCount(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-16 bg-white/5 border border-white/10 rounded-lg px-2 py-2 text-white text-sm outline-none focus:border-[#f472b6]/40"
+                  className="w-16 bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-2 py-2 text-[var(--text-primary)] text-sm outline-none focus:border-[#f472b6]/40"
                 />
               </div>
-              <label className="flex items-center gap-2 text-sm text-[#a8b2c1] cursor-pointer">
+              <label className="flex items-center gap-2 text-sm text-[var(--text-secondary)] cursor-pointer">
                 <input type="checkbox" checked={allowRepeat} onChange={(e) => setAllowRepeat(e.target.checked)} className="accent-[#f472b6]" />
                 允许重复
               </label>
@@ -362,14 +362,14 @@ export default function LotteryWheel() {
           {drawResult.length > 0 && (
             <div className="glass-card p-6">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm text-white font-medium">抽签结果</h3>
+                <h3 className="text-sm text-[var(--text-primary)] font-medium">抽签结果</h3>
                 <button onClick={copyDraw} className="btn-secondary flex items-center gap-2 !px-4 !py-1.5 text-xs">
                   <Copy size={12} /> {drawCopied ? '已复制' : '复制'}
                 </button>
               </div>
               <div className="flex flex-wrap gap-2">
                 {drawResult.map((r, i) => (
-                  <span key={i} className="bg-white/10 rounded-lg px-4 py-2 text-white font-medium">{r}</span>
+                  <span key={i} className="bg-[var(--bg-secondary)] rounded-lg px-4 py-2 text-[var(--text-primary)] font-medium">{r}</span>
                 ))}
               </div>
             </div>

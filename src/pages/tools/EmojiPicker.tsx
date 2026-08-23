@@ -549,7 +549,7 @@ export default function EmojiPicker() {
           <div style={{ width: 40, height: 40, borderRadius: 12, background: `${color}24`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Smile size={20} style={{ color }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">Emoji表情大全</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">Emoji表情大全</h1>
         </div>
         <p style={{ color: '#a8b2c1', marginLeft: 52 }}>分类展示所有Emoji表情（支持搜索），点击即可复制到剪贴板</p>
       </motion.div>
@@ -558,14 +558,14 @@ export default function EmojiPicker() {
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="glass-card p-4 mb-6">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 flex-1">
-            <Search size={18} className="text-[#666]" />
+            <Search size={18} className="text-[var(--text-faint)]" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="搜索Emoji（如：笑、爱、狗、苹果）..."
               aria-label="搜索Emoji"
-              className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm text-white outline-none focus:border-[#ffd369]/30 w-full"
+              className="bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[#ffd369]/30 w-full"
             />
           </div>
           {copiedEmoji && (
@@ -603,7 +603,7 @@ export default function EmojiPicker() {
       {/* Emoji Grid */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="glass-card p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-medium text-[#a8b2c1]">
+          <h2 className="text-sm font-medium text-[var(--text-secondary)]">
             {searchQuery ? `搜索结果 (${filteredEmojis.length})` : `${selectedCategory} (${filteredEmojis.length})`}
           </h2>
         </div>
@@ -615,7 +615,7 @@ export default function EmojiPicker() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: Math.min(i * 0.01, 0.5) }}
               onClick={() => copyEmoji(emoji)}
-              className="text-2xl p-2 rounded-lg hover:bg-white/10 transition-all cursor-pointer active:scale-90"
+              className="text-2xl p-2 rounded-lg hover:bg-[var(--bg-secondary)] transition-all cursor-pointer active:scale-90"
               title="点击复制"
             >
               {emoji}
@@ -623,14 +623,14 @@ export default function EmojiPicker() {
           ))}
         </div>
         {filteredEmojis.length === 0 && (
-          <div className="text-center text-[#666] py-8">没有找到匹配的Emoji</div>
+          <div className="text-center text-[var(--text-faint)] py-8">没有找到匹配的Emoji</div>
         )}
       </motion.div>
 
       {/* Tips */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="glass-card p-4 mt-6">
-        <p className="text-xs text-[#666]">
-          <strong className="text-[#a8b2c1]">提示：</strong>
+        <p className="text-xs text-[var(--text-faint)]">
+          <strong className="text-[var(--text-secondary)]">提示：</strong>
           点击任意Emoji即可复制到剪贴板，可直接粘贴到聊天、文档等场景使用。支持中文关键词搜索，如输入"笑"、"爱"、"狗"等。
         </p>
       </motion.div>

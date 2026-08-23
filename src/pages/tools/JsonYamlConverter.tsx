@@ -155,7 +155,7 @@ export default function JsonYamlConverter() {
           <div style={{ width: 40, height: 40, borderRadius: 12, background: `${color}24`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <FileCode size={20} style={{ color }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">JSON/YAML互转</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">JSON/YAML互转</h1>
         </div>
         <p style={{ color: '#a8b2c1', marginLeft: 52 }}>将JSON文本转换为YAML格式，或将YAML转换回JSON，支持格式校验</p>
       </motion.div>
@@ -198,7 +198,7 @@ export default function JsonYamlConverter() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
-          <label className="text-sm font-medium text-[#a8b2c1] mb-2 ml-1 block">
+          <label className="text-sm font-medium text-[var(--text-secondary)] mb-2 ml-1 block">
             {mode === 'json2yaml' ? 'JSON输入' : 'YAML输入'}
           </label>
           <textarea
@@ -206,14 +206,14 @@ export default function JsonYamlConverter() {
             onChange={(e) => setInput(e.target.value)}
             placeholder={mode === 'json2yaml' ? '粘贴JSON内容...' : '粘贴YAML内容...'}
             aria-label={mode === 'json2yaml' ? 'JSON输入' : 'YAML输入'}
-            className="tool-area w-full h-[350px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#a78bfa]/30 transition-colors placeholder:text-[#333] font-mono"
+            className="tool-area w-full h-[350px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#a78bfa]/30 transition-colors placeholder:text-[var(--text-faint)] font-mono"
           />
         </motion.div>
 
         {/* Output */}
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
           <div className="flex items-center justify-between mb-2 ml-1">
-            <label className="text-sm font-medium text-[#a8b2c1]">
+            <label className="text-sm font-medium text-[var(--text-secondary)]">
               {mode === 'json2yaml' ? 'YAML输出' : 'JSON输出'}
             </label>
             {output && (
@@ -227,7 +227,7 @@ export default function JsonYamlConverter() {
             value={output}
             placeholder="结果将显示在这里..."
             aria-label="输出结果"
-            className="tool-area w-full h-[350px] p-5 text-sm leading-relaxed resize-none outline-none text-[#a8b2c1] placeholder:text-[#333] font-mono"
+            className="tool-area w-full h-[350px] p-5 text-sm leading-relaxed resize-none outline-none text-[var(--text-secondary)] placeholder:text-[var(--text-faint)] font-mono"
           />
         </motion.div>
       </div>
@@ -235,7 +235,7 @@ export default function JsonYamlConverter() {
       {/* Error */}
       {error && (
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="glass-card p-4 mt-6 border border-red-500/30">
-          <span className="text-red-400 text-sm">{error}</span>
+          <span className="text-[var(--danger)] text-sm">{error}</span>
         </motion.div>
       )}
 

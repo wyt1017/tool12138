@@ -103,9 +103,9 @@ export default function FullhalfConverter() {
           <div className="w-10 h-10 rounded-xl bg-[#a78bfa]/15 flex items-center justify-center">
             <Type size={20} className="text-[#a78bfa]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">全角半角转换</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">全角半角转换</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">在半角与全角字符之间快速转换，支持字母、数字和标点符号</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">在半角与全角字符之间快速转换，支持字母、数字和标点符号</p>
       </motion.div>
 
       {/* Options */}
@@ -122,7 +122,7 @@ export default function FullhalfConverter() {
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
                 options[opt.key]
                   ? 'bg-[#a78bfa]/15 text-[#a78bfa] border border-[#a78bfa]/30'
-                  : 'bg-white/5 text-[#666] border border-white/10'
+                  : 'bg-[var(--bg-hover)] text-[var(--text-faint)] border border-[var(--border-color)]'
               }`}
             >
               <span
@@ -141,13 +141,13 @@ export default function FullhalfConverter() {
 
       {/* Input Area */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
-        <label className="text-sm font-medium text-[#a8b2c1] mb-2 block ml-1">输入文本</label>
+        <label className="text-sm font-medium text-[var(--text-secondary)] mb-2 block ml-1">输入文本</label>
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="输入要转换的文本，支持中文、英文、数字、标点..."
           aria-label="输入文本"
-          className="tool-area w-full h-[240px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#a78bfa]/30 transition-colors placeholder:text-[#333]"
+          className="tool-area w-full h-[240px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#a78bfa]/30 transition-colors placeholder:text-[var(--text-faint)]"
         />
       </motion.div>
 
@@ -179,7 +179,7 @@ export default function FullhalfConverter() {
             transition={{ delay: 0.25 }}
             className="mt-6 glass-card p-4"
           >
-            <p className="text-sm text-[#a8b2c1]">
+            <p className="text-sm text-[var(--text-secondary)]">
               共转换了 <span className="text-[#a78bfa] font-bold text-base mx-1">{convertCount}</span> 个字符
             </p>
           </motion.div>

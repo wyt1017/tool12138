@@ -77,16 +77,17 @@ export default function ScientificCalculator() {
     else if (btn === '=') evaluate();
     else if (btn === '←') setExpression(prev => prev.slice(0, -1));
     else if (btn === '!') setExpression(prev => prev + '!');
+    else setExpression(prev => prev + btn);   // 数字/运算符/函数/小数点等追加到表达式
   };
 
   const getButtonProps = (btn: string) => {
     if (btn === '=') return { className: 'bg-[#e94560]/15 text-[#e94560] hover:bg-[#e94560]/25', style: { WebkitTextFillColor: '#e94560' } as React.CSSProperties };
-    if (btn === 'C') return { className: 'bg-red-500/15 text-red-400 hover:bg-red-500/25' };
+    if (btn === 'C') return { className: 'bg-red-500/15 text-[var(--danger)] hover:bg-red-500/25' };
     if (btn === '←') return { className: 'bg-yellow-500/15 text-yellow-400 hover:bg-yellow-500/25' };
     if (['÷', '×', '+', '-', '%', '^', '!'].includes(btn)) return { className: 'bg-blue-500/15 text-blue-400 hover:bg-blue-500/25' };
     if (['sin', 'cos', 'tan', 'asin', 'acos', 'atan', 'log', 'ln', 'sqrt', 'abs', 'exp'].includes(btn)) return { className: 'bg-purple-500/15 text-purple-400 hover:bg-purple-500/25' };
     if (['pi', 'e'].includes(btn)) return { className: 'bg-green-500/15 text-green-400 hover:bg-green-500/25' };
-    return { className: 'bg-white/5 text-white hover:bg-white/10' };
+    return { className: 'bg-[var(--bg-hover)] text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]' };
   };
 
   return (
@@ -97,7 +98,7 @@ export default function ScientificCalculator() {
           <div style={{ width: 40, height: 40, borderRadius: 12, background: `${COLOR}24`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Calculator size={20} style={{ color: COLOR }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">科学计算器</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">科学计算器</h1>
         </div>
         <p style={{ color: '#a8b2c1', marginLeft: 52 }}>支持三角函数、指数、对数、幂运算等科学计算，实时表达式求值</p>
       </motion.div>
@@ -113,13 +114,13 @@ export default function ScientificCalculator() {
             onKeyDown={(e) => e.key === 'Enter' && evaluate()}
             placeholder="输入表达式，如 sin(pi/2) + log(100)"
             aria-label="数学表达式"
-            className="bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-lg text-white outline-none focus:border-[#e94560]/30 w-full font-mono"
+            className="bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-3 text-lg text-[var(--text-primary)] outline-none focus:border-[#e94560]/30 w-full font-mono"
           />
         </div>
 
         {/* Result */}
-        <div className="flex items-center justify-between mb-4 bg-white/5 rounded-lg px-4 py-3">
-          <div className="text-lg text-[#a8b2c1] font-mono">
+        <div className="flex items-center justify-between mb-4 bg-[var(--bg-hover)] rounded-lg px-4 py-3">
+          <div className="text-lg text-[var(--text-secondary)] font-mono">
             {result || '等待计算...'}
           </div>
           {result && result !== '计算错误' && result !== '表达式错误' && (
@@ -151,9 +152,9 @@ export default function ScientificCalculator() {
         </div>
 
         {/* Function Reference */}
-        <div className="mt-4 p-4 bg-white/5 rounded-lg">
-          <h3 className="text-xs text-[#666] mb-2">函数说明</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs text-[#a8b2c1]">
+        <div className="mt-4 p-4 bg-[var(--bg-hover)] rounded-lg">
+          <h3 className="text-xs text-[var(--text-faint)] mb-2">函数说明</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs text-[var(--text-secondary)]">
             <div>sin/cos/tan - 三角函数</div>
             <div>asin/acos/atan - 反三角</div>
             <div>log - 以10为底对数</div>
@@ -170,10 +171,10 @@ export default function ScientificCalculator() {
       {/* History */}
       {history.length > 0 && (
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="glass-card p-4 mt-6">
-          <h3 className="text-sm font-medium text-[#a8b2c1] mb-3">计算历史</h3>
-          <div className="space-y-1 text-xs text-[#666]">
+          <h3 className="text-sm font-medium text-[var(--text-secondary)] mb-3">计算历史</h3>
+          <div className="space-y-1 text-xs text-[var(--text-faint)]">
             {history.map((h, i) => (
-              <div key={i} className="bg-white/5 rounded px-2 py-1.5 font-mono">{h}</div>
+              <div key={i} className="bg-[var(--bg-hover)] rounded px-2 py-1.5 font-mono">{h}</div>
             ))}
           </div>
         </motion.div>

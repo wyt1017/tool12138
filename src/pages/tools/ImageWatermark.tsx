@@ -106,17 +106,17 @@ export default function ImageWatermark() {
           <div className="w-10 h-10 rounded-xl bg-[#00d9ff]/15 flex items-center justify-center">
             <Droplet size={20} className="text-[#00d9ff]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">图片水印工具</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">图片水印工具</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">在图片上添加文字水印，可自定义位置、透明度、大小</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">在图片上添加文字水印，可自定义位置、透明度、大小</p>
       </motion.div>
 
       {/* Upload */}
       {!image && (
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
-          <label className="glass-card p-12 flex flex-col items-center justify-center cursor-pointer hover:bg-white/5 transition-colors">
-            <Upload size={48} className="text-[#666] mb-4" />
-            <span className="text-[#a8b2c1] mb-2">点击上传图片</span>
+          <label className="glass-card p-12 flex flex-col items-center justify-center cursor-pointer hover:bg-[var(--bg-hover)] transition-colors">
+            <Upload size={48} className="text-[var(--text-faint)] mb-4" />
+            <span className="text-[var(--text-secondary)] mb-2">点击上传图片</span>
             <input type="file" accept="image/*" onChange={handleFileUpload} aria-label="上传图片" className="hidden" />
           </label>
         </motion.div>
@@ -128,7 +128,7 @@ export default function ImageWatermark() {
           {/* Original */}
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
             <div className="glass-card p-4">
-              <label className="text-sm font-medium text-[#a8b2c1] mb-3 block">原始图片</label>
+              <label className="text-sm font-medium text-[var(--text-secondary)] mb-3 block">原始图片</label>
               <div className="bg-white rounded-lg p-2">
                 <img src={image} alt="Original" className="max-w-full max-h-[250px]" />
               </div>
@@ -141,27 +141,27 @@ export default function ImageWatermark() {
 
           {/* Options */}
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="glass-card p-6">
-            <h2 className="text-sm font-medium text-[#a8b2c1] mb-4">水印设置</h2>
+            <h2 className="text-sm font-medium text-[var(--text-secondary)] mb-4">水印设置</h2>
 
             <div className="mb-4">
-              <label className="text-xs text-[#666] block mb-2">水印文字</label>
+              <label className="text-xs text-[var(--text-faint)] block mb-2">水印文字</label>
               <input
                 type="text"
                 value={watermarkText}
                 onChange={(e) => setWatermarkText(e.target.value)}
                 placeholder="输入水印文字..."
                 aria-label="水印文字"
-                className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm text-white outline-none focus:border-[#00d9ff]/30 w-full"
+                className="bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[#00d9ff]/30 w-full"
               />
             </div>
 
             <div className="mb-4">
-              <label className="text-xs text-[#666] block mb-2">位置</label>
+              <label className="text-xs text-[var(--text-faint)] block mb-2">位置</label>
               {/* Custom dropdown */}
               <div className="relative">
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm text-white outline-none focus:border-[#00d9ff]/30 w-full flex items-center justify-between"
+                  className="bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[#00d9ff]/30 w-full flex items-center justify-between"
                 >
                   <span>{POSITION_OPTIONS.find(o => o.value === position)?.label}</span>
                   <svg className={`w-4 h-4 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -171,13 +171,13 @@ export default function ImageWatermark() {
                 {dropdownOpen && (
                   <>
                     <div className="fixed inset-0 z-10" onClick={() => setDropdownOpen(false)} />
-                    <div className="absolute top-full left-0 mt-1 w-full bg-[#1a1a2e] border border-white/10 rounded-lg shadow-xl z-20 overflow-hidden">
+                    <div className="absolute top-full left-0 mt-1 w-full bg-[var(--bg-elevated)] border border-[var(--border-color)] rounded-lg shadow-xl z-20 overflow-hidden">
                       {POSITION_OPTIONS.map(opt => (
                         <button
                           key={opt.value}
                           onClick={() => selectPosition(opt.value)}
                           className={`w-full px-4 py-2.5 text-left text-sm transition-colors ${
-                            position === opt.value ? 'bg-[#00d9ff]/15 text-[#00d9ff]' : 'text-[#a8b2c1] hover:bg-white/5'
+                            position === opt.value ? 'bg-[#00d9ff]/15 text-[#00d9ff]' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]'
                           }`}
                         >
                           {opt.label}
@@ -190,7 +190,7 @@ export default function ImageWatermark() {
             </div>
 
             <div className="mb-4">
-              <label className="text-xs text-[#666] block mb-2">透明度</label>
+              <label className="text-xs text-[var(--text-faint)] block mb-2">透明度</label>
               <input
                 type="range"
                 min={0.1}
@@ -201,11 +201,11 @@ export default function ImageWatermark() {
                 aria-label="透明度"
                 className="w-full"
               />
-              <div className="text-xs text-[#a8b2c1] mt-1">{Math.round(opacity * 100)}%</div>
+              <div className="text-xs text-[var(--text-secondary)] mt-1">{Math.round(opacity * 100)}%</div>
             </div>
 
             <div className="mb-4">
-              <label className="text-xs text-[#666] block mb-2">字体大小</label>
+              <label className="text-xs text-[var(--text-faint)] block mb-2">字体大小</label>
               <input
                 type="number"
                 value={fontSize}
@@ -213,12 +213,12 @@ export default function ImageWatermark() {
                 min={12}
                 max={100}
                 aria-label="字体大小"
-                className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm text-white outline-none focus:border-[#00d9ff]/30 w-full"
+                className="bg-[var(--bg-hover)] border border-[var(--border-color)] rounded-lg px-4 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[#00d9ff]/30 w-full"
               />
             </div>
 
             <div className="mb-4">
-              <label className="text-xs text-[#666] block mb-2">颜色</label>
+              <label className="text-xs text-[var(--text-faint)] block mb-2">颜色</label>
               <input
                 type="color"
                 value={color}
@@ -236,7 +236,7 @@ export default function ImageWatermark() {
           {/* Result */}
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
             <div className="glass-card p-4 h-full">
-              <label className="text-sm font-medium text-[#a8b2c1] mb-3 block">添加水印后</label>
+              <label className="text-sm font-medium text-[var(--text-secondary)] mb-3 block">添加水印后</label>
               {result ? (
                 <>
                   <div className="bg-white rounded-lg p-2 mb-3">
@@ -247,7 +247,7 @@ export default function ImageWatermark() {
                   </button>
                 </>
               ) : (
-                <div className="text-[#666] text-sm text-center py-12">等待添加水印...</div>
+                <div className="text-[var(--text-faint)] text-sm text-center py-12">等待添加水印...</div>
               )}
             </div>
           </motion.div>

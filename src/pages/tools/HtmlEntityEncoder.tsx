@@ -121,9 +121,9 @@ export default function HtmlEntityEncoder() {
           <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${COLOR}26` }}>
             <Code size={20} style={{ color: COLOR }} />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">HTML实体编解码</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">HTML实体编解码</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">将特殊字符转换为HTML安全实体，或反向还原</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">将特殊字符转换为HTML安全实体，或反向还原</p>
       </motion.div>
 
       {/* Mode Toggle */}
@@ -131,7 +131,7 @@ export default function HtmlEntityEncoder() {
         <button
           onClick={() => setMode('encode')}
           className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-            mode === 'encode' ? `bg-[#e94560]/15 text-[#e94560]` : 'bg-white/5 text-[#666]'
+            mode === 'encode' ? `bg-[#e94560]/15 text-[#e94560]` : 'bg-[var(--bg-hover)] text-[var(--text-faint)]'
           }`}
         >
           编码 → HTML实体
@@ -139,7 +139,7 @@ export default function HtmlEntityEncoder() {
         <button
           onClick={() => setMode('decode')}
           className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-            mode === 'decode' ? `bg-[#00d9ff]/15 text-[#00d9ff]` : 'bg-white/5 text-[#666]'
+            mode === 'decode' ? `bg-[#00d9ff]/15 text-[#00d9ff]` : 'bg-[var(--bg-hover)] text-[var(--text-faint)]'
           }`}
         >
           解码 ← HTML实体
@@ -150,7 +150,7 @@ export default function HtmlEntityEncoder() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
-          <label className="text-sm font-medium text-[#a8b2c1] mb-2 ml-1 block">
+          <label className="text-sm font-medium text-[var(--text-secondary)] mb-2 ml-1 block">
             {mode === 'encode' ? '原始文本' : 'HTML实体文本'}
           </label>
           <textarea
@@ -158,14 +158,14 @@ export default function HtmlEntityEncoder() {
             onChange={(e) => setInput(e.target.value)}
             placeholder={mode === 'encode' ? '输入包含特殊字符的文本...' : '输入HTML实体编码的文本...'}
             aria-label="输入文本"
-            className="tool-area w-full h-[280px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#e94560]/30 transition-colors placeholder:text-[#333]"
+            className="tool-area w-full h-[280px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#e94560]/30 transition-colors placeholder:text-[var(--text-faint)]"
           />
         </motion.div>
 
         {/* Output */}
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
           <div className="flex items-center justify-between mb-2 ml-1">
-            <label className="text-sm font-medium text-[#a8b2c1]">
+            <label className="text-sm font-medium text-[var(--text-secondary)]">
               {mode === 'encode' ? 'HTML实体结果' : '解码结果'}
             </label>
             {output && (
@@ -179,7 +179,7 @@ export default function HtmlEntityEncoder() {
             value={output}
             placeholder="结果将显示在这里..."
             aria-label="输出结果"
-            className="tool-area w-full h-[280px] p-5 text-sm leading-relaxed resize-none outline-none text-[#a8b2c1] placeholder:text-[#333]"
+            className="tool-area w-full h-[280px] p-5 text-sm leading-relaxed resize-none outline-none text-[var(--text-secondary)] placeholder:text-[var(--text-faint)]"
           />
         </motion.div>
       </div>
@@ -204,7 +204,7 @@ export default function HtmlEntityEncoder() {
 
       {/* Common Entities Reference */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="glass-card p-6 mt-6">
-        <h2 className="text-sm font-medium text-[#a8b2c1] mb-4">常用HTML实体参考</h2>
+        <h2 className="text-sm font-medium text-[var(--text-secondary)] mb-4">常用HTML实体参考</h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2 text-xs">
           {[
             { char: '<', entity: '&lt;' },
@@ -220,9 +220,9 @@ export default function HtmlEntityEncoder() {
             { char: '°', entity: '&deg;' },
             { char: '±', entity: '&plusmn;' },
           ].map((item, i) => (
-            <div key={i} className="bg-white/5 rounded px-2 py-1.5 flex items-center justify-between">
-              <span className="text-white">{item.char}</span>
-              <code className="text-[#a8b2c1] font-mono">{item.entity}</code>
+            <div key={i} className="bg-[var(--bg-hover)] rounded px-2 py-1.5 flex items-center justify-between">
+              <span className="text-[var(--text-primary)]">{item.char}</span>
+              <code className="text-[var(--text-secondary)] font-mono">{item.entity}</code>
             </div>
           ))}
         </div>

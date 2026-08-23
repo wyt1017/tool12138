@@ -157,9 +157,9 @@ export default function ScTcConverter() {
           <div className="w-10 h-10 rounded-xl bg-[#00d9ff]/15 flex items-center justify-center">
             <Languages size={20} className="text-[#00d9ff]" />
           </div>
-          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-white">简繁体转换</h1>
+          <h1 className="font-['Syne'] font-bold text-2xl sm:text-3xl text-[var(--text-primary)]">简繁体转换</h1>
         </div>
-        <p className="text-[#a8b2c1] ml-[52px]">简体中文与繁体中文互转，内置常用汉字对照表</p>
+        <p className="text-[var(--text-secondary)] ml-[52px]">简体中文与繁体中文互转，内置常用汉字对照表</p>
       </motion.div>
 
       {/* Mode Toggle */}
@@ -167,7 +167,7 @@ export default function ScTcConverter() {
         <button
           onClick={() => setMode('sc2tc')}
           className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-            mode === 'sc2tc' ? 'bg-[#00d9ff]/15 text-[#00d9ff]' : 'bg-white/5 text-[#666]'
+            mode === 'sc2tc' ? 'bg-[#00d9ff]/15 text-[#00d9ff]' : 'bg-[var(--bg-hover)] text-[var(--text-faint)]'
           }`}
         >
           简体 → 繁体
@@ -175,7 +175,7 @@ export default function ScTcConverter() {
         <button
           onClick={() => setMode('tc2sc')}
           className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-            mode === 'tc2sc' ? 'bg-[#a78bfa]/15 text-[#a78bfa]' : 'bg-white/5 text-[#666]'
+            mode === 'tc2sc' ? 'bg-[#a78bfa]/15 text-[#a78bfa]' : 'bg-[var(--bg-hover)] text-[var(--text-faint)]'
           }`}
         >
           繁体 → 简体
@@ -184,15 +184,15 @@ export default function ScTcConverter() {
 
       {/* Input */}
       <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
-        <label className="text-sm font-medium text-[#a8b2c1] ml-1 mb-2 block">输入文本</label>
+        <label className="text-sm font-medium text-[var(--text-secondary)] ml-1 mb-2 block">输入文本</label>
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="输入要转换的文本..."
           aria-label="输入文本"
-          className="tool-area w-full h-[240px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#00d9ff]/30 transition-colors placeholder:text-[#333]"
+          className="tool-area w-full h-[240px] p-5 text-sm leading-relaxed resize-none outline-none focus:border-[#00d9ff]/30 transition-colors placeholder:text-[var(--text-faint)]"
         />
-        <div className="flex items-center gap-4 mt-2 ml-1 text-xs text-[#666]">
+        <div className="flex items-center gap-4 mt-2 ml-1 text-xs text-[var(--text-faint)]">
           <span>共 {input.length} 个字符</span>
           <span>|</span>
           <span>检测到 {scCount + tcCount} 个可转换字符</span>
@@ -211,15 +211,15 @@ export default function ScTcConverter() {
               </button>
             )}
           </div>
-          <div className={`tool-area w-full min-h-[200px] max-h-[300px] overflow-y-auto p-5 text-sm leading-relaxed ${!scResult ? 'text-[#555]' : ''}`}>
+          <div className={`tool-area w-full min-h-[200px] max-h-[300px] overflow-y-auto p-5 text-sm leading-relaxed ${!scResult ? 'text-[var(--text-faint)]' : ''}`}>
             {scResult ? (
               <pre className="whitespace-pre-wrap font-sans">{scResult}</pre>
             ) : (
-              <span className="text-[#333]">转换结果...</span>
+              <span className="text-[var(--text-faint)]">转换结果...</span>
             )}
           </div>
           {scResult && (
-            <p className="text-xs text-[#666] mt-2 ml-1">转换了 {scCount} 个字符</p>
+            <p className="text-xs text-[var(--text-faint)] mt-2 ml-1">转换了 {scCount} 个字符</p>
           )}
         </motion.div>
 
@@ -233,15 +233,15 @@ export default function ScTcConverter() {
               </button>
             )}
           </div>
-          <div className={`tool-area w-full min-h-[200px] max-h-[300px] overflow-y-auto p-5 text-sm leading-relaxed ${!tcResult ? 'text-[#555]' : ''}`}>
+          <div className={`tool-area w-full min-h-[200px] max-h-[300px] overflow-y-auto p-5 text-sm leading-relaxed ${!tcResult ? 'text-[var(--text-faint)]' : ''}`}>
             {tcResult ? (
               <pre className="whitespace-pre-wrap font-sans">{tcResult}</pre>
             ) : (
-              <span className="text-[#333]">转换结果...</span>
+              <span className="text-[var(--text-faint)]">转换结果...</span>
             )}
           </div>
           {tcResult && (
-            <p className="text-xs text-[#666] mt-2 ml-1">转换了 {tcCount} 个字符</p>
+            <p className="text-xs text-[var(--text-faint)] mt-2 ml-1">转换了 {tcCount} 个字符</p>
           )}
         </motion.div>
       </div>
