@@ -198,7 +198,7 @@ export default function CsvJsonConverter() {
             >
               <option value=",">逗号 (,)</option>
               <option value=";">分号 (;)</option>
-              <option value="\t">制表符 (Tab)</option>
+              <option value={'\t'}>制表符 (Tab)</option>
               <option value="|">竖线 (|)</option>
             </select>
           </div>

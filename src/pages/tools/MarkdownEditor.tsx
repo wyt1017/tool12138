@@ -164,7 +164,7 @@ export default function MarkdownEditor() {
       </div>
 
       {/* Editor Area */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4" style={{ display: mode === 'preview' ? 'none' : undefined }}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {(mode === 'edit' || mode === 'split') && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -193,3 +193,4 @@ export default function MarkdownEditor() {
     </div>
   );
 }
+

@@ -58,7 +58,7 @@ function toChineseIntegerPart(integerStr: string, mode: Mode): string {
       if (groupResult && groupIdx > 0) {
         groupResult += groupUnits[groupIdx];
       }
-      groupResults.unshift(groupResult);
+      groupResults.push(groupResult);
     }
   }
 

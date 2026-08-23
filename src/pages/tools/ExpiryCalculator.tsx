@@ -67,7 +67,10 @@ const STATUS_CONFIG: Record<ExpiryStatus, { label: string; color: string; bgColo
 };
 
 export default function ExpiryCalculator() {
-  const today = new Date().toISOString().split('T')[0];
+  const today = (() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  })();
 
   const [products, setProducts] = useState<ProductRecord[]>([
     { id: 1, name: '', productionDate: today, shelfLife: 30, shelfUnit: 'day' },
@@ -332,3 +335,4 @@ export default function ExpiryCalculator() {
     </div>
   );
 }
+

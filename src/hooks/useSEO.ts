@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { getToolByPath } from '@/data/tools';
+import { getToolByPath, tools } from '@/data/tools';
 
 const SITE_BASE = 'https://same-toolbox.pages.dev';
-const DEFAULT_TITLE = '瓜崎工具 - 66+ 款免费在线工具箱';
-const DEFAULT_DESC = '瓜崎工具 - 66+ 款免费在线工具箱，涵盖文本处理、开发工具、设计工具、密码生成、图片压缩、二维码生成等。数据本地处理，无需注册，保护隐私安全。';
+const TOOL_COUNT = tools.length + '+';
+const DEFAULT_TITLE = '瓜崎工具 - ' + TOOL_COUNT + ' 款免费在线工具箱';
+const DEFAULT_DESC = '瓜崎工具 - ' + TOOL_COUNT + ' 款免费在线工具箱，涵盖文本处理、开发工具、设计工具、密码生成、图片压缩、二维码生成等。数据本地处理，无需注册，保护隐私安全。';
 const DEFAULT_IMAGE = `${SITE_BASE}/favicon.svg`;
 
 function setMeta(name: string, content: string) {
@@ -54,16 +55,16 @@ export default function useSEO() {
     } else if (location.pathname === '/tools') {
       const title = '全部工具 - 瓜崎工具';
       document.title = title;
-      setMeta('description', '瓜崎工具 - 66+ 款免费在线开发工具合集，JSON格式化、Base64编解码、二维码生成、密码生成等全部免费使用。');
+      setMeta('description', '瓜崎工具 - ' + TOOL_COUNT + ' 款免费在线开发工具合集，JSON格式化、Base64编解码、二维码生成、密码生成等全部免费使用。');
       setProperty('og:title', title);
-      setProperty('og:description', '瓜崎工具 - 66+ 款免费在线开发工具合集。');
+      setProperty('og:description', '瓜崎工具 - ' + TOOL_COUNT + ' 款免费在线开发工具合集。');
       setProperty('og:url', SITE_BASE + '/tools');
       setProperty('og:image', DEFAULT_IMAGE);
       setProperty('og:type', 'website');
     } else if (location.pathname === '/about') {
       const title = '关于瓜崎工具';
       document.title = title;
-      setMeta('description', '瓜崎工具是一个开源的免费在线工具箱，提供66+款常用工具，所有数据在浏览器本地处理，不上传服务器。');
+      setMeta('description', '瓜崎工具是一个开源的免费在线工具箱，提供' + TOOL_COUNT + '款常用工具，所有数据在浏览器本地处理，不上传服务器。');
       setProperty('og:title', title);
       setProperty('og:description', '瓜崎工具是一个开源的免费在线工具箱。');
       setProperty('og:url', SITE_BASE + '/about');

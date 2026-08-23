@@ -38,7 +38,14 @@ export default function BaseConverter() {
       // 2. 去掉各进制前缀（所有出现都要替换）
       const cleaned = withoutSign.replace(/^0x/i, '').replace(/^0o/i, '').replace(/^0b/i, '');
 
-      const bigInt = BigInt(parseInt(cleaned || '0', activeBase)) * (isNegative ? -1n : 1n);
+      // 直接用 BigInt 解析，避免 parseInt 先转成 Number 造成超过 2^53 的大数精度丢失
+      const num = cleaned || '0';
+      let parsed: bigint;
+      if (activeBase === 16) parsed = BigInt('0x' + num);
+      else if (activeBase === 8) parsed = BigInt('0o' + num);
+      else if (activeBase === 2) parsed = BigInt('0b' + num);
+      else parsed = BigInt(num);
+      const bigInt = parsed * (isNegative ? -1n : 1n);
 
       setValues({
         2: bigInt.toString(2),

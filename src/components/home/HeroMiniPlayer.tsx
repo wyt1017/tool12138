@@ -32,7 +32,11 @@ export default function HeroMiniPlayer() {
     <div className="mt-6 w-full max-w-md mx-auto">
       <div className="bg-white/5 border border-white/10 backdrop-blur-md px-4 py-3 flex items-center gap-3 rounded-2xl shadow-lg">
         {/* 封面缩略图 */}
-        <div className="relative w-11 h-11 rounded-full overflow-hidden flex-shrink-0 border border-white/15">
+        <div
+          onDoubleClick={() => navigate("/tools/music-player")}
+          title="双击封面进入完整播放器"
+          className="relative w-11 h-11 rounded-full overflow-hidden flex-shrink-0 border border-white/15 cursor-pointer"
+        >
           <div className="absolute inset-0 bg-gradient-to-br from-[#a78bfa]/40 to-[#00d9ff]/40 z-10 pointer-events-none" />
           <div className="w-full h-full bg-[#1a1a2e] flex items-center justify-center">
             {loadingUrlId ? (

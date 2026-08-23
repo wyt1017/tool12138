@@ -32,7 +32,7 @@ export default function WorkingDayCalc() {
   const [excludedDates, setExcludedDates] = useState<string>('');
   const [copied, setCopied] = useState(false);
 
-  const todayStr = new Date().toISOString().split('T')[0];
+  const todayStr = formatDate(new Date());
 
   const excludedDateSet = useMemo(() => {
     return new Set(

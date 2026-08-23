@@ -56,61 +56,73 @@ export default function JsonYamlConverter() {
     }).join('\n');
   };
 
+    interface YEntry { key: string; value: string; isEmpty: boolean }
+
   const yamlToJson = (yaml: string): JsonValue => {
-    const lines = yaml.split('\n').filter(line => line.trim() && !line.trim().startsWith('#'));
-    const result: Record<string, JsonValue> = {};
-    let currentKey = '';
-    let currentObj: Record<string, JsonValue> | JsonValue[] = result;
-    const stack: (Record<string, JsonValue> | JsonValue[])[] = [result];
-    const indentStack: number[] = [0];
-
+    const lines = yaml.split('\n').filter((l) => l.trim() && !/^\s*#/.test(l));
+    interface TNode { indent: number; text: string; children: TNode[] }
+    const root: TNode = { indent: -1, text: '', children: [] };
+    const stack: TNode[] = [root];
     for (const line of lines) {
-      const indent = line.search(/\S/);
-      const trimmed = line.trim();
-
-      // 处理数组项
-      if (trimmed.startsWith('- ')) {
-        const value = parseYamlValue(trimmed.slice(2));
-        if (!Array.isArray(currentObj)) {
-          currentObj = [];
-          (stack[stack.length - 1] as Record<string, JsonValue>)[currentKey] = currentObj;
-        }
-        currentObj.push(value);
-        continue;
-      }
-
-      // 处理键值对
-      const colonIndex = trimmed.indexOf(':');
-      if (colonIndex === -1) continue;
-
-      const key = trimmed.slice(0, colonIndex).trim();
-      const valueStr = trimmed.slice(colonIndex + 1).trim();
-
-      // 检查缩进变化
-      while (indent < indentStack[indentStack.length - 1]) {
-        stack.pop();
-        indentStack.pop();
-        currentObj = stack[stack.length - 1];
-      }
-
-      if (indent > indentStack[indentStack.length - 1]) {
-        indentStack.push(indent);
-        stack.push(((currentObj as Record<string, JsonValue>)[currentKey] || {}) as (Record<string, JsonValue> | JsonValue[]));
-        currentObj = stack[stack.length - 1];
-      }
-
-      currentKey = key;
-      if (valueStr === '' || valueStr === '|' || valueStr === '>') {
-        (currentObj as Record<string, JsonValue>)[key] = {};
-      } else {
-        (currentObj as Record<string, JsonValue>)[key] = parseYamlValue(valueStr);
-      }
+      const node: TNode = { indent: line.search(/\S/), text: line.trim(), children: [] };
+      while (stack.length > 1 && node.indent <= stack[stack.length - 1].indent) stack.pop();
+      stack[stack.length - 1].children.push(node);
+      stack.push(node);
     }
 
-    return result;
-  };
+    // 按缩进构造树后再按结构转成 JSON，正确处理嵌套对象、对象的列表、列表中的对象
+    const parseEntry = (s: string): YEntry | null => {
+      // 仅当冒号后有空白、或整行以冒号结尾时才视为映射条目，避免把 "http://x" 误判为键值
+      const m = /^(.*?):\s+(.*)$/.exec(s) || /^(.*?):$/.exec(s);
+      if (!m) return null;
+      return { key: m[1], value: m[2] ?? '', isEmpty: m[2] === undefined };
+    };
 
-  const parseYamlValue = (str: string): JsonValue => {
+    const convertNode = (n: TNode): JsonValue => {
+      const text = n.text;
+      const isItem = text.startsWith('- ');
+      const content = isItem ? text.slice(2).trim() : text;
+
+      if (isItem) {
+        const entry = parseEntry(content);
+        if (entry) {
+          // 列表项本身是映射条目（如 "- name: a"），其子节点为同一对象的下级字段
+          if (n.children.length > 0) {
+            const dict: Record<string, JsonValue> = {};
+            dict[entry.key] = entry.isEmpty ? convertChildren(n.children) : parseYamlValue(entry.value);
+            for (const child of n.children) {
+              if (!child.text.startsWith('- ')) {
+                const ce = parseEntry(child.text);
+                if (ce && !(ce.key in dict)) dict[ce.key] = convertNode(child);
+              }
+            }
+            return dict;
+          }
+          return { [entry.key]: parseYamlValue(entry.value) };
+        }
+        return n.children.length > 0 ? convertChildren(n.children) : parseYamlValue(content);
+      }
+
+      const entry = parseEntry(text);
+      if (!entry) return parseYamlValue(text);
+      return entry.isEmpty ? convertChildren(n.children) : parseYamlValue(entry.value);
+    };
+
+    const convertChildren = (children: TNode[]): JsonValue => {
+      if (children.length === 0) return {};
+      const allItems = children.every((c) => c.text.startsWith('- '));
+      if (allItems) return children.map(convertNode);
+      const dict: Record<string, JsonValue> = {};
+      for (const c of children) {
+        const e = parseEntry(c.text);
+        if (e) dict[e.key] = convertNode(c);
+      }
+      return dict;
+    };
+
+    return convertChildren(root.children);
+  };
+const parseYamlValue = (str: string): JsonValue => {
     if (str === 'null' || str === '~') return null;
     if (str === 'true') return true;
     if (str === 'false') return false;

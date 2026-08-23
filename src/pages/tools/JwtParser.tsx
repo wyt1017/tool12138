@@ -8,7 +8,10 @@ const COLOR = '#e94560';
 function b64urlDecode(str: string): string {
   let b64 = str.replace(/-/g, '+').replace(/_/g, '/');
   while (b64.length % 4) b64 += '=';
-  return atob(b64);
+  const raw = atob(b64);
+  const bytes = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
 }
 
 export default function JwtParser() {

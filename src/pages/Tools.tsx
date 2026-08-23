@@ -1,15 +1,17 @@
 import { useState } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Search } from 'lucide-react';
 import { tools, categories, searchTools } from '@/data/tools';
 import ToolCard from '@/components/home/ToolCard';
 
 export default function Tools() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const initialQuery = searchParams.get('q') || '';
+  const activeCat = searchParams.get('cat') || '';
   const [query, setQuery] = useState(initialQuery);
-  const filtered = query ? searchTools(query) : tools;
+  const catTools = activeCat ? tools.filter((t) => t.category === activeCat) : tools;
+  const filtered = query ? searchTools(query) : catTools;
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-12">
@@ -40,6 +42,38 @@ export default function Tools() {
         </div>
       </motion.div>
 
+      {/* Category Filter */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="max-w-xl mx-auto mb-10 flex flex-wrap items-center justify-center gap-2"
+      >
+        <button
+          onClick={() => { setSearchParams({}); setQuery(''); }}
+          className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+            !activeCat ? 'bg-[#a78bfa]/15 text-[#a78bfa]' : 'bg-[var(--bg-hover)] text-[var(--text-faint)] hover:text-[var(--text-primary)]'
+          }`}
+        >
+          全部
+        </button>
+        {categories.map((cat) => {
+          const count = tools.filter((t) => t.category === cat.key).length;
+          if (count === 0) return null;
+          return (
+            <button
+              key={cat.key}
+              onClick={() => { setSearchParams({ cat: cat.key }); setQuery(''); }}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                activeCat === cat.key ? 'bg-[#a78bfa]/15 text-[#a78bfa]' : 'bg-[var(--bg-hover)] text-[var(--text-faint)] hover:text-[var(--text-primary)]'
+              }`}
+            >
+              {cat.label} ({count})
+            </button>
+          );
+        })}
+      </motion.div>
+
       {/* Results */}
       {filtered.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -52,38 +86,6 @@ export default function Tools() {
           <p className="text-[var(--text-faint)] text-lg">没有找到匹配 "{query}" 的工具</p>
           <button onClick={() => setQuery('')} className="btn-primary mt-4">清除搜索</button>
         </div>
-      )}
-
-      {/* Category Summary */}
-      {!query && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="mt-16 glass-card p-8"
-        >
-          <h2 className="font-['Syne'] font-semibold text-lg text-[var(--text-primary)] mb-6">按分类浏览</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {categories.map((cat) => {
-              const count = tools.filter((t) => t.category === cat.key).length;
-              return (
-                <Link
-                  key={cat.key}
-                  to={`#${cat.key}`}
-                  className="flex items-center gap-3 p-4 rounded-xl bg-[var(--bg-hover)] hover:bg-[var(--bg-secondary)] transition-colors group"
-                >
-                  <div
-                    className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
-                    style={{ backgroundColor: cat.bgColor, color: cat.color }}
-                  >
-                    <span className="font-['Syne'] font-bold text-sm">{count}</span>
-                  </div>
-                  <span className="text-sm text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">{cat.label}</span>
-                </Link>
-              );
-            })}
-          </div>
-        </motion.div>
       )}
     </div>
   );

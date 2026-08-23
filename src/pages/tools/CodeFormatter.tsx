@@ -326,8 +326,8 @@ export default function CodeFormatter() {
     if (/^\s*<!doctype\s+html/i.test(trimmed) || /^\s*<html/i.test(trimmed) || /<\/\w+>/i.test(trimmed)) return 'html';
     if (/^\s*<(?:\w+)[\s>]/i.test(trimmed) && !/^\s*<\?xml/i.test(trimmed)) return 'xml';
     if (/\b(SELECT|INSERT|UPDATE|DELETE|FROM|WHERE)\b/i.test(trimmed) && /;?\s*$/.test(trimmed)) return 'sql';
-    if (/\{[^}]*\}/.test(trimmed) && /[\w-]+\s*:\s*[^;]+;/.test(trimmed)) return 'css';
     if (/\b(function|const|let|var|import|export|class|=>)\b/.test(trimmed)) return 'js';
+    if (/\{[^}]*\}/.test(trimmed) && /[\w-]+\s*:\s*[^;]+;/.test(trimmed)) return 'css';
     return 'js';
   };
 

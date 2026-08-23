@@ -94,13 +94,17 @@ export default function DateCalc() {
       const date = new Date(year, month - 1, day);
       const isLeapYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
 
-      // ISO 8601 周数计算：第一周是包含1月4日的那一周
-      const jan4 = new Date(year, 0, 4);
-      const week1Monday = new Date(jan4);
-      week1Monday.setDate(jan4.getDate() - (jan4.getDay() + 6) % 7);
       const startOfYear = new Date(year, 0, 1);
       const dayOfYear = Math.floor((date.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-      const weekNum = Math.ceil(((date.getTime() - week1Monday.getTime()) / (1000 * 60 * 60 * 24) + 1) / 7);
+      // ISO 8601 周数计算：以包含本周四的那一周为准，正确处理年初/年末属于上一年最后一周的情况，避免出现第0周
+      const dayOfWeek = (date.getDay() + 6) % 7; // 周一=0 ... 周日=6
+      const thursday = new Date(date);
+      thursday.setDate(date.getDate() - dayOfWeek + 3); // 本周四
+      const firstThursday = new Date(thursday.getFullYear(), 0, 4);
+      const firstThursdayDow = (firstThursday.getDay() + 6) % 7;
+      const isoWeek1Monday = new Date(firstThursday);
+      isoWeek1Monday.setDate(firstThursday.getDate() - firstThursdayDow);
+      const weekNum = Math.floor((thursday.getTime() - isoWeek1Monday.getTime()) / (1000 * 60 * 60 * 24) / 7) + 1;
 
       const daysInMonth = new Date(year, month, 0).getDate();
       const endOfYear = new Date(year, 11, 31);

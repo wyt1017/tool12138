@@ -1,46 +1,18 @@
-import { useState, useEffect, useMemo } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Zap, ChevronDown } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import { Menu, X, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { tools, type Tool } from '@/data/tools';
-import DynamicIcon from '@/components/DynamicIcon';
+import { tools, categories } from '@/data/tools';
 import ThemeToggle from './ThemeToggle';
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
-
-  // 预计算分类工具列表，避免每次渲染重复计算
-  const categoryTools = useMemo(() => {
-    const result: Record<string, Tool[]> = {
-      text: tools.filter(t => t.category === 'text'),
-      dev: tools.filter(t => t.category === 'dev'),
-      design: tools.filter(t => t.category === 'design'),
-      generator: tools.filter(t => t.category === 'generator'),
-      convert: tools.filter(t => t.category === 'convert'),
-      calculator: tools.filter(t => t.category === 'calculator'),
-    };
-    // 计算其他分类：未被分配到上述分类的工具
-    const assigned = new Set<string>();
-    Object.values(result).forEach(list => list.forEach(t => assigned.add(t.id)));
-    result.other = tools.filter(t => !assigned.has(t.id));
-    return result;
-  }, []);
-
-  const navCategories = [
-    { key: 'text', label: '文本工具' },
-    { key: 'dev', label: '开发工具' },
-    { key: 'design', label: '设计工具' },
-    { key: 'generator', label: '生成器' },
-    { key: 'convert', label: '转换编解码' },
-    { key: 'calculator', label: '计算器' },
-    { key: 'other', label: '其他' },
-  ];
+  const [searchParams] = useSearchParams();
+  const activeCat = searchParams.get('cat') || '';
 
   useEffect(() => {
-    setOpenDropdown(null);
     setMobileOpen(false);
   }, [location.pathname]);
 
@@ -58,9 +30,9 @@ export default function Header() {
         scrolled ? 'bg-[color-mix(in_srgb,var(--bg-elevated)_88%,transparent)] shadow-lg border-b-[var(--border-strong)]' : 'bg-[color-mix(in_srgb,var(--bg-elevated)_60%,transparent)] border-b-[var(--border-color)]'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2.5 group">
+        <Link to="/" className="flex items-center gap-2.5 group shrink-0">
           <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#8b5cf6] to-[#a78bfa] flex items-center justify-center shadow-lg shadow-[#8b5cf6]/20 group-hover:shadow-[#8b5cf6]/35 group-hover:scale-105 transition-all">
             <Zap size={18} className="text-white" />
           </div>
@@ -69,11 +41,11 @@ export default function Header() {
           </span>
         </Link>
 
-        {/* Desktop Nav - 分类下拉菜单 */}
-        <nav className="hidden md:flex items-center gap-1">
+        {/* Desktop Nav - 分类按钮（无下拉，点击直达对应分类） */}
+        <nav className="hidden md:flex items-center gap-1 overflow-x-auto [scrollbar-width:none]">
           <Link
             to="/"
-            className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 ${
+            className={`flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 whitespace-nowrap ${
               location.pathname === '/'
                 ? 'text-[var(--text-primary)] font-semibold'
                 : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)]'
@@ -81,60 +53,29 @@ export default function Header() {
           >
             首页
           </Link>
-          {navCategories.map((cat) => {
-            const isActive = openDropdown === cat.key;
-            const items = categoryTools[cat.key] || [];
-            if (items.length === 0) return null;
-
+          {categories.map((cat) => {
+            const count = tools.filter((t) => t.category === cat.key).length;
+            if (count === 0) return null;
+            const isActive = activeCat === cat.key;
             return (
-              <div
+              <Link
                 key={cat.key}
-                className="relative"
-                onMouseEnter={() => setOpenDropdown(cat.key)}
-                onMouseLeave={() => setOpenDropdown(null)}
-                onFocus={() => setOpenDropdown(cat.key)}
-                onBlur={(e) => {
-                  if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
-                    setOpenDropdown(null);
-                  }
-                }}
+                to={`/tools?cat=${cat.key}`}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 whitespace-nowrap ${
+                  isActive
+                    ? 'text-[var(--text-primary)] font-semibold bg-[var(--bg-hover)]'
+                    : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)]'
+                }`}
               >
-                <button
-                  type="button"
-                  aria-haspopup="true"
-                  aria-expanded={isActive}
-                  className={`flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8b5cf6]/60 ${
-                    isActive ? 'text-[var(--text-primary)] font-semibold' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)]'
-                  }`}
-                >
-                  {cat.label}
-                  <ChevronDown size={14} className={`transition-transform duration-200 ${isActive ? 'rotate-180' : ''}`} />
-                </button>
-                {isActive && (
-                  <div className="absolute top-full left-0 -mt-1 pt-3 w-56">
-                    <div className="bg-[var(--bg-elevated)] rounded-xl border border-[var(--border-color)] shadow-2xl overflow-hidden">
-                      <div className="py-2">
-                        {items.map((tool) => (
-                          <Link
-                            key={tool.id}
-                            to={tool.path}
-                            className="flex items-center gap-3 px-4 py-2.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)] transition-colors"
-                          >
-                            <DynamicIcon name={tool.icon} size={18} className="text-[var(--text-faint)] shrink-0" />
-                            <span className="truncate">{tool.name}</span>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
+                <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: cat.color }} />
+                {cat.label}
+              </Link>
             );
           })}
         </nav>
 
         {/* 右侧：主题切换 + 移动端菜单按钮 */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 shrink-0">
           <ThemeToggle />
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -146,7 +87,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu - 分类按钮 */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.nav
@@ -167,29 +108,27 @@ export default function Header() {
               >
                 首页
               </Link>
-              {navCategories.map((cat) => {
-                const items = categoryTools[cat.key] || [];
-                if (items.length === 0) return null;
+              {categories.map((cat) => {
+                const count = tools.filter((t) => t.category === cat.key).length;
+                if (count === 0) return null;
+                const isActive = activeCat === cat.key;
                 return (
-                  <div key={cat.key}>
-                    <div className="px-4 py-2 text-xs font-semibold text-[var(--text-faint)] uppercase tracking-wider">
+                  <Link
+                    key={cat.key}
+                    to={`/tools?cat=${cat.key}`}
+                    onClick={() => setMobileOpen(false)}
+                    className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                      isActive
+                        ? 'bg-[#8b5cf6]/10 text-[#a78bfa]'
+                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)]'
+                    }`}
+                  >
+                    <span className="flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: cat.color }} />
                       {cat.label}
-                    </div>
-                    {items.map((tool) => (
-                      <Link
-                        key={tool.id}
-                        to={tool.path}
-                        onClick={() => setMobileOpen(false)}
-                        className={`block px-4 py-2.5 pl-6 rounded-lg text-sm font-medium transition-all ${
-                          location.pathname === tool.path
-                            ? 'bg-[#8b5cf6]/10 text-[#a78bfa]'
-                            : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)]'
-                        }`}
-                      >
-                        {tool.name}
-                      </Link>
-                    ))}
-                  </div>
+                    </span>
+                    <span className="text-xs text-[var(--text-faint)]">{count}</span>
+                  </Link>
                 );
               })}
             </div>

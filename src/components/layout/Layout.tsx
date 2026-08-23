@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
+import { ArrowUp } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import useSEO from '@/hooks/useSEO';
 import Header from './Header';
@@ -13,6 +15,35 @@ function isWorkspaceRoute(pathname: string): boolean {
 // 细粒度 SVG 噪点纹理（base64 data URI，营造氛围颗粒）
 const NOISE_URI =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E\")";
+
+function BackToTop() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 300);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.button
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.8 }}
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          aria-label="回到顶部"
+          title="回到顶部"
+          className="fixed bottom-24 right-5 z-40 w-11 h-11 rounded-full flex items-center justify-center bg-[var(--bg-elevated)] border border-[var(--border-color)] text-[var(--text-muted)] shadow-lg backdrop-blur-xl hover:text-[var(--text-primary)] hover:border-[#8b5cf6]/40 transition-all hover:shadow-[#8b5cf6]/20"
+        >
+          <ArrowUp size={20} />
+        </motion.button>
+      )}
+    </AnimatePresence>
+  );
+}
 
 export default function Layout() {
   useSEO();
@@ -67,6 +98,7 @@ export default function Layout() {
 
       <Footer />
       <MusicMiniPlayer />
+      <BackToTop />
     </motion.div>
   );
 }

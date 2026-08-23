@@ -23,7 +23,8 @@ export default function TextReplace() {
         const flags = `${globalReplace ? 'g' : ''}${caseSensitive ? '' : 'i'}`;
         const regex = new RegExp(searchText, flags);
         const matches = inputText.match(regex);
-        count = matches ? matches.length : 0;
+        // 非全局模式只替换首次匹配；match 数组长度在含捕获组时会大于实际替换次数
+        count = matches ? (globalReplace ? matches.length : 1) : 0;
         result = inputText.replace(regex, replaceText);
       } else {
         if (globalReplace) {
