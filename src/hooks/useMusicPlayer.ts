@@ -144,6 +144,26 @@ let audio: HTMLAudioElement | null = null;
 let playlist: SongMeta[] = loadPlaylist();
 // 随机模式下的播放顺序（播放列表索引的洗牌排列）：一轮内每首歌恰好播放一次
 let shuffleOrder: number[] = [];
+// 自动切歌延迟定时器：error/ended/无源跳过等自动切换路径统一延迟 3 秒，
+// 避免「有源却立即报错」时无停顿地连续跳曲；手动切歌（next/prev/点歌）即时响应并清除该定时器。
+const AUTO_FALLBACK_DELAY_MS = 3000;
+let autoDelayTimer: ReturnType<typeof setTimeout> | null = null;
+
+function clearAutoDelay() {
+  if (autoDelayTimer) {
+    clearTimeout(autoDelayTimer);
+    autoDelayTimer = null;
+  }
+}
+
+// 延迟执行下一个 loadAndPlay；若在延迟期间被手动切歌/点歌中断则取消
+function scheduleAutoPlay(song: SongMeta) {
+  clearAutoDelay();
+  autoDelayTimer = setTimeout(() => {
+    autoDelayTimer = null;
+    loadAndPlay(song);
+  }, AUTO_FALLBACK_DELAY_MS);
+}
 
 interface MusicSnapshot {
   currentSong: SongMeta | null;
@@ -270,6 +290,8 @@ function shufflePickIndex(): number {
 let autoSkipCount = 0;
 
 async function loadAndPlay(song: SongMeta, list?: SongMeta[], manual = false) {
+  // 任何切歌（含自动延迟触发）都代表进入新的一次播放，取消未执行的自动切歌
+  clearAutoDelay();
   // 手动切歌时重置计数器
   if (manual) autoSkipCount = 0;
 
@@ -313,7 +335,7 @@ async function loadAndPlay(song: SongMeta, list?: SongMeta[], manual = false) {
     }
     const target = pickNext();
     if (target && target.id !== song.id) {
-      loadAndPlay(target);
+      scheduleAutoPlay(target);
     } else {
       error = "该歌曲暂无免费音源，试试其他歌曲";
       emit();
@@ -332,7 +354,7 @@ async function loadAndPlay(song: SongMeta, list?: SongMeta[], manual = false) {
     if (audio !== a) return;
     const target = pickNext();
     if (target && target.id !== song.id) {
-      loadAndPlay(target);
+      scheduleAutoPlay(target);
     } else {
       error = "音频加载失败，请重试或切换歌曲";
       playing = false;
@@ -371,7 +393,7 @@ async function loadAndPlay(song: SongMeta, list?: SongMeta[], manual = false) {
       return;
     }
     const target = pickNext();
-    if (target) loadAndPlay(target);
+    if (target) scheduleAutoPlay(target);
     else {
       playing = false;
       currentTime = 0;
