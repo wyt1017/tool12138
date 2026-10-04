@@ -108,6 +108,14 @@ const LotteryWheel = lazy(() => import('@/pages/tools/LotteryWheel'));
 const Fortune = lazy(() => import('@/pages/tools/Fortune'));
 const MusicPlayer = lazy(() => import('@/pages/tools/MusicPlayer'));
 
+// 第8批：趣味随机/转换
+const CoinFlip = lazy(() => import('@/pages/tools/CoinFlip'));
+const DiceRoll = lazy(() => import('@/pages/tools/DiceRoll'));
+const NumberCircle = lazy(() => import('@/pages/tools/NumberCircle'));
+const RandomString = lazy(() => import('@/pages/tools/RandomString'));
+const Text2Image = lazy(() => import('@/pages/tools/Text2Image'));
+const ImageToPdf = lazy(() => import('@/pages/tools/ImageToPdf'));
+
 export default function App() {
   return (
     <MotionConfig reducedMotion="user">
@@ -202,6 +210,13 @@ export default function App() {
           <Route path="/tools/lottery-wheel" element={<Suspense fallback={<LoadingSpinner />}><LotteryWheel /></Suspense>} />
           <Route path="/tools/fortune" element={<Suspense fallback={<LoadingSpinner />}><Fortune /></Suspense>} />
           <Route path="/tools/music-player" element={<Suspense fallback={<LoadingSpinner />}><MusicPlayer /></Suspense>} />
+          {/* 第8批：趣味随机/转换 */}
+          <Route path="/tools/coin-flip" element={<Suspense fallback={<LoadingSpinner />}><CoinFlip /></Suspense>} />
+          <Route path="/tools/dice-roll" element={<Suspense fallback={<LoadingSpinner />}><DiceRoll /></Suspense>} />
+          <Route path="/tools/number-circle" element={<Suspense fallback={<LoadingSpinner />}><NumberCircle /></Suspense>} />
+          <Route path="/tools/random-string" element={<Suspense fallback={<LoadingSpinner />}><RandomString /></Suspense>} />
+          <Route path="/tools/text2image" element={<Suspense fallback={<LoadingSpinner />}><Text2Image /></Suspense>} />
+          <Route path="/tools/image-to-pdf" element={<Suspense fallback={<LoadingSpinner />}><ImageToPdf /></Suspense>} />
           <Route path="/about" element={<About />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

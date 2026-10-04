@@ -26,7 +26,7 @@ export default function Footer() {
               免费在线工具集合，无需注册，数据本地处理，保护您的隐私安全。
             </p>
             <div className="flex items-center gap-2 mt-5">
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-lg bg-[var(--bg-hover)] border border-[var(--border-color)] flex items-center justify-center text-[var(--text-secondary)] hover:text-white hover:border-[#a78bfa]/40 hover:shadow-[0_0_16px_var(--violet-glow)] transition-all" aria-label="GitHub">
+              <a href="https://github.com/wyt1017/tool12138" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-lg bg-[var(--bg-hover)] border border-[var(--border-color)] flex items-center justify-center text-[var(--text-secondary)] hover:text-white hover:border-[#a78bfa]/40 hover:shadow-[0_0_16px_var(--violet-glow)] transition-all" aria-label="GitHub">
                 <Github size={17} />
               </a>
               <span className="w-9 h-9 rounded-lg bg-[var(--bg-hover)] border border-[var(--border-color)] flex items-center justify-center text-[var(--text-secondary)] cursor-default" title="每日上新">

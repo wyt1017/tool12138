@@ -1,5 +1,6 @@
-﻿User-agent: *
+User-agent: *
 Allow: /
 Disallow: /@
 Disallow: /__vite__
-Sitemap: https://same-toolbox.pages.dev/sitemap.xml
+Disallow: /api/
+Sitemap: https://tool12138.3383.workers.dev/sitemap.xml

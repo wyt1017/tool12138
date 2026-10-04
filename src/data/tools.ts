@@ -119,6 +119,14 @@ export const tools: Tool[] = [
   { id: 'lottery-wheel', name: '抽奖转盘/抽签', description: '可自定义奖项与权重的概率转盘，以及随机抽签工具', category: 'utility', icon: 'Dice1', path: '/tools/lottery-wheel', tags: ['抽奖', '转盘', '抽签', '概率', '随机'] },
   { id: 'fortune', name: '运势/抽签/心理测试', description: '每日运势、灵签抽签与趣味心理测试三合一', category: 'utility', icon: 'Sparkles', path: '/tools/fortune', tags: ['运势', '抽签', '灵签', '心理测试', '趣味'] },
   { id: 'music-player', name: '音乐播放器', description: '搜索歌曲在线试听，支持歌词同步滚动与全局迷你播放器', category: 'utility', icon: 'Music2', path: '/tools/music-player', tags: ['音乐', '播放器', '歌词', '网易云', 'Music'] },
+
+  // ===== 第8批：趣味随机/转换 =====
+  { id: 'coin-flip', name: '随机抛硬币', description: '模拟抛硬币，支持自定义数量、正反面统计与翻转动画', category: 'generator', icon: 'Coins', path: '/tools/coin-flip', tags: ['硬币', '抛硬币', '正反面', '随机', '概率'] },
+  { id: 'dice-roll', name: '随机摇骰子', description: '模拟摇骰子，支持自定义骰子数量与各面点数统计', category: 'generator', icon: 'Dice5', path: '/tools/dice-roll', tags: ['骰子', '摇骰子', '点数', '随机', '概率'] },
+  { id: 'number-circle', name: '数字加圆圈', description: '将数字转换为①②③、⓵⓶⓷、❶❷❸等五种带圈序号样式', category: 'convert', icon: 'CircleDot', path: '/tools/number-circle', tags: ['数字', '圆圈', '带圈', '序号', '转换'] },
+  { id: 'random-string', name: '随机字符生成', description: '按自定义字符集批量生成随机字符串，支持复制与下载 TXT', category: 'generator', icon: 'Shuffle', path: '/tools/random-string', tags: ['随机字符串', '字符', '生成', '批量'] },
+  { id: 'text2image', name: '文本转图片', description: '将文本渲染为图片，可自定义尺寸、字体、颜色与背景，导出 PNG/JPG', category: 'design', icon: 'Type', path: '/tools/text2image', tags: ['文本', '图片', '转图片', 'Canvas', '导出'] },
+  { id: 'image-to-pdf', name: '图片转 PDF', description: '多张图片合并为一个 PDF，可自定义页面尺寸、方向与边距', category: 'convert', icon: 'FileDown', path: '/tools/image-to-pdf', tags: ['图片', 'PDF', '合并', '转换', '导出', 'JPG', 'PNG'] },
 ];
 
 export function getToolByPath(path: string): Tool | undefined {

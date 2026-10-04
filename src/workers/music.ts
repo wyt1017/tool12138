@@ -82,6 +82,46 @@ interface NeteaseSong {
 // url/lrc 接口的访问令牌（前端同源请求携带；防止接口被外部无谓调用）
 const MUSIC_TOKEN = "same-toolbox-music-2026";
 
+// ── 音源短缓存 ──
+// 背景：播放器自动切歌 + 用户切歌会产生大量 /api/music?type=url 请求，取源链路较慢且失败率高，
+// 这部分重复请求既拖慢体验又造成大量 4xx/无效上游调用。这里给「最终直链」加一个极短 TTL
+// 的缓存，显著降低重复取源与 4xx 峰值。
+// 用 caches.default（边缘缓存）而非模块级 Map：Map 只存在于单个 Worker 实例，实例随时被回收、
+// 多实例之间不共享，实际命中率极低；边缘缓存才能真正跨实例生效。
+// 正确性关键点（为避免引入新失误，刻意保持最简单的「值+TTL」模型）：
+//  - 只缓存取源成功的结果（非空 url）；取源失败不写入，下次请求仍可重试；
+//  - TTL 很短、会自动过期并清理；
+//  - 不引入 Promise/并发的去重逻辑：同一 key 并发时均可命中或被覆盖，最坏也只是重复打一次
+//    上游，行为和缓存前完全一致，绝不引入新 Bug。
+const URL_CACHE_TTL_SECONDS = 30;
+const URL_CACHE_KEY_PREFIX = 'https://guaqi.internal/music-url/';
+
+/**
+ * Cloudflare Workers 边缘缓存。
+ * 必须惰性读取：本文件也被 vite.config.ts 在 Node 侧引入（dev 中间件复用），
+ * 而模块顶层求值时 caches 尚不存在。caches.default 也不在 DOM 类型定义中。
+ */
+function getEdgeCache(): Cache {
+  return (caches as unknown as { default: Cache }).default;
+}
+
+function urlCacheKey(server: string, id: string): string {
+  return `${URL_CACHE_KEY_PREFIX}${server}:${id}`;
+}
+
+async function getCachedUrl(key: string): Promise<string | undefined> {
+  const hit = await getEdgeCache().match(key);
+  if (!hit) return undefined;
+  return (await hit.text()) || undefined;
+}
+
+async function setCachedUrl(key: string, url: string) {
+  await getEdgeCache().put(
+    key,
+    new Response(url, { headers: { 'Cache-Control': `public, max-age=${URL_CACHE_TTL_SECONDS}` } }),
+  );
+}
+
 const SERVERS = ["netease", "tencent", "kugou", "baidu", "kuwo", "youtube"];
 const TYPES = ["search", "song", "album", "artist", "playlist", "lrc", "url", "pic"];
 
@@ -567,6 +607,13 @@ export async function handleMusicRequest(query: URLSearchParams): Promise<Respon
     return json({ error: "unsupported" }, 400);
   }
 
+  // 取源结果短缓存：命中直接返回（跳过整条上游链路），显著降低重复取源与 4xx 峰值。
+  // 仅 type=url 且非 debug 模式命中；cache key 带上 name/artist，避免不同歌曲信息取到同一结果。
+  if (type === "url" && query.get("debug") !== "1") {
+    const cached = await getCachedUrl(urlCacheKey(server, `${id}:${name}:${artist}`));
+    if (cached !== undefined) return json({ url: cached });
+  }
+
   const meting = new Meting(server);
   patchNetease(meting);
   meting.format(true);
@@ -634,11 +681,13 @@ export async function handleMusicRequest(query: URLSearchParams): Promise<Respon
       }
     }
     if (query.get("debug") === "1") return json({ ...dbg, final: url ? "ok" : "empty" });
-    if (!url) return json({ error: "no free source" }, 404);
+    if (!url) return json({ url: "" });
     url = url.replace(/^http:\/\//, "https://");
     if (server === "netease") {
       url = url.replace("://m7c.", "://m7.").replace("://m8c.", "://m8.");
     }
+    // 仅缓存取源成功的结果（非空 url），供后续同曲目短时间直接命中，降低重复请求
+    await setCachedUrl(urlCacheKey(server, `${id}:${name}:${artist}`), url);
     return json({ url });
   }
   if (type === "lrc") {

@@ -16,7 +16,7 @@ function md5(originalStr: string): string {
   const bytes = new TextEncoder().encode(originalStr);
 
   // Padding: byte message + 0x80 + zeros + 64-bit bit-length (little-endian)
-  let msg: number[] = Array.from(bytes);
+  const msg: number[] = Array.from(bytes);
   msg.push(0x80);
   while (msg.length % 64 !== 56) msg.push(0);
   const bitLen = bytes.length * 8;

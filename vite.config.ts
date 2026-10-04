@@ -8,16 +8,16 @@ import http from 'http';
 import type { Connect, Plugin } from 'vite';
 import type { IncomingMessage, ServerResponse } from 'http';
 import { handleMusicRequest } from './src/workers/music';
+import { seoPlugin } from './vite-plugin-seo';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// 可代理的目标域名白名单
+// 可代理的目标域名白名单（与 src/workers/index.ts 的 allowedPrefixes 保持一致）
 const PROXY_ALLOWED_HOSTS = [
   'api.open-meteo.com',
   'geocoding-api.open-meteo.com',
   'api.frankfurter.app',
   'api.github.com',
-  'huggingface.co',
   'music.163.com',
 ];
 
@@ -122,16 +122,8 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [createApiProxyPlugin(), react(mode === 'development' ? {
     babel: { plugins: ['react-dev-locator'] },
-  } : undefined), tsconfigPaths()],
+  } : undefined), tsconfigPaths(), seoPlugin()],
   server: {
     allowedHosts: true,
-    proxy: {
-      '/api/hf': {
-        target: 'https://huggingface.co/api',
-        changeOrigin: true,
-        rewrite: p => p.replace(/^\/api\/hf/, ''),
-        headers: { 'User-Agent': 'same-toolbox/1.0 (https://same-toolbox.pages.dev)' },
-      },
-    },
   },
 }))
